@@ -1,0 +1,21 @@
+{
+  "extends": "../../packages/config/tsconfig/web.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": [],
+    "paths": {
+      "@pdpx/types": ["../../packages/types/src"],
+      "@pdpx/ui": ["../../packages/ui/src"],
+      "@pdpx/utils": ["../../packages/utils/src"]
+    },
+    "incremental": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

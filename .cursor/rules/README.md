@@ -16,6 +16,7 @@ Dica: use `index.mdc` como ponto de entrada canônico para a IA.
 Nota: a API Nest é a única fonte de verdade para dados/autenticação; o Next chama apenas a API.
 
 ### Como pedir automações ao Cursor
+
 - "Aplicar scaffold_monorepo conforme `index.mdc` (automations)"
 - "Aplicar configure_http_client e seo_setup seguindo `http-client.mdc` e `seo-cache.mdc`"
 - "Aplicar enforce_backend_boundary e nest_auth_setup conforme `guardrails.mdc` e `supabase.mdc`"
@@ -48,5 +49,3 @@ Nota: a API Nest é a única fonte de verdade para dados/autenticação; o Next 
 ## Escopo atual
 
 Este repositório contém apenas as Rules/MDC. A implementação será feita posteriormente respeitando estes documentos.
-
-

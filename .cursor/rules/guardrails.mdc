@@ -52,6 +52,9 @@ Estas regras garantem consistência, qualidade e alinhamento às exigências do 
 - Componentes desacoplados, com props claras e tipadas.
 - Erros tratados com mensagens amigáveis no UI e logs estruturados no backend.
 - Proibir side effects inesperados em hooks; usar React Query com cuidado para não violar frescor de preço.
+- Backend (Nest.js): declarar SEMPRE modificadores de acesso explícitos (`public` | `private` | `protected`) em métodos e propriedades de classes.
+  - Construtores com DI: usar `private readonly` (ou `protected readonly`) para dependências injetadas; nunca depender de `public` implícito.
+  - Evitar omissão de `public` — explicitar a intenção para todos os membros.
 
 ## Observabilidade e Logs
 - Logs estruturados com correlação de request. Não logar dados sensíveis.
