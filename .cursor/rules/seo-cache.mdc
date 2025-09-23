@@ -1,0 +1,79 @@
+# MDC: SEO, SSR e Cache
+
+seo:
+  title: Usar título baseado em `Product.name` + marca
+  description: Derivada de `Product.description` (resumo)
+  open_graph:
+    - og:title, og:description, og:image (primary image), og:type=product
+  twitter:
+    - summary_large_image
+  canonical: /produto/[slug]
+  structured_data:
+    - JSON-LD Product (name, brand, sku, images[], offers with price/currency)
+  robots:
+    - index, follow (404/erro -> noindex)
+
+ssr:
+  - PDP renderizada no server; dados carregados da API Nest.
+  - `generateMetadata`/equivalente para metadados dinâmicos e OG/JSON-LD.
+
+cache:
+  source_of_truth: API Nest (que consulta Supabase e aplica cache)
+  product_metadata:
+    revalidate_seconds: 60
+    strategy: stale-while-revalidate
+  price:
+    ttl_seconds: 5-15
+    rule: sempre revalidar no server (API) antes de exibir preço
+  images:
+    source: `product_images` via API (usar `is_primary` e `position`)
+    optimization: Next Image, tamanhos responsivos, prioridade no LCP
+
+consistency:
+  - Se preço stale for detectado, revalide antes de enviar HTML.
+  - Evitar divergência entre HTML e hidratação.
+
+web_vitals:
+  - LCP: otimizar imagem principal e servidor próximo (edge opcional)
+  - CLS: reservar espaço para imagens e elementos dinâmicos
+  - INP: evitar JS desnecessário; utilizar componentes leves
+
+code_templates:
+  generate_metadata_ts: |
+    import type { Metadata } from 'next'
+
+    export async function generateMetadata({ params }): Promise<Metadata> {
+      // buscar dados do produto via API
+      return {
+        title: `${product.name} — ${product.brand}`,
+        description: product.description.slice(0, 160),
+        openGraph: {
+          title: product.name,
+          description: product.description,
+          images: [{ url: product.images.find(i => i.isPrimary)?.url ?? product.images[0]?.url }],
+          type: 'product',
+        },
+        alternates: { canonical: `/produto/${product.slug}` },
+      }
+    }
+
+  json_ld_tsx: |
+    import Script from 'next/script'
+
+    export function ProductJsonLd({ product, price }) {
+      const data = {
+        '@context': 'https://schema.org/',
+        '@type': 'Product',
+        name: product.name,
+        brand: product.brand,
+        sku: product.sku,
+        image: product.images.map(i => i.url),
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: price.currency,
+          price: (price.amountCents / 100).toFixed(2),
+          availability: 'https://schema.org/InStock',
+        },
+      }
+      return <Script type="application/ld+json" id="product-jsonld" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+    }

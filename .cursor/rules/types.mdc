@@ -1,0 +1,50 @@
+# MDC: Tipagens Compartilhadas (packages/types)
+
+purpose: Unificar contratos entre web e api com DTOs e schemas compartilhados.
+
+package:
+  location: packages/types
+  contents:
+    - DTOs de requests/responses da API (ProductDTO, PriceDTO, CartItemDTO, etc.)
+    - Schemas de validação (Zod/Valibot) opcionais para runtime
+    - Tipos utilitários (Result<T>, Paginated<T>)
+
+principles:
+  - Single source of truth para contratos (web e api importam daqui)
+  - Sem dependências pesadas; evitar acoplamento a frameworks
+  - Backward-compatible por padrão; alterações breaking devem ser versionadas
+
+naming:
+  - DTOs em PascalCase com sufixo DTO (ex.: ProductDTO)
+  - Schemas com sufixo `Schema` (ex.: productDTOSchema)
+
+core_dtos:
+  - ProductImageDTO: { id, url, alt?, isPrimary, position }
+  - ProductDTO: { id, slug, name, brand, sku, description, isActive, images: ProductImageDTO[] }
+  - PriceDTO: { productId, currency, amountCents, validFrom, validTo? }
+  - ProductWithPriceDTO: { product: ProductDTO, price: PriceDTO }
+  - CartItemDTO: { sku, quantity }
+  - AddToCartResponseDTO: { success, message }
+
+usecase_contracts:
+  - UseCase<Input, Output> { execute(input: Input): Promise<Output> }
+
+repository_interfaces:
+  - ProductRepository:
+      findBySlugWithImages(slug: string): Promise<ProductDTO | null>
+  - PriceRepository:
+      getCurrentByProductId(productId: string): Promise<PriceDTO | null>
+  - CartRepository:
+      addItem(input: CartItemDTO): Promise<AddToCartResponseDTO>
+
+usage_rules:
+  web:
+    - Tipar Axios e React Query com DTOs (ver `http-client.mdc`)
+    - Não redefinir tipos locais duplicando contratos
+  api:
+    - Controllers/UseCases dependem apenas de interfaces (DI); implementações ficam em `infra/prisma`
+    - Services mapeiam entidades -> DTOs; validações com schemas compartilhados (se adotado)
+
+migration_policy:
+  - Alterações de contrato devem atualizar DTOs e, se necessário, schemas
+  - Registrar breaking changes nas notas de versão do pacote

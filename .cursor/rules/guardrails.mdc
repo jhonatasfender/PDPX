@@ -1,0 +1,78 @@
+# MDC: Guardrails (Regras e Diretrizes)
+
+Estas regras garantem consistência, qualidade e alinhamento às exigências do case técnico. São obrigatórias para IA e humanos.
+
+## Comportamento e Workflow (Cursor)
+- Todas as interações devem referenciar estes arquivos quando houver dúvida: `project.mdc`, `supabase.mdc`, `seo-cache.mdc`, `tech-choices.md`, `http-client.mdc`.
+- Trabalhar de forma incremental: pequenas edições coesas, com justificativa curta vinculada às Rules.
+- Respostas da IA devem ser objetivas, com alternativas quando houver trade-offs, e citar o documento fonte.
+- Nunca ignorar regras existentes; se um requisito conflitar, propor ajuste explícito nas Rules antes de mudar código.
+
+## Arquitetura
+- Monorepo com Turborepo. Pacotes principais:
+  - `apps/web` (Next.js + React + Tailwind v4) — PDP, SSR, SEO.
+  - `apps/api` (Nest.js) — BFF/API central.
+  - `packages/ui` (componentes compartilhados), `packages/config` (eslint, tsconfig, tailwind), `packages/utils` (helpers), quando necessário.
+  - `packages/types` (tipos/DTOs/schemas compartilhados)
+- Separação de responsabilidades: front não acessa banco nem Supabase diretamente; usa a API Nest.
+- API Nest é autoridade de dados e autenticação.
+- Comunicação entre `web` e `api` via HTTP com CORS `credentials=true`.
+
+## Banco de Dados e Auth (Supabase)
+- Chaves e clientes Supabase apenas no backend (Nest). Front não carrega SDK do Supabase.
+- Usar RLS para proteger dados sensíveis.
+- Sessão via cookies httpOnly geridos pela API.
+- Preço atual é consultado pelo backend a cada renderização crítica; cache respeita frescor definido em `seo-cache.mdc`.
+
+## SEO, SSR, Cache e Preço Atual
+- PDP deve ser SSR por padrão para garantir SEO e preço atual.
+- Utilizar cache com política diferenciada:
+  - Metadados de produto: cacheável com revalidação curta.
+  - Preço: cache com TTL curto e revalidação server-side obrigatória na API.
+- Head tags completas (título, descrição, OG/Twitter) derivadas do produto.
+- Garantir Web Vitals (LCP, CLS, INP) com imagens otimizadas e layouts estáveis.
+
+## HTTP Client e Data Fetching
+- Axios como client padrão para falar com a API Nest (`withCredentials=true`).
+- TanStack React Query v5 para cache client-side.
+- Alinhar `staleTime`/`gcTime` às políticas de `seo-cache.mdc`.
+- SSR para PDP: hidratar React Query com dados vindos da API, evitando duplo fetch.
+
+## Tipagens Compartilhadas
+- Requests/responses e DTOs devem vir de `packages/types`.
+- Evitar duplicação de tipos entre web e api; qualquer mudança nos contratos ocorre no pacote de tipos.
+
+## SOLID e Camadas (API)
+- Controllers finos: apenas orquestram e chamam UseCases.
+- UseCase por endpoint: regra de negócio isolada, dependente de interfaces.
+- Repositories expostos como interfaces e injetados via DI; Prisma apenas em `infra/prisma`.
+
+## Estilo de Código e Qualidade
+- TypeScript estrito em todos os pacotes. Sem `any` não justificado.
+- Componentes desacoplados, com props claras e tipadas.
+- Erros tratados com mensagens amigáveis no UI e logs estruturados no backend.
+- Proibir side effects inesperados em hooks; usar React Query com cuidado para não violar frescor de preço.
+
+## Observabilidade e Logs
+- Logs estruturados com correlação de request. Não logar dados sensíveis.
+- Medir latência de chamadas à API e consultas críticas (preço e estoque se aplicável).
+
+## Segurança
+- Sanitizar inputs, validar params de rotas.
+- Cookies httpOnly/secure/sameSite=lax; CORS restrito aos domínios do front.
+- Não expor detalhes de infra (chaves, internals) no client ou logs.
+
+## Entregáveis (fase atual)
+- Apenas Rules/MDC. Nada de código de app.
+- Qualquer mudança nos documentos deve manter compatibilidade ou trazer plano de migração.
+
+## Automação (para Cursor LLM)
+- Ao criar scaffolds ou código, aplicar estas regras automaticamente:
+  - Proibir import de SDK do Supabase no `apps/web`. Se detectado, substituir por chamadas Axios para a API Nest.
+  - Garantir que Axios esteja configurado com `baseURL` e `withCredentials=true` conforme `http-client.mdc`.
+  - Inserir Providers do React Query no `apps/web` com defaults de `http-client.mdc` e hidratação SSR.
+  - Em controllers/serviços do Nest, importar DTOs de `packages/types` e validar contratos.
+  - Gerar metadados/JSON-LD seguindo `seo-cache.mdc` (usar imagem primária).
+  - Ao tocar preço, aplicar política de cache server-first; nunca renderizar preço de fonte client.
+  - Aplicar layering SOLID: criar UseCase por endpoint, interfaces de repositório, e implementação Prisma na infra.
+- Se uma ação conflitar com estas regras, interromper e propor correção referenciando o documento relevante.

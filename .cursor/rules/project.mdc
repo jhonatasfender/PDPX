@@ -1,0 +1,154 @@
+# MDC: Projeto e Domínios
+
+intent: Definir estrutura do monorepo, domínios e contratos de alto nível para a PDP.
+
+monorepo:
+  apps:
+    - apps/web: Next.js (SSR), Tailwind v4
+    - apps/api: Nest.js (BFF/API)
+  packages:
+    - packages/ui: componentes compartilhados (Headless + Tailwind)
+    - packages/utils: utilidades puras e tipos compartilhados
+    - packages/config: lint, tsconfig, tailwind config compartilhados
+    - packages/types: tipos/DTOs/esquemas compartilhados entre web e api
+
+scaffold_tree:
+  - apps/
+    - web/
+      - app/
+      - src/
+      - tailwind.config.ts
+    - api/
+      - src/
+        - modules/
+          - products/
+            - controllers/
+            - usecases/
+            - infra/
+              - prisma/
+            - mappers/
+            - entities/
+            - repositories/
+        - prisma/
+          - schema.prisma
+      - nest-cli.json
+  - packages/
+    - ui/
+    - utils/
+    - config/
+    - types/
+  - turbo.json
+  - package.json
+
+architecture_layers:
+  - Controller -> UseCase -> Repository (Interface) -> Repository (Prisma Implementation)
+  - Entities/Value Objects e Mappers responsáveis por conversão Entity <-> DTO
+  - Dependency Injection via Nest providers e tokens
+
+domains:
+  product:
+    entity: Product
+    fields:
+      - id: uuid
+      - slug: string (único)
+      - name: string
+      - brand: string
+      - sku: string (único)
+      - description: string
+      - isActive: boolean
+      - createdAt: timestamptz
+      - updatedAt: timestamptz
+    relations:
+      - images: ProductImage[] (ordenadas por `position`; uma `is_primary=true`)
+  image:
+    entity: ProductImage
+    fields:
+      - id: uuid
+      - productId: uuid (FK Product)
+      - url: string
+      - alt: string | null
+      - isPrimary: boolean
+      - position: number
+      - createdAt: timestamptz
+  price:
+    entity: ProductPrice
+    fields:
+      - id: uuid
+      - productId: uuid (FK Product)
+      - currency: string (ISO 4217)
+      - amountCents: integer
+      - validFrom: timestamptz
+      - validTo: timestamptz | null
+      - createdAt: timestamptz
+  cart:
+    note: Para este case, implementar apenas contratos; persistência é opcional.
+
+api_contracts (Nest.js):
+  - GET /v1/products/:slug
+    desc: Retorna produto por slug, imagens (primária e galeria resumida). Cacheável com revalidate curto.
+  - GET /v1/products/:slug/price
+    desc: Retorna preço atual (server-side, TTL curto). Autoridade é a API.
+  - POST /v1/cart
+    desc: Adiciona item ao carrinho; valida SKU e disponibilidade; retorna confirmação.
+
+shared_types:
+  package: packages/types
+  strategy:
+    - Exportar DTOs e schemas Zod/Valibot para requests/responses e entidades
+    - Web e API importam desses tipos para alinhar contratos
+    - Versão sem dependências pesadas (somente runtime schemas leves, se necessário)
+
+http_data_fetching:
+  client: Axios (instância e interceptors em `http-client.mdc`)
+  cache_client: React Query v5 (keys e defaults em `http-client.mdc`)
+  ssr_alignment:
+    - PDP SSR hidrata cache do React Query para evitar duplo fetch
+    - Preço é resolvido no server via API; client só revalida quando necessário
+
+rendering_policy:
+  - PDP é SSR por padrão.
+  - Preço sempre calculado no server em request/revalidate através da API Nest.
+
+caching_policy:
+  - Produto (metadados+imagens): revalidate ~60s (ajustável), SWR/React Query no client quando aplicável.
+  - Preço: TTL 5–15s na API; revalidação obrigatória antes de renderizar preço.
+
+error_policy:
+  - 4xx: mensagens amigáveis no UI; logs com contexto.
+  - 5xx: fallback seguro no UI; logs com correlação.
+
+naming_conventions:
+  - Pastas kebab-case, arquivos kebab-case em apps; componentes PascalCase em `packages/ui`.
+  - Tipos TS em PascalCase; props em camelCase.
+
+notes:
+  - Implementação futura deve seguir `supabase.mdc`, `seo-cache.mdc` e `http-client.mdc` ao detalhar queries e metadados.
+
+code_templates:
+  usecase_interface_ts: |
+    export interface UseCase<Input, Output> {
+      execute(input: Input): Promise<Output>
+    }
+
+  product_get_by_slug_usecase_ts: |
+    import { UseCase } from 'packages/types'
+    import { ProductRepository } from 'packages/types'
+
+    export type GetProductBySlugInput = { slug: string }
+    export type GetProductBySlugOutput = ProductDTO
+
+    export class GetProductBySlugUseCase implements UseCase<GetProductBySlugInput, GetProductBySlugOutput> {
+      constructor(private readonly productRepo: ProductRepository) {}
+      async execute({ slug }: GetProductBySlugInput) {
+        const product = await this.productRepo.findBySlugWithImages(slug)
+        // map to DTO
+        return product
+      }
+    }
+
+  repository_token_ts: |
+    export const TOKENS = {
+      ProductRepository: Symbol('ProductRepository'),
+      PriceRepository: Symbol('PriceRepository'),
+      CartRepository: Symbol('CartRepository'),
+    }

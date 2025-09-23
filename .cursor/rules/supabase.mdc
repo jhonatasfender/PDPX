@@ -1,0 +1,147 @@
+# MDC: Supabase (Banco e Autenticação)
+
+schema:
+  tables:
+    - products:
+        id: uuid (pk)
+        slug: text (unique)
+        name: text
+        brand: text
+        sku: text (unique)
+        description: text
+        # image_url: text  # DEPRECADO: usar product_images
+        is_active: boolean default true
+        created_at: timestamptz default now()
+        updated_at: timestamptz default now()
+    - product_prices:
+        id: uuid (pk)
+        product_id: uuid (fk -> products.id)
+        currency: text
+        amount_cents: int
+        valid_from: timestamptz default now()
+        valid_to: timestamptz nullable
+        created_at: timestamptz default now()
+    - product_images:
+        id: uuid (pk)
+        product_id: uuid (fk -> products.id)
+        url: text
+        alt: text nullable
+        is_primary: boolean default false
+        position: int default 0  # ordenação da galeria
+        created_at: timestamptz default now()
+    - profiles:
+        id: uuid (pk, references auth.users id)
+        email: text
+        full_name: text nullable
+        role: text default 'user' -- user | admin
+        created_at: timestamptz default now()
+        updated_at: timestamptz default now()
+
+triggers:
+  - on_auth_user_created -> insert into public.profiles(id, email)
+    note: use função em `auth.users` para manter profiles sincronizado
+
+indexes:
+  - profiles_email_idx on profiles(email)
+  - product_prices_product_idx on product_prices(product_id)
+  - product_images_product_idx on product_images(product_id)
+  - product_images_primary_idx on product_images(product_id, is_primary)
+  - product_images_position_idx on product_images(product_id, position)
+
+rls:
+  enabled: true
+  policies:
+    - products: select public where is_active = true
+    - product_prices: no public select; acesso via backend com `service_role`
+    - product_images:
+        select: to public using (
+          exists (
+            select 1 from products p
+            where p.id = product_id and p.is_active = true
+          )
+        )
+    - profiles:
+        select: to authenticated using ((select auth.uid()) = id)
+        update: to authenticated using ((select auth.uid()) = id)
+        admin_select: to authenticated using (exists (select 1 from profiles p where p.id = (select auth.uid()) and p.role = 'admin'))
+
+auth:
+  ownership:
+    - A API Nest gerencia autenticação e sessão; o front não usa SDK do Supabase.
+  packages_backend:
+    - '@supabase/supabase-js' v2 (somente no Nest)
+  env_backend:
+    - SUPABASE_URL
+    - SUPABASE_ANON_KEY
+    - SUPABASE_SERVICE_ROLE_KEY (somente backend)
+  jwt_verification:
+    - Verificar JWT das requisições via JWKS do Supabase na API Nest
+    - Cachear chaves públicas; rotação suportada
+  cookies_session:
+    - Cookies httpOnly/secure/sameSite=lax emitidos pela API Nest
+
+clients:
+  backend_admin_client:
+    usage:
+      - Operações server-side que exigem privilégios (ex.: leitura de preço atual)
+      - Nunca expor `service_role` ao front
+  frontend:
+    rule:
+      - Proibido usar `@supabase/ssr` ou `createBrowserClient` no Next; apenas chamadas à API Nest
+
+routes_auth (na API Nest):
+  - POST /v1/auth/sign-in
+  - POST /v1/auth/sign-up
+  - GET /v1/auth/callback  # OAuth (se aplicável)
+  - POST /v1/auth/sign-out
+  notes:
+    - API valida credenciais com Supabase e emite cookies de sessão httpOnly
+
+access_patterns:
+  - PDP:
+    - server (Next): chama API Nest `/v1/products/:slug` e `/v1/products/:slug/price`
+    - API (Nest): lê Supabase (RLS/roles), agrega dados e aplica cache
+
+security:
+  keys:
+    - `SUPABASE_SERVICE_ROLE_KEY` somente em backend (`apps/api`); nunca vazar ao browser
+  rls:
+    - Sempre habilitado; políticas específicas por tabela (ver seção rls.policies)
+  tokens:
+    - Cookies httpOnly pela API; nunca localStorage
+  rate_limit:
+    - Aplicar rate limit em rotas sensíveis (auth, price)
+
+migrations:
+  - Backfill: migrar `products.image_url` para `product_images` (is_primary=true, position=0), depois remover coluna legacy.
+
+notes:
+  - Rastrear `updated_at` para invalidação de cache.
+  - Admin operations (ex.: leitura de preço) ocorrem na API com client administrativo.
+
+code_templates:
+  sql_tables: |
+    -- Products, product_prices, product_images (DDL) aqui conforme schema
+  nest_auth_module_ts: |
+    import { Module } from '@nestjs/common'
+    import { AuthService } from './auth.service'
+    import { AuthController } from './auth.controller'
+
+    @Module({ providers: [AuthService], controllers: [AuthController] })
+    export class AuthModule {}
+
+  nest_jwt_guard_ts: |
+    import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+    @Injectable()
+    export class JwtGuard implements CanActivate {
+      async canActivate(ctx: ExecutionContext) {
+        const req = ctx.switchToHttp().getRequest()
+        // verificar JWT do cookie via JWKS
+        return true
+      }
+    }
+
+prisma_notes:
+  - DATABASE_URL: usar string do Supabase (preferir connection pooling quando disponível)
+  - Migrations: gerenciadas pelo Prisma; sincronizar alterações com RLS/policies manuais quando necessário
+  - Não usar Prisma no frontend; apenas na API (infra)                                                        

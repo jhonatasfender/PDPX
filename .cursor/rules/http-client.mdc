@@ -1,0 +1,97 @@
+# MDC: HTTP Client (Axios) e React Query
+
+purpose: Padronizar chamadas HTTP do frontend e alinhamento com cache/SSR.
+
+axios:
+  base_instance:
+    - BaseURL: variável `NEXT_PUBLIC_API_BASE_URL` apontando para a API Nest (ex.: http://localhost:3001)
+    - withCredentials: true (cookies de sessão)
+    - Timeout padrão: 10s.
+    - Headers padrão: `Content-Type: application/json`.
+  types:
+    - Usar generics de `packages/types` para tipar `axios.get<TResponse>` e payloads
+  interceptors:
+    request:
+      - Anexar `x-request-id` (se disponível) e idioma.
+      - Não anexar tokens do Supabase; sessão é via cookies httpOnly.
+    response:
+      - Normalizar erros: mapear status -> mensagens padronizadas.
+      - Tratar 401/403: opcional redirect/login no client; SSR trata via rota protegida.
+  retries:
+    - Backoff exponencial para erros de rede 5xx/ECONNRESET (máx 2 tentativas).
+
+react_query:
+  version: v5
+  defaults:
+    queries:
+      staleTime_ms: 60000  # alinhar com product metadata
+      gcTime_ms: 300000
+      retry: 2
+      refetchOnWindowFocus: false
+    mutations:
+      retry: 0
+  ssr:
+    - Usar prefetch e dehydrate/hydrate das respostas da API Nest.
+    - Para preço da PDP, a fonte é SSR da API; evitar duplo fetch client-side.
+  keys:
+    - product: ["product", slug]
+    - price: ["price", slug]
+  types:
+    - Usar `UseQueryResult<ProductDTO>` e similares importados de `packages/types`
+
+alignment_with_seo_cache:
+  - `product` segue revalidate ~60s (`seo-cache.mdc`).
+  - `price` não deve ser servido stale; se React Query for usado, `staleTime` 0-5s e validação via API server-first.
+
+restrictions:
+  - Proibido usar clientes do Supabase no front; toda comunicação é via API Nest.
+
+error_handling:
+  - Mapear erros de rede e 4xx/5xx para mensagens amigáveis.
+  - Logar somente no server dados sensíveis; no client, logs mínimos.
+
+usage_guidelines:
+  - Para PDP, buscar metadados via SSR contra API Nest e hidratar React Query.
+  - Preço: renderizar via SSR da API e sincronizar somente quando necessário via endpoint dedicado.
+  - Não confiar em dados críticos vindos do client para preço.
+
+code_templates:
+  axios_instance_ts: |
+    import axios from 'axios'
+
+    export const api = axios.create({
+      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+      withCredentials: true,
+      timeout: 10_000,
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    api.interceptors.request.use((config) => {
+      // anexar x-request-id/idioma se necessário
+      return config
+    })
+
+    api.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        // normalizar erros
+        return Promise.reject(err)
+      }
+    )
+
+  react_query_provider_tsx: |
+    'use client'
+    import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+    import { ReactNode, useState } from 'react'
+
+    export function RQProvider({ children }: { children: ReactNode }) {
+      const [client] = useState(
+        () => new QueryClient({
+          defaultOptions: {
+            queries: { staleTime: 60_000, gcTime: 300_000, retry: 2, refetchOnWindowFocus: false },
+            mutations: { retry: 0 },
+          },
+        })
+      )
+      return <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    }

@@ -1,0 +1,34 @@
+# MDC: Index das Rules do Projeto
+
+intent: Centralizar as regras e apontar para os artefatos MDC/MD relevantes.
+
+includes:
+  - ./guardrails.mdc
+  - ./tech-choices.md
+  - ./project.mdc
+  - ./seo-cache.mdc
+  - ./supabase.mdc
+  - ./http-client.mdc
+  - ./types.mdc
+
+guidance:
+  - Priorizar este arquivo ao iniciar tarefas com a IA no Cursor.
+  - A API Nest é a única interface de backend; o Next não acessa Supabase diretamente.
+  - Em implementações, seguir `project.mdc` para arquitetura e contratos, `supabase.mdc` para dados/auth, e `seo-cache.mdc` para SSR/SEO/cache.
+  - Divergências devem ser resolvidas atualizando estes documentos antes do código.
+
+automations:
+  - scaffold_monorepo:
+      prompt: "Crie monorepo Turborepo com apps/web (Next), apps/api (Nest), packages/ui, packages/utils, packages/config, packages/types seguindo project.mdc e tech-choices.md"
+  - configure_http_client:
+      prompt: "Crie instância Axios com baseURL NEXT_PUBLIC_API_BASE_URL, withCredentials=true e defaults de http-client.mdc; adicione React Query Provider com defaults"
+  - enforce_backend_boundary:
+      prompt: "Verifique apps/web e remova qualquer uso de SDK do Supabase, substituindo por chamadas à API Nest tipadas com packages/types"
+  - seo_setup:
+      prompt: "Implemente generateMetadata e JSON-LD Product conforme seo-cache.mdc usando a imagem primária"
+  - nest_auth_setup:
+      prompt: "Implemente módulo de Auth no Nest: verificação JWT via JWKS, cookies httpOnly e endpoints /v1/auth; use DTOs de packages/types"
+  - prisma_repository_setup:
+      prompt: "Configure Prisma v5 com Supabase Postgres; crie interfaces de repositório em packages/types e implementações em infra/prisma seguindo project.mdc"
+  - usecase_per_endpoint:
+      prompt: "Para cada endpoint em project.mdc, crie um UseCase dedicado que depende apenas de interfaces de repositório; controllers finos chamando usecases"
