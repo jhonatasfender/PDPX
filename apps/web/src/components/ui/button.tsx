@@ -13,6 +13,8 @@ const buttonVariants = cva(
           "border border-neutral-800 bg-transparent text-neutral-100 hover:bg-neutral-900/60 focus:ring-neutral-800",
         ghost: "text-neutral-100 hover:bg-neutral-900/50",
         danger: "bg-red-500 text-white hover:bg-red-600 focus:ring-red-600",
+        chip:
+          "border border-neutral-800 bg-transparent text-neutral-200 hover:bg-neutral-900/60 focus:ring-neutral-800 rounded-md",
       },
       size: {
         sm: "px-3 py-1.5",

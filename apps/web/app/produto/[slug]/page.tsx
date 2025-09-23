@@ -10,8 +10,9 @@ import {
   Star,
   BadgePercent,
 } from "lucide-react";
-import { Button } from "../../../src/components/ui/button";
+import { Button, buttonVariants } from "../../../src/components/ui/button";
 import { RadioSwatch } from "../../../src/components/ui/radio-swatch";
+import { ProductGallery } from "../../../src/components/product-gallery";
 import { CurrencyFormatter } from "../../../src/lib/format";
 
 export default async function PDPPage() {
@@ -23,39 +24,14 @@ export default async function PDPPage() {
   return (
     <main className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-6 md:grid-cols-2 md:gap-12 md:px-6">
       <section>
-        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-neutral-800">
-          {primary && (
-            <Image
-              src={primary.url}
-              alt={primary.alt ?? product.name}
-              fill
-              className="object-cover"
-              priority
-            />
-          )}
-        </div>
-        <div className="mt-3 grid grid-cols-4 gap-3 md:mt-4 md:gap-4">
-          {gallery.map((img) => (
-            <div
-              key={img.id}
-              className="relative aspect-square overflow-hidden rounded-md bg-neutral-800 ring-1 ring-transparent hover:ring-neutral-600"
-            >
-              <Image
-                src={img.url}
-                alt={img.alt ?? product.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
+        <ProductGallery images={[primary, ...gallery]} />
       </section>
 
       <section className="space-y-5 md:space-y-6">
         <nav className="-mb-1">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-neutral-300 hover:text-neutral-100"
+            className={buttonVariants({ variant: "secondary", size: "sm" }) + " inline-flex items-center gap-2"}
           >
             <ChevronLeft size={16} /> Voltar ao catálogo
           </Link>
@@ -126,12 +102,9 @@ export default async function PDPPage() {
             <div className="flex flex-wrap gap-2">
               {["Chaise esquerda", "Chaise direita", "Sem chaise"].map(
                 (cfg) => (
-                  <button
-                    key={cfg}
-                    className="rounded-md border border-neutral-800 px-3 py-1.5 text-sm text-neutral-200 hover:bg-neutral-900/60"
-                  >
+                  <Button key={cfg} variant="chip" size="sm">
                     {cfg}
-                  </button>
+                  </Button>
                 ),
               )}
             </div>
