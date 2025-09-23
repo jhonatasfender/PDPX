@@ -26,7 +26,7 @@ const baseProducts: MockProduct[] = [
       },
       {
         id: "i3",
-        url: "https://images.unsplash.com/photo-1505691723518-36a5ac3b2d95?q=80&w=1200",
+        url: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200",
         alt: "Detalhe tecido",
         isPrimary: false,
         position: 2,
