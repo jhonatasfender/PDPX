@@ -89,7 +89,7 @@ export function AdminProductForm({
             Descrição
           </label>
           <RichTextEditor
-            value={methods.getValues("description")}
+            value={methods.watch("description")}
             onChange={(html) => methods.setValue("description", html)}
             placeholder="Detalhes do produto"
           />
