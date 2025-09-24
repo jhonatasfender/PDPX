@@ -2,6 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { User, Session } from "@supabase/supabase-js";
 import { TokenService } from "../interfaces/token.interface";
 import { UserSyncRepository } from "../interfaces/user-sync.repository";
+import { UserAlreadyExistsException } from "../../../domain/exceptions";
 
 export interface RegisterUserRequest {
   email: string;
@@ -25,6 +26,11 @@ export class RegisterUserUseCase {
   public async execute(
     request: RegisterUserRequest,
   ): Promise<RegisterUserResponse> {
+    const userExists = await this.tokenService.checkUserExists(request.email);
+    if (userExists) {
+      throw new UserAlreadyExistsException(request.email);
+    }
+
     const authResponse = await this.tokenService.signUp(
       request.email,
       request.password,

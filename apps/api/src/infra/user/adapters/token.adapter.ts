@@ -102,6 +102,27 @@ export class SupabaseTokenAdapter implements TokenService {
     return user;
   }
 
+  public async checkUserExists(email: string): Promise<boolean> {
+    try {
+      const adminClient = this.supabaseService.getAdminClient();
+      const { data, error } = await adminClient.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000,
+      });
+
+      if (error) {
+        console.error("Erro ao listar usuários:", error);
+        return false;
+      }
+
+      const userExists = data.users.some(user => user.email === email);
+      return userExists;
+    } catch (error) {
+      console.error("Erro ao verificar se usuário existe:", error);
+      return false;
+    }
+  }
+
   private handleSupabaseAuthError(error: any, email: string): never {
     const errorMessage = error.message?.toLowerCase() || "";
     const errorCode = error.code || "";

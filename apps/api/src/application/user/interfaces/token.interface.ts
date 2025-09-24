@@ -18,4 +18,5 @@ export interface TokenService {
   signOut(): Promise<void>;
   refreshSession(refreshToken: string): Promise<SupabaseAuthResponse>;
   verifyAccessToken(token: string): Promise<User>;
+  checkUserExists(email: string): Promise<boolean>;
 }

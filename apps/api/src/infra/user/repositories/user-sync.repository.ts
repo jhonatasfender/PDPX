@@ -126,7 +126,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     });
 
     const usersWithAuth = await Promise.all(
-      customUsers.map(async (user) => {
+      customUsers.map(async (user: typeof customUsers[0]) => {
         const authUser = await this.prisma.auth_users.findUnique({
           where: { id: user.auth_user_id },
           include: {
