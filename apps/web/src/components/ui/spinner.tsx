@@ -17,7 +17,7 @@ export function Spinner({ size = "md", className }: SpinnerProps) {
       className={cn(
         "animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-100",
         sizes[size],
-        className
+        className,
       )}
     />
   );

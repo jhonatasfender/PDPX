@@ -20,7 +20,7 @@ export function Alert({ children, variant = "info", className }: AlertProps) {
       className={cn(
         "rounded-lg border p-4 text-sm",
         variants[variant],
-        className
+        className,
       )}
     >
       {children}

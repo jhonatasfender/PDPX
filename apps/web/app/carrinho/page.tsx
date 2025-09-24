@@ -55,10 +55,10 @@ export default function CartPage() {
                         item.product.price.amountCents * item.quantity,
                       )}
                     </div>
-                  <button
-                    aria-label="Remover"
-                    className="rounded-md border border-neutral-800 p-2 text-neutral-300 hover:bg-neutral-900/60 cursor-pointer"
-                  >
+                    <button
+                      aria-label="Remover"
+                      className="rounded-md border border-neutral-800 p-2 text-neutral-300 hover:bg-neutral-900/60 cursor-pointer"
+                    >
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -66,7 +66,9 @@ export default function CartPage() {
               </div>
             ))}
             {mockCart.length === 0 && (
-              <p className="text-sm text-neutral-400">Seu carrinho está vazio.</p>
+              <p className="text-sm text-neutral-400">
+                Seu carrinho está vazio.
+              </p>
             )}
           </section>
 

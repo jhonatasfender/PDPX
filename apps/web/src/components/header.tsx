@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Armchair, ShoppingCart, Menu, Search, User, LogOut } from "lucide-react";
+import {
+  Armchair,
+  ShoppingCart,
+  Menu,
+  Search,
+  User,
+  LogOut,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useAuth } from "@/contexts/auth.context";
 import { useRouter } from "next/navigation";
@@ -43,7 +50,7 @@ export default function Header() {
               <span className="hidden sm:inline">Carrinho</span>
             </Button>
           </Link>
-          
+
           {user ? (
             <div className="flex items-center gap-2">
               <span className="hidden text-sm text-neutral-300 sm:inline">
@@ -67,7 +74,7 @@ export default function Header() {
               </Button>
             </Link>
           )}
-          
+
           <Button
             aria-label="Menu"
             variant="secondary"

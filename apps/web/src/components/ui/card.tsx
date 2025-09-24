@@ -11,7 +11,7 @@ export function Card({ children, className }: CardProps) {
     <div
       className={cn(
         "rounded-lg border border-neutral-800 bg-neutral-900/50 p-6 shadow-lg backdrop-blur-sm",
-        className
+        className,
       )}
     >
       {children}
@@ -25,11 +25,7 @@ interface CardHeaderProps {
 }
 
 export function CardHeader({ children, className }: CardHeaderProps) {
-  return (
-    <div className={cn("mb-4", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("mb-4", className)}>{children}</div>;
 }
 
 interface CardContentProps {
@@ -38,9 +34,5 @@ interface CardContentProps {
 }
 
 export function CardContent({ children, className }: CardContentProps) {
-  return (
-    <div className={cn("", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("", className)}>{children}</div>;
 }

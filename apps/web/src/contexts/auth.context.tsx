@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { AuthService } from "@/services/auth.service";
 import type {
   AuthContextType,
@@ -41,16 +47,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (data: LoginRequest) => {
     try {
       const response = await AuthService.login(data);
-      
+
       if (response.session) {
         setUser(response.user);
         setSession(response.session);
-        
+
         localStorage.setItem("access_token", response.session.access_token);
         localStorage.setItem("refresh_token", response.session.refresh_token);
-        
+
         AuthService.setAuthToken(response.session.access_token);
-        
+
         await getCurrentUser();
       }
     } catch (error) {
@@ -91,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const response = await AuthService.refreshToken();
-      
+
       if (response.session) {
         setSession(response.session);
         localStorage.setItem("access_token", response.session.access_token);

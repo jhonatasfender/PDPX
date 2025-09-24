@@ -11,7 +11,7 @@ import { api } from "@/lib/http";
 
 const schema = z
   .object({
-    email: z.string().email("Informe um e-mail válido"),
+    email: z.email("Informe um e-mail válido"),
     password: z.string().min(6, "Mínimo de 6 caracteres"),
     confirmPassword: z.string().min(6, "Mínimo de 6 caracteres"),
   })

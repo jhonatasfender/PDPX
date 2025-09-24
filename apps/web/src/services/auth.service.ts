@@ -8,25 +8,17 @@ import type {
 
 export class AuthService {
   static async login(data: LoginRequest): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>(
-      `/auth/login`,
-      data
-    );
+    const response = await api.post<AuthResponse>(`/auth/login`, data);
     return response.data;
   }
 
   static async register(data: RegisterRequest): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>(
-      `/auth/register`,
-      data
-    );
+    const response = await api.post<AuthResponse>(`/auth/register`, data);
     return response.data;
   }
 
   static async getCurrentUser(): Promise<{ message: string; user: User }> {
-    const response = await api.get<{ message: string; user: User }>(
-      `/auth/me`
-    );
+    const response = await api.get<{ message: string; user: User }>(`/auth/me`);
     return response.data;
   }
 
@@ -35,9 +27,7 @@ export class AuthService {
   }
 
   static async refreshToken(): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>(
-      `/auth/refresh`
-    );
+    const response = await api.post<AuthResponse>(`/auth/refresh`);
     return response.data;
   }
 

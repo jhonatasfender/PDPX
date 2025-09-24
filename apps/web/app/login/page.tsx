@@ -50,7 +50,6 @@ export default function LoginPage() {
           <CardContent>
             <Form<FormValues> methods={methods} onSubmit={onSubmit}>
               <div className="space-y-4">
-                
                 <FormField<FormValues>
                   name="email"
                   label="E-mail"
@@ -79,7 +78,10 @@ export default function LoginPage() {
                 </Button>
                 <p className="text-center text-xs text-neutral-400">
                   Não tem conta?{" "}
-                  <Link href="/register" className="text-neutral-200 underline cursor-pointer">
+                  <Link
+                    href="/register"
+                    className="text-neutral-200 underline cursor-pointer"
+                  >
                     Criar conta
                   </Link>
                 </p>
