@@ -1,40 +1,40 @@
+import { PublicUser } from "../../../domain/entities/public-user.entity";
+
 export interface UserWithAuthData {
-  custom: {
-    id: string;
-    auth_user_id: string;
-    role: string;
-  };
+  custom: PublicUser;
   auth: {
     id: string;
     email: string | null;
     email_confirmed_at: Date | null;
     last_sign_in_at: Date | null;
-    raw_user_meta_data: any;
+    raw_user_meta_data: unknown;
     identities: Array<{
       provider: string;
-      identity_data: any;
+      identity_data: unknown;
     }>;
   } | null;
 }
 
 export interface UserSyncRepository {
-  syncUserFromAuth(authUserId: string): Promise<any>;
+  syncUserFromAuth(authUserId: string, customName?: string): Promise<PublicUser>;
   getUserWithAuthData(userId: string): Promise<UserWithAuthData>;
   getUserByEmail(email: string): Promise<UserWithAuthData | null>;
   updateUserRole(
     authUserId: string,
     role: "USER" | "ADMIN" | "SUPERADMIN",
-  ): Promise<any>;
+  ): Promise<PublicUser>;
   getAllUsersWithAuthData(): Promise<UserWithAuthData[]>;
-  findCustomUserByAuthId(authUserId: string): Promise<any>;
+  findCustomUserByAuthId(authUserId: string): Promise<PublicUser | null>;
   createCustomUser(data: {
     auth_user_id: string;
     role: "USER" | "ADMIN" | "SUPERADMIN";
-  }): Promise<any>;
+    name?: string;
+  }): Promise<PublicUser>;
   updateCustomUser(
     authUserId: string,
     data: {
       role?: "USER" | "ADMIN" | "SUPERADMIN";
+      name?: string;
     },
-  ): Promise<any>;
+  ): Promise<PublicUser>;
 }

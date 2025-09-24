@@ -33,6 +33,7 @@ import { LoginUserUseCase } from "../../../application/user/use-cases/login-user
 import { RefreshTokenUseCase } from "../../../application/user/use-cases/refresh-token.use-case";
 import { LogoutUserUseCase } from "../../../application/user/use-cases/logout-user.use-case";
 import { GetCurrentUserUseCase } from "../../../application/user/use-cases/get-current-user.use-case";
+import { GetCurrentUserWithPublicDataUseCase } from "../../../application/user/use-cases/get-current-user-with-public-data.use-case";
 import { UserMapper } from "../../mappers/user.mapper";
 import { MissingTokenException } from "../../../domain/exceptions";
 
@@ -45,6 +46,7 @@ export class AuthController {
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
     private readonly logoutUserUseCase: LogoutUserUseCase,
     private readonly getCurrentUserUseCase: GetCurrentUserUseCase,
+    private readonly getCurrentUserWithPublicDataUseCase: GetCurrentUserWithPublicDataUseCase,
   ) {}
 
   @Post("register")
@@ -178,10 +180,10 @@ export class AuthController {
       throw new MissingTokenException();
     }
 
-    const result = await this.getCurrentUserUseCase.execute({ token });
+    const result = await this.getCurrentUserWithPublicDataUseCase.execute({ token });
     return {
       message: "Usuário atual obtido com sucesso",
-      user: UserMapper.fromSupabase(result.user),
+      user: UserMapper.fromSupabaseWithPublicData(result.user, result.publicUser),
     };
   }
 }

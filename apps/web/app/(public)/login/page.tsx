@@ -7,6 +7,7 @@ import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { Alert } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/auth.context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,14 +25,25 @@ export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(values: FormValues) {
     try {
       setIsLoading(true);
+      setError(null);
       await login(values);
       router.push("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro no login:", error);
+      if (error.code === "INVALID_CREDENTIALS") {
+        setError("Credenciais incorretas. Verifique seu email e senha e tente novamente.");
+      } else if (error.code === "TOKEN_EXPIRED" || error.code === "INVALID_TOKEN") {
+        setError("Sessão expirada. Faça login novamente.");
+      } else if (error.response?.status === 401) {
+        setError("Credenciais incorretas. Verifique seu email e senha e tente novamente.");
+      } else {
+        setError("Erro interno. Tente novamente em alguns instantes.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -49,6 +61,11 @@ export default function LoginPage() {
           <CardContent>
             <Form<FormValues> methods={methods} onSubmit={onSubmit}>
               <div className="space-y-4">
+                {error && (
+                  <Alert variant="error">
+                    {error}
+                  </Alert>
+                )}
                 <FormField<FormValues>
                   name="email"
                   label="E-mail"

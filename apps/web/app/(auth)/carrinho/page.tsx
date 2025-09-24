@@ -4,7 +4,6 @@ import { mockCart } from "@/mocks/cart";
 import { CurrencyFormatter } from "@/lib/format";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AuthGuard } from "@/components/auth-guard";
 
 export default function CartPage() {
   const subtotalCents = mockCart.reduce(
@@ -13,8 +12,7 @@ export default function CartPage() {
   );
 
   return (
-    <AuthGuard requireAuth={true}>
-      <main className="mx-auto max-w-5xl p-4">
+    <main className="mx-auto max-w-5xl p-4">
         <h1 className="mb-6 text-2xl font-semibold tracking-tight text-neutral-100">
           Seu carrinho
         </h1>
@@ -94,6 +92,5 @@ export default function CartPage() {
           </aside>
         </div>
       </main>
-    </AuthGuard>
   );
 }

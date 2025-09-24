@@ -1,50 +1,67 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth.context";
+import { AuthLoading } from "./auth-loading";
 
 interface AuthGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
+  requireRole?: "USER" | "ADMIN";
   redirectTo?: string;
+  fallback?: React.ReactNode;
 }
 
 export function AuthGuard({
   children,
   requireAuth = true,
+  requireRole,
   redirectTo = "/login",
+  fallback,
 }: AuthGuardProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (isLoading) return;
 
     if (requireAuth && !user) {
-      router.push(redirectTo);
-    } else if (!requireAuth && user) {
-      router.push("/");
+      const currentPath = window.location.pathname;
+      const redirectUrl = redirectTo === "/login" && currentPath !== "/login" 
+        ? `${redirectTo}?redirect=${encodeURIComponent(currentPath)}`
+        : redirectTo;
+      router.push(redirectUrl);
+      return;
     }
-  }, [user, isLoading, requireAuth, redirectTo, router]);
+
+    if (!requireAuth && user) {
+      const redirectParam = searchParams.get('redirect');
+      router.push(redirectParam || "/");
+      return;
+    }
+
+    if (requireAuth && user && requireRole && user.role !== requireRole) {
+      router.push("/");
+      return;
+    }
+  }, [user, isLoading, requireAuth, requireRole, redirectTo, router, searchParams]);
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-100"></div>
-          <p className="mt-2 text-sm text-neutral-400">Carregando...</p>
-        </div>
-      </div>
-    );
+    return fallback || <AuthLoading />;
   }
 
   if (requireAuth && !user) {
-    return null;
+    return fallback || null;
   }
 
   if (!requireAuth && user) {
-    return null;
+    return fallback || null;
+  }
+
+  if (requireAuth && user && requireRole && user.role !== requireRole) {
+    return fallback || null;
   }
 
   return <>{children}</>;

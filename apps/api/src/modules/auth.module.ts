@@ -6,6 +6,7 @@ import { LoginUserUseCase } from "../application/user/use-cases/login-user.use-c
 import { RefreshTokenUseCase } from "../application/user/use-cases/refresh-token.use-case";
 import { LogoutUserUseCase } from "../application/user/use-cases/logout-user.use-case";
 import { GetCurrentUserUseCase } from "../application/user/use-cases/get-current-user.use-case";
+import { GetCurrentUserWithPublicDataUseCase } from "../application/user/use-cases/get-current-user-with-public-data.use-case";
 import { SupabaseAdapter } from "../infra/user/adapters/supabase.adapter";
 import { SupabaseTokenAdapter } from "../infra/user/adapters/token.adapter";
 import { AuthGuard } from "../presentation/guards/auth.guard";
@@ -26,6 +27,7 @@ import { PermissionRepository } from "../infra/user/repositories/permission.repo
     RefreshTokenUseCase,
     LogoutUserUseCase,
     GetCurrentUserUseCase,
+    GetCurrentUserWithPublicDataUseCase,
     AuthenticateUserUseCase,
     CheckUserPermissionUseCase,
     UpdateLastSignInUseCase,
@@ -52,6 +54,7 @@ import { PermissionRepository } from "../infra/user/repositories/permission.repo
     RefreshTokenUseCase,
     LogoutUserUseCase,
     GetCurrentUserUseCase,
+    GetCurrentUserWithPublicDataUseCase,
     AuthenticateUserUseCase,
     CheckUserPermissionUseCase,
     UpdateLastSignInUseCase,

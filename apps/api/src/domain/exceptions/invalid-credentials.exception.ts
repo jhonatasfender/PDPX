@@ -4,7 +4,7 @@ export class InvalidCredentialsException extends HttpException {
   public constructor() {
     super(
       {
-        message: "Credenciais inválidas. Verifique seu email e senha.",
+        message: "Credenciais incorretas. Verifique seu email e senha e tente novamente.",
         error: "INVALID_CREDENTIALS",
         statusCode: HttpStatus.UNAUTHORIZED,
       },
