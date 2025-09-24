@@ -1,3 +1,9 @@
+metadata:
+  status: reference
+  enforcement: recommended
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: SEO, SSR e Cache
 
 seo:

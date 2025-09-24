@@ -1,3 +1,9 @@
+metadata:
+  status: reference
+  enforcement: recommended
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: HTTP Client (Axios) e React Query
 
 purpose: Padronizar chamadas HTTP do frontend e alinhamento com cache/SSR.
@@ -45,6 +51,7 @@ alignment_with_seo_cache:
 
 restrictions:
   - Proibido usar clientes do Supabase no front; toda comunicação é via API Nest.
+  - Não criar hooks/clients que acessem adapters diretamente; o front sempre fala HTTP com a API.
 
 error_handling:
   - Mapear erros de rede e 4xx/5xx para mensagens amigáveis.

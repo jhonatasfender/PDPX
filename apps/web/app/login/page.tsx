@@ -78,12 +78,14 @@ export default function LoginPage() {
                 </Button>
                 <p className="text-center text-xs text-neutral-400">
                   Não tem conta?{" "}
-                  <Link
-                    href="/register"
-                    className="text-neutral-200 underline cursor-pointer"
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="px-1 text-neutral-200 underline"
+                    onClick={() => router.push("/register")}
                   >
                     Criar conta
-                  </Link>
+                  </Button>
                 </p>
               </div>
             </Form>

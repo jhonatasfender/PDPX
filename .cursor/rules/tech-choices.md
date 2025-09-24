@@ -29,6 +29,8 @@
 - Verificação de JWT do Supabase via JWKS; caching de chaves.
 - SOLID: controllers finos; um UseCase por endpoint.
 - Repository Pattern: interfaces em `packages/types`; implementações em `infra/prisma`.
+- Integrations Pattern: usar `Adapters` sob `infra/**` (ex.: `SupabaseAdapter`, `SupabaseTokenAdapter`).
+- Proibição de `Service`: não nomear classes com sufixo Service. Usar `Adapter` (integrações) e `Repository` (dados) conforme responsabilidade.
 - Prisma: acesso apenas na camada de infra; sem Prisma em controllers/usecases.
 - DTOs e contratos importados de `packages/types`.
 
@@ -60,7 +62,7 @@
 
 - Web Vitals como critério (LCP, CLS, INP) na PDP.
 - Logs estruturados e tratamento de erros padronizado.
-- Backend (Nest.js): usar modificadores de acesso explícitos em todas as classes (métodos e propriedades), preferir `private readonly` para DI.
+- Backend (Nest.js): usar modificadores de acesso explícitos em todas as classes (métodos e propriedades), preferir `private readonly` para DI. Prisma restrito à camada `infra/**`.
 
 ## Observações
 

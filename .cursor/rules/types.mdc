@@ -1,3 +1,9 @@
+metadata:
+  status: reference
+  enforcement: recommended
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: Tipagens Compartilhadas (packages/types)
 
 purpose: Unificar contratos entre web e api com DTOs e schemas compartilhados.

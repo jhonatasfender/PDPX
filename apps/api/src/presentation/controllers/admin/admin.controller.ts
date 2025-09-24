@@ -22,6 +22,9 @@ import {
 } from "../../decorators/roles.decorator";
 import { CurrentUser } from "../../decorators/current-user.decorator";
 import { User } from "../../../domain/entities/user.entity.js";
+import { AdminMapper } from "../../mappers/admin.mapper";
+import type { UpdateUserRoleResponseDto } from "../../dto/admin/admin-response.dto";
+import { UserMapper } from "../../mappers/user.mapper";
 
 @ApiTags("Administração")
 @Controller("admin")
@@ -47,12 +50,7 @@ export class AdminController {
   public async getDashboard(@CurrentUser() user: User) {
     return {
       message: "Dashboard administrativo",
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
+      user: UserMapper.fromDomain(user),
       permissions: {
         canManageUsers: user.canManageUsers(),
         canManageProducts: user.canManageProducts(),
@@ -76,11 +74,7 @@ export class AdminController {
   public async getUsers(@CurrentUser() user: User) {
     return {
       message: "Lista de usuários",
-      currentUser: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
+      currentUser: UserMapper.fromDomain(user),
       users: [],
     };
   }
@@ -104,18 +98,7 @@ export class AdminController {
     @Param("userId") userId: string,
     @Body() body: { role: string },
     @CurrentUser() user: User,
-  ) {
-    return {
-      message: "Role alterado com sucesso",
-      updatedBy: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
-      targetUser: {
-        id: userId,
-        newRole: body.role,
-      },
-    };
+  ): Promise<UpdateUserRoleResponseDto> {
+    return AdminMapper.toUpdateUserRoleResponse(user, userId, body.role);
   }
 }

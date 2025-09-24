@@ -23,6 +23,13 @@ Nota: a API Nest é a única fonte de verdade para dados/autenticação; o Next 
 
 ## Arquivos
 
+- Todos os arquivos possuem bloco `metadata` com status/enforcement/version/last_updated
+- Interpretação dos campos:
+  - status: canonical | authoritative | reference
+  - enforcement: required | recommended | optional
+  - version: semântico simples (major.minor)
+  - last_updated: ISO date
+
 - `guardrails.mdc`: Regras comportamentais, arquiteturais e de qualidade (pt-BR).
 - `project.mdc`: Escopo do monorepo (Turborepo), domínios, contratos de alto nível e limites.
 - `seo-cache.mdc`: Estratégias obrigatórias de SEO, SSR/SSG, cache e consistência de preço.

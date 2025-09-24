@@ -1,3 +1,9 @@
+metadata:
+  status: authoritative
+  enforcement: required
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: Guardrails (Regras e Diretrizes)
 
 Estas regras garantem consistência, qualidade e alinhamento às exigências do case técnico. São obrigatórias para IA e humanos.
@@ -45,7 +51,9 @@ Estas regras garantem consistência, qualidade e alinhamento às exigências do 
 ## SOLID e Camadas (API)
 - Controllers finos: apenas orquestram e chamam UseCases.
 - UseCase por endpoint: regra de negócio isolada, dependente de interfaces.
-- Repositories expostos como interfaces e injetados via DI; Prisma apenas em `infra/prisma`.
+- Repositórios (Repository) expostos como interfaces e injetados via DI; Prisma apenas na camada `infra/**`.
+- Integrações externas (SDKs/HTTP/third-party) devem ser encapsuladas em "Adapters" na camada `infra/**`.
+- PROIBIDO nomear classes como "Service" (ex.: `AuthService`, `PermissionService`). Preferir `...Adapter` (integrações) ou `...Repository` (acesso a dados) conforme responsabilidade.
 
 ## Estilo de Código e Qualidade
 - TypeScript estrito em todos os pacotes. Sem `any` não justificado.
@@ -55,6 +63,8 @@ Estas regras garantem consistência, qualidade e alinhamento às exigências do 
 - Backend (Nest.js): declarar SEMPRE modificadores de acesso explícitos (`public` | `private` | `protected`) em métodos e propriedades de classes.
   - Construtores com DI: usar `private readonly` (ou `protected readonly`) para dependências injetadas; nunca depender de `public` implícito.
   - Evitar omissão de `public` — explicitar a intenção para todos os membros.
+  - Proibir uso direto de `PrismaService` fora de `infra/**`. Guards, Controllers e UseCases devem depender de repositórios/adapters via tokens.
+  - Duplicação de regras (ex.: hierarquia de roles) deve ser centralizada em um único `PermissionRepository` (ou equivalente) para reutilização.
 
 ## Observabilidade e Logs
 - Logs estruturados com correlação de request. Não logar dados sensíveis.
@@ -75,7 +85,8 @@ Estas regras garantem consistência, qualidade e alinhamento às exigências do 
   - Garantir que Axios esteja configurado com `baseURL` e `withCredentials=true` conforme `http-client.mdc`.
   - Inserir Providers do React Query no `apps/web` com defaults de `http-client.mdc` e hidratação SSR.
   - Em controllers/serviços do Nest, importar DTOs de `packages/types` e validar contratos.
+  - Substituir qualquer ocorrência de classes `*Service` por `*Adapter` ou `*Repository` conforme responsabilidade.
   - Gerar metadados/JSON-LD seguindo `seo-cache.mdc` (usar imagem primária).
   - Ao tocar preço, aplicar política de cache server-first; nunca renderizar preço de fonte client.
-  - Aplicar layering SOLID: criar UseCase por endpoint, interfaces de repositório, e implementação Prisma na infra.
+  - Aplicar layering SOLID: criar UseCase por endpoint, interfaces de repositório, implementação Prisma na infra, e adapters para integrações externas.
 - Se uma ação conflitar com estas regras, interromper e propor correção referenciando o documento relevante.

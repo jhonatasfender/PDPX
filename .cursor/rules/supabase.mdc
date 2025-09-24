@@ -1,3 +1,9 @@
+metadata:
+  status: authoritative
+  enforcement: required
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: Supabase (Banco e Autenticação)
 
 schema:

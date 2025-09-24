@@ -1,3 +1,9 @@
+metadata:
+  status: authoritative
+  enforcement: required
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: Projeto e Domínios
 
 intent: Definir estrutura do monorepo, domínios e contratos de alto nível para a PDP.
@@ -42,6 +48,8 @@ scaffold_tree:
 
 architecture_layers:
   - Controller -> UseCase -> Repository (Interface) -> Repository (Prisma Implementation)
+  - Integrations: Adapter (ex.: SupabaseAdapter, SupabaseTokenAdapter) sob `infra/**`
+  - Presentation mapping: Mappers para converter Domain/Supabase -> DTOs (ex.: `UserMapper`)
   - Entities/Value Objects e Mappers responsáveis por conversão Entity <-> DTO
   - Dependency Injection via Nest providers e tokens
 
@@ -120,6 +128,7 @@ error_policy:
 naming_conventions:
   - Pastas kebab-case, arquivos kebab-case em apps; componentes PascalCase em `packages/ui`.
   - Tipos TS em PascalCase; props em camelCase.
+  - Evitar sufixo `Service` em classes. Usar `Adapter` para integrações e `Repository` para dados.
 
 notes:
   - Implementação futura deve seguir `supabase.mdc`, `seo-cache.mdc` e `http-client.mdc` ao detalhar queries e metadados.
@@ -147,6 +156,12 @@ code_templates:
     }
 
   repository_token_ts: |
+  mapper_example_ts: |
+    export interface UserResponseDto { id: string; email: string; name?: string; role: 'USER'|'ADMIN'|'SUPERADMIN' }
+    export class UserMapper {
+      static fromDomain(u: any): UserResponseDto { return { id: u.id, email: u.email, name: u.name, role: u.role } }
+      static fromSupabase(u: any): UserResponseDto { return { id: u?.id ?? '', email: u?.email ?? '', name: u?.user_metadata?.name ?? u?.user_metadata?.full_name, role: u?.user_metadata?.role ?? 'USER' } }
+    }
     export const TOKENS = {
       ProductRepository: Symbol('ProductRepository'),
       PriceRepository: Symbol('PriceRepository'),

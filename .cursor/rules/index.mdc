@@ -1,3 +1,9 @@
+metadata:
+  status: canonical
+  enforcement: required
+  version: 1.0
+  last_updated: 2025-09-24
+
 # MDC: Index das Rules do Projeto
 
 intent: Centralizar as regras e apontar para os artefatos MDC/MD relevantes.
@@ -16,6 +22,7 @@ guidance:
   - A API Nest é a única interface de backend; o Next não acessa Supabase diretamente.
   - Em implementações, seguir `project.mdc` para arquitetura e contratos, `supabase.mdc` para dados/auth, e `seo-cache.mdc` para SSR/SEO/cache.
   - Divergências devem ser resolvidas atualizando estes documentos antes do código.
+  - Naming enforcement: não criar classes `*Service`. Preferir `*Adapter` (integrações) e `*Repository` (dados) e UseCases por endpoint.
 
 automations:
   - scaffold_monorepo:
@@ -31,4 +38,4 @@ automations:
   - prisma_repository_setup:
       prompt: "Configure Prisma v5 com Supabase Postgres; crie interfaces de repositório em packages/types e implementações em infra/prisma seguindo project.mdc"
   - usecase_per_endpoint:
-      prompt: "Para cada endpoint em project.mdc, crie um UseCase dedicado que depende apenas de interfaces de repositório; controllers finos chamando usecases"
+    prompt: "Para cada endpoint em project.mdc, crie um UseCase dedicado que depende apenas de interfaces de repositório/adapters; controllers finos chamando usecases; evitar classes *Service"

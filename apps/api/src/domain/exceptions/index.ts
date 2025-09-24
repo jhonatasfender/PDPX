@@ -5,3 +5,4 @@ export * from "./user-already-exists.exception";
 export * from "./token-expired.exception";
 export * from "./invalid-token.exception";
 export * from "./auth-service.exception";
+export * from "./missing-token.exception";

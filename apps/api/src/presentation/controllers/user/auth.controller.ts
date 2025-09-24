@@ -33,6 +33,8 @@ import { LoginUserUseCase } from "../../../application/user/use-cases/login-user
 import { RefreshTokenUseCase } from "../../../application/user/use-cases/refresh-token.use-case";
 import { LogoutUserUseCase } from "../../../application/user/use-cases/logout-user.use-case";
 import { GetCurrentUserUseCase } from "../../../application/user/use-cases/get-current-user.use-case";
+import { UserMapper } from "../../mappers/user.mapper";
+import { MissingTokenException } from "../../../domain/exceptions";
 
 @ApiTags("Autenticação")
 @Controller("auth")
@@ -69,14 +71,7 @@ export class AuthController {
     const result = await this.registerUserUseCase.execute(registerUserDto);
     return {
       message: "Usuário criado com sucesso",
-      user: {
-        id: result.user?.id || "",
-        email: result.user?.email || "",
-        name:
-          result.user?.user_metadata?.name ||
-          result.user?.user_metadata?.full_name,
-        role: result.user?.user_metadata?.role || "USER",
-      },
+      user: UserMapper.fromSupabase(result.user),
       session: result.session,
     };
   }
@@ -109,14 +104,7 @@ export class AuthController {
     const result = await this.loginUserUseCase.execute(loginUserDto);
     return {
       message: "Login realizado com sucesso",
-      user: {
-        id: result.user?.id || "",
-        email: result.user?.email || "",
-        name:
-          result.user?.user_metadata?.name ||
-          result.user?.user_metadata?.full_name,
-        role: result.user?.user_metadata?.role || "USER",
-      },
+      user: UserMapper.fromSupabase(result.user),
       session: result.session,
     };
   }
@@ -187,20 +175,13 @@ export class AuthController {
   public async getCurrentUser(@Request() req: any): Promise<MeResponseDto> {
     const token = req.headers.authorization?.replace("Bearer ", "");
     if (!token) {
-      throw new Error("Token não fornecido");
+      throw new MissingTokenException();
     }
 
     const result = await this.getCurrentUserUseCase.execute({ token });
     return {
       message: "Usuário atual obtido com sucesso",
-      user: {
-        id: result.user.id,
-        email: result.user.email || "",
-        name:
-          result.user.user_metadata?.name ||
-          result.user.user_metadata?.full_name,
-        role: result.user.user_metadata?.role || "USER",
-      },
+      user: UserMapper.fromSupabase(result.user),
     };
   }
 }
