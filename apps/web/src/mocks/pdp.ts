@@ -67,4 +67,6 @@ export const mockProduct: MockProduct = {
     },
   ],
   price: { currency: "BRL", amountCents: 349900 },
+  stock: 12,
+  isActive: true,
 };

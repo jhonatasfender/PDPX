@@ -1,6 +1,6 @@
-import { mockProducts } from "../src/mocks/catalog";
-import { ProductCard } from "../src/components/product-card";
-import CatalogFilters from "../src/components/catalog-filters";
+import { mockProducts } from "@/mocks/catalog";
+import { ProductCard } from "@/components/product-card";
+import CatalogFilters from "@/components/catalog-filters";
 
 export default function Page() {
   return (

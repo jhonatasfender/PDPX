@@ -20,4 +20,6 @@ export type MockProduct = {
   description: string;
   images: MockProductImage[];
   price: MockPrice;
+  stock: number;
+  isActive: boolean;
 };

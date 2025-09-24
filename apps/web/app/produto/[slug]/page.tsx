@@ -1,6 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-import { mockProduct } from "../../../src/mocks/pdp";
+import { mockProduct } from "@/mocks/pdp";
 import {
   ShoppingCart,
   Truck,
@@ -10,10 +9,10 @@ import {
   Star,
   BadgePercent,
 } from "lucide-react";
-import { Button, buttonVariants } from "../../../src/components/ui/button";
-import { RadioSwatch } from "../../../src/components/ui/radio-swatch";
-import { ProductGallery } from "../../../src/components/product-gallery";
-import { CurrencyFormatter } from "../../../src/lib/format";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { RadioSwatch } from "@/components/ui/radio-swatch";
+import { ProductGallery } from "@/components/product-gallery";
+import { CurrencyFormatter } from "@/lib/format";
 
 export default async function PDPPage() {
   const product = mockProduct;
@@ -31,7 +30,10 @@ export default async function PDPPage() {
         <nav className="-mb-1">
           <Link
             href="/"
-            className={buttonVariants({ variant: "secondary", size: "sm" }) + " inline-flex items-center gap-2"}
+            className={
+              buttonVariants({ variant: "secondary", size: "sm" }) +
+              " inline-flex items-center gap-2"
+            }
           >
             <ChevronLeft size={16} /> Voltar ao catálogo
           </Link>

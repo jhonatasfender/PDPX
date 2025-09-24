@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "types": [],
     "paths": {
+      "@/*": ["src/*"],
       "@pdpx/types": ["../../packages/types/src"],
       "@pdpx/ui": ["../../packages/ui/src"],
       "@pdpx/utils": ["../../packages/utils/src"]

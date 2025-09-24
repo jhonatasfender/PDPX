@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockCart } from "../../src/mocks/cart";
-import { CurrencyFormatter } from "../../src/lib/format";
+import { mockCart } from "@/mocks/cart";
+import { CurrencyFormatter } from "@/lib/format";
 import { Trash2 } from "lucide-react";
-import { Button } from "../../src/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function CartPage() {
   const subtotalCents = mockCart.reduce(

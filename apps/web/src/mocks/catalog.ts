@@ -33,6 +33,8 @@ const baseProducts: MockProduct[] = [
       },
     ],
     price: { currency: "BRL", amountCents: 349900 },
+    stock: 12,
+    isActive: true,
   },
   {
     id: "2",
@@ -66,6 +68,8 @@ const baseProducts: MockProduct[] = [
       },
     ],
     price: { currency: "BRL", amountCents: 189900 },
+    stock: 8,
+    isActive: true,
   },
   {
     id: "3",
@@ -99,6 +103,8 @@ const baseProducts: MockProduct[] = [
       },
     ],
     price: { currency: "BRL", amountCents: 259900 },
+    stock: 5,
+    isActive: true,
   },
 ];
 
@@ -129,6 +135,8 @@ const extraProducts: MockProduct[] = Array.from({ length: 300 }, (_, idx) => {
       position: p,
     })),
     price: { currency: "BRL", amountCents: 120000 + idx * 1375 },
+    stock: (idx * 3) % 20,
+    isActive: idx % 7 !== 0,
   };
 });
 
