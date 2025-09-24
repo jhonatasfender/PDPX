@@ -1,5 +1,5 @@
-import { Email } from '../user/value-objects/email.vo';
-import { Role, UserRole } from '../user/value-objects/role.vo';
+import { Email } from "../user/value-objects/email.vo";
+import { Role, UserRole } from "../user/value-objects/role.vo";
 
 export class User {
   private constructor(
@@ -11,7 +11,7 @@ export class User {
     private readonly _updatedAt: Date,
   ) {}
 
-  static create(
+  public static create(
     id: string,
     email: string,
     name: string,
@@ -29,7 +29,7 @@ export class User {
     );
   }
 
-  static fromPrisma(data: {
+  public static fromPrisma(data: {
     id: string;
     email: string;
     name: string;
@@ -47,63 +47,63 @@ export class User {
     );
   }
 
-  get id(): string {
+  public get id(): string {
     return this._id;
   }
 
-  get email(): string {
+  public get email(): string {
     return this._email.getValue();
   }
 
-  get name(): string {
+  public get name(): string {
     return this._name;
   }
 
-  get role(): UserRole {
+  public get role(): UserRole {
     return this._role.getValue();
   }
 
-  get createdAt(): Date {
+  public get createdAt(): Date {
     return this._createdAt;
   }
 
-  get updatedAt(): Date {
+  public get updatedAt(): Date {
     return this._updatedAt;
   }
 
-  getRoleObject(): Role {
+  public getRoleObject(): Role {
     return this._role;
   }
 
-  isAdmin(): boolean {
+  public isAdmin(): boolean {
     return this._role.isAdmin();
   }
 
-  isSuperAdmin(): boolean {
+  public isSuperAdmin(): boolean {
     return this._role.isSuperAdmin();
   }
 
-  isUser(): boolean {
+  public isUser(): boolean {
     return this._role.isUser();
   }
 
-  hasPermission(requiredRole: UserRole): boolean {
+  public hasPermission(requiredRole: UserRole): boolean {
     return this._role.hasPermission(requiredRole);
   }
 
-  canAccessAdminPanel(): boolean {
+  public canAccessAdminPanel(): boolean {
     return this.isAdmin();
   }
 
-  canManageUsers(): boolean {
+  public canManageUsers(): boolean {
     return this.isSuperAdmin();
   }
 
-  canManageProducts(): boolean {
+  public canManageProducts(): boolean {
     return this.isAdmin();
   }
 
-  toJSON(): any {
+  public toJSON(): any {
     return {
       id: this.id,
       email: this.email,

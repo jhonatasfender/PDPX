@@ -1,13 +1,13 @@
 export enum UserRole {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-  SUPERADMIN = 'SUPERADMIN',
+  USER = "USER",
+  ADMIN = "ADMIN",
+  SUPERADMIN = "SUPERADMIN",
 }
 
 export class Role {
   private readonly value: UserRole;
 
-  constructor(role: UserRole) {
+  public constructor(role: UserRole) {
     this.validateRole(role);
     this.value = role;
   }
@@ -18,31 +18,31 @@ export class Role {
     }
   }
 
-  getValue(): UserRole {
+  public getValue(): UserRole {
     return this.value;
   }
 
-  toString(): string {
+  public toString(): string {
     return this.value;
   }
 
-  equals(other: Role): boolean {
+  public equals(other: Role): boolean {
     return this.value === other.value;
   }
 
-  isAdmin(): boolean {
+  public isAdmin(): boolean {
     return this.value === UserRole.ADMIN || this.value === UserRole.SUPERADMIN;
   }
 
-  isSuperAdmin(): boolean {
+  public isSuperAdmin(): boolean {
     return this.value === UserRole.SUPERADMIN;
   }
 
-  isUser(): boolean {
+  public isUser(): boolean {
     return this.value === UserRole.USER;
   }
 
-  hasPermission(requiredRole: UserRole): boolean {
+  public hasPermission(requiredRole: UserRole): boolean {
     const roleHierarchy = {
       [UserRole.USER]: 1,
       [UserRole.ADMIN]: 2,
@@ -52,20 +52,20 @@ export class Role {
     return roleHierarchy[this.value] >= roleHierarchy[requiredRole];
   }
 
-  static fromString(roleString: string): Role {
+  public static fromString(roleString: string): Role {
     const role = roleString.toUpperCase() as UserRole;
     return new Role(role);
   }
 
-  static createUser(): Role {
+  public static createUser(): Role {
     return new Role(UserRole.USER);
   }
 
-  static createAdmin(): Role {
+  public static createAdmin(): Role {
     return new Role(UserRole.ADMIN);
   }
 
-  static createSuperAdmin(): Role {
+  public static createSuperAdmin(): Role {
     return new Role(UserRole.SUPERADMIN);
   }
 }

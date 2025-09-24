@@ -21,14 +21,20 @@ export interface UserSyncRepository {
   syncUserFromAuth(authUserId: string): Promise<any>;
   getUserWithAuthData(userId: string): Promise<UserWithAuthData>;
   getUserByEmail(email: string): Promise<UserWithAuthData | null>;
-  updateUserRole(authUserId: string, role: 'USER' | 'ADMIN' | 'SUPERADMIN'): Promise<any>;
+  updateUserRole(
+    authUserId: string,
+    role: "USER" | "ADMIN" | "SUPERADMIN",
+  ): Promise<any>;
   getAllUsersWithAuthData(): Promise<UserWithAuthData[]>;
   findCustomUserByAuthId(authUserId: string): Promise<any>;
   createCustomUser(data: {
     auth_user_id: string;
-    role: 'USER' | 'ADMIN' | 'SUPERADMIN';
+    role: "USER" | "ADMIN" | "SUPERADMIN";
   }): Promise<any>;
-  updateCustomUser(authUserId: string, data: {
-    role?: 'USER' | 'ADMIN' | 'SUPERADMIN';
-  }): Promise<any>;
+  updateCustomUser(
+    authUserId: string,
+    data: {
+      role?: "USER" | "ADMIN" | "SUPERADMIN";
+    },
+  ): Promise<any>;
 }

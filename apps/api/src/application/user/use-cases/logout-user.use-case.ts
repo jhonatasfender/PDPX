@@ -1,5 +1,5 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { TokenService } from '../interfaces/token.interface';
+import { Injectable, Inject } from "@nestjs/common";
+import { TokenService } from "../interfaces/token.interface";
 
 export interface LogoutUserRequest {
   token: string;
@@ -11,11 +11,13 @@ export interface LogoutUserResponse {
 
 @Injectable()
 export class LogoutUserUseCase {
-  constructor(
-    @Inject('TokenService') private readonly tokenService: TokenService,
+  public constructor(
+    @Inject("TokenService") private readonly tokenService: TokenService,
   ) {}
 
-  async execute(request: LogoutUserRequest): Promise<LogoutUserResponse> {
+  public async execute(
+    request: LogoutUserRequest,
+  ): Promise<LogoutUserResponse> {
     try {
       await this.tokenService.signOut();
 
@@ -29,4 +31,3 @@ export class LogoutUserUseCase {
     }
   }
 }
-

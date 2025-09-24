@@ -6,44 +6,47 @@ import {
   Param,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
-} from '@nestjs/swagger';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { RequireAdmin, RequireSuperAdmin } from '../../decorators/roles.decorator';
-import { CurrentUser } from '../../decorators/current-user.decorator';
-import { User } from '../../../domain/entities/user.entity.js';
+} from "@nestjs/swagger";
+import { UseGuards } from "@nestjs/common";
+import { AuthGuard } from "../../guards/auth.guard";
+import { RolesGuard } from "../../guards/roles.guard";
+import {
+  RequireAdmin,
+  RequireSuperAdmin,
+} from "../../decorators/roles.decorator";
+import { CurrentUser } from "../../decorators/current-user.decorator";
+import { User } from "../../../domain/entities/user.entity.js";
 
-@ApiTags('Administração')
-@Controller('admin')
+@ApiTags("Administração")
+@Controller("admin")
 @UseGuards(AuthGuard, RolesGuard)
-@ApiBearerAuth('JWT-auth')
+@ApiBearerAuth("JWT-auth")
 export class AdminController {
-  
-  @Get('dashboard')
+  @Get("dashboard")
   @RequireAdmin()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Dashboard administrativo',
-    description: 'Acesso ao painel administrativo (requer role ADMIN ou SUPERADMIN)',
+    summary: "Dashboard administrativo",
+    description:
+      "Acesso ao painel administrativo (requer role ADMIN ou SUPERADMIN)",
   })
   @ApiResponse({
     status: 200,
-    description: 'Dashboard carregado com sucesso',
+    description: "Dashboard carregado com sucesso",
   })
   @ApiResponse({
     status: 403,
-    description: 'Acesso negado - permissões insuficientes',
+    description: "Acesso negado - permissões insuficientes",
   })
-  async getDashboard(@CurrentUser() user: User) {
+  public async getDashboard(@CurrentUser() user: User) {
     return {
-      message: 'Dashboard administrativo',
+      message: "Dashboard administrativo",
       user: {
         id: user.id,
         email: user.email,
@@ -58,20 +61,21 @@ export class AdminController {
     };
   }
 
-  @Get('users')
+  @Get("users")
   @RequireAdmin()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Listar usuários',
-    description: 'Lista todos os usuários do sistema (requer role ADMIN ou SUPERADMIN)',
+    summary: "Listar usuários",
+    description:
+      "Lista todos os usuários do sistema (requer role ADMIN ou SUPERADMIN)",
   })
   @ApiResponse({
     status: 200,
-    description: 'Lista de usuários obtida com sucesso',
+    description: "Lista de usuários obtida com sucesso",
   })
-  async getUsers(@CurrentUser() user: User) {
+  public async getUsers(@CurrentUser() user: User) {
     return {
-      message: 'Lista de usuários',
+      message: "Lista de usuários",
       currentUser: {
         id: user.id,
         email: user.email,
@@ -81,28 +85,28 @@ export class AdminController {
     };
   }
 
-  @Put('users/:userId/role')
+  @Put("users/:userId/role")
   @RequireSuperAdmin()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Alterar role de usuário',
-    description: 'Altera o role de um usuário (requer role SUPERADMIN)',
+    summary: "Alterar role de usuário",
+    description: "Altera o role de um usuário (requer role SUPERADMIN)",
   })
   @ApiResponse({
     status: 200,
-    description: 'Role alterado com sucesso',
+    description: "Role alterado com sucesso",
   })
   @ApiResponse({
     status: 403,
-    description: 'Acesso negado - requer SUPERADMIN',
+    description: "Acesso negado - requer SUPERADMIN",
   })
-  async updateUserRole(
-    @Param('userId') userId: string,
+  public async updateUserRole(
+    @Param("userId") userId: string,
     @Body() body: { role: string },
     @CurrentUser() user: User,
   ) {
     return {
-      message: 'Role alterado com sucesso',
+      message: "Role alterado com sucesso",
       updatedBy: {
         id: user.id,
         email: user.email,

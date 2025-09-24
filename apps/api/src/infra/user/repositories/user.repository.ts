@@ -1,19 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../infra/prisma/prisma.service';
-import { UserRole } from '../../../domain/user/value-objects/role.vo';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../infra/prisma/prisma.service";
+import { UserRole } from "../../../domain/user/value-objects/role.vo";
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  public constructor(private readonly prisma: PrismaService) {}
 
-
-  async findById(id: string) {
+  public async findById(id: string) {
     return this.prisma.users.findUnique({
       where: { id },
     });
   }
 
-  async create(data: {
+  public async create(data: {
     id: string;
     auth_user_id: string;
     role?: UserRole;
@@ -27,15 +26,14 @@ export class UserRepository {
     });
   }
 
-  async updateRole(id: string, role: UserRole) {
+  public async updateRole(id: string, role: UserRole) {
     return this.prisma.users.update({
       where: { id },
       data: { role },
     });
   }
 
-
-  async findAll() {
+  public async findAll() {
     return this.prisma.users.findMany({
       select: {
         id: true,

@@ -1,7 +1,7 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { User, Session } from '@supabase/supabase-js';
-import { TokenService } from '../interfaces/token.interface';
-import { UserSyncRepository } from '../interfaces/user-sync.repository';
+import { Injectable, Inject } from "@nestjs/common";
+import { User, Session } from "@supabase/supabase-js";
+import { TokenService } from "../interfaces/token.interface";
+import { UserSyncRepository } from "../interfaces/user-sync.repository";
 
 export interface RegisterUserRequest {
   email: string;
@@ -16,22 +16,28 @@ export interface RegisterUserResponse {
 
 @Injectable()
 export class RegisterUserUseCase {
-  constructor(
-    @Inject('TokenService') private readonly tokenService: TokenService,
-    @Inject('UserSyncRepository') private readonly userSyncRepository: UserSyncRepository,
+  public constructor(
+    @Inject("TokenService") private readonly tokenService: TokenService,
+    @Inject("UserSyncRepository")
+    private readonly userSyncRepository: UserSyncRepository,
   ) {}
 
-  async execute(request: RegisterUserRequest): Promise<RegisterUserResponse> {
-    const authResponse = await this.tokenService.signUp(request.email, request.password);
-    
+  public async execute(
+    request: RegisterUserRequest,
+  ): Promise<RegisterUserResponse> {
+    const authResponse = await this.tokenService.signUp(
+      request.email,
+      request.password,
+    );
+
     if (!authResponse.user) {
-      throw new Error('Falha ao criar usuário');
+      throw new Error("Falha ao criar usuário");
     }
 
     try {
       await this.userSyncRepository.syncUserFromAuth(authResponse.user.id);
     } catch (error) {
-      console.error('Erro ao sincronizar usuário:', error);
+      console.error("Erro ao sincronizar usuário:", error);
     }
 
     return {
@@ -40,4 +46,3 @@ export class RegisterUserUseCase {
     };
   }
 }
-

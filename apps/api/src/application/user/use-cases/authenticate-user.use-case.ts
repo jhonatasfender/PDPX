@@ -1,6 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { PrismaService } from '../../../infra/prisma/prisma.service';
-import { UserSyncRepository } from '../interfaces/user-sync.repository';
+import { Injectable, Inject } from "@nestjs/common";
+import { PrismaService } from "../../../infra/prisma/prisma.service";
+import { UserSyncRepository } from "../interfaces/user-sync.repository";
+import { AuthUserRepository } from "../../../infra/user/repositories/auth-user.repository";
+import { PermissionRepository } from "../../../infra/user/repositories/permission.repository";
 
 export interface AuthenticateUserRequest {
   email: string;
@@ -25,33 +27,29 @@ export interface AuthenticateUserResponse {
 
 @Injectable()
 export class AuthenticateUserUseCase {
-  constructor(
+  public constructor(
     private readonly prisma: PrismaService,
-    @Inject('UserSyncRepository')
+    @Inject("UserSyncRepository")
     private readonly userSyncRepository: UserSyncRepository,
+    private readonly authUserQuery: AuthUserRepository,
+    private readonly permissionService: PermissionRepository,
   ) {}
 
-  async execute(request: AuthenticateUserRequest): Promise<AuthenticateUserResponse | null> {
-    let authUser;
-
-    if (request.provider && request.providerId) {
-      authUser = await this.findUserByProvider(request.provider, request.providerId);
-    } else if (request.email) {
-      authUser = await this.prisma.auth_users.findFirst({
-        where: { email: request.email },
-        include: {
-          identities: true,
-        },
-      });
-    }
+  public async execute(
+    request: AuthenticateUserRequest,
+  ): Promise<AuthenticateUserResponse | null> {
+    const authUser = await this.findAuthUser(request);
 
     if (!authUser) {
       return null;
     }
 
-    const customUser = await this.userSyncRepository.syncUserFromAuth(authUser.id);
+    const customUser = await this.userSyncRepository.syncUserFromAuth(
+      authUser.id,
+    );
 
-    const providers = authUser.identities?.map((identity: any) => identity.provider) || [];
+    const providers =
+      authUser.identities?.map((identity: any) => identity.provider) || [];
 
     return {
       user: {
@@ -68,45 +66,20 @@ export class AuthenticateUserUseCase {
     };
   }
 
-  private async findUserByProvider(provider: string, providerId: string): Promise<any> {
-    const identity = await this.prisma.auth_identities.findFirst({
-      where: {
-        provider,
-        provider_id: providerId,
-      },
-      include: {
-        users: true,
-      },
-    });
-
-    return identity?.users || null;
-  }
-
-  async checkUserPermission(authUserId: string, requiredRole: string): Promise<boolean> {
-    const customUser = await this.prisma.users.findUnique({
-      where: { auth_user_id: authUserId },
-    });
-
-    if (!customUser) {
-      return false;
+  private async findAuthUser(
+    request: AuthenticateUserRequest,
+  ): Promise<any | null> {
+    if (request.provider && request.providerId) {
+      return await this.authUserQuery.findByProvider(
+        request.provider,
+        request.providerId,
+      );
     }
 
-    const roleHierarchy: Record<string, number> = {
-      USER: 1,
-      ADMIN: 2,
-      SUPERADMIN: 3,
-    };
+    if (request.email) {
+      return await this.authUserQuery.findByEmail(request.email);
+    }
 
-    const userLevel = roleHierarchy[customUser.role] || 0;
-    const requiredLevel = roleHierarchy[requiredRole] || 0;
-
-    return userLevel >= requiredLevel;
-  }
-
-  async updateLastSignIn(authUserId: string): Promise<void> {
-    await this.prisma.auth_users.update({
-      where: { id: authUserId },
-      data: { last_sign_in_at: new Date() },
-    });
+    return null;
   }
 }

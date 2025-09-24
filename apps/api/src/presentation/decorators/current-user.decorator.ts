@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 export interface CurrentUserData {
   auth: {
@@ -18,7 +18,7 @@ export interface CurrentUserData {
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): CurrentUserData => {
     const request = ctx.switchToHttp().getRequest();
-    
+
     if (request.customUser) {
       return {
         auth: {
@@ -26,7 +26,8 @@ export const CurrentUser = createParamDecorator(
           email: request.customUser.email,
           emailConfirmed: request.user?.email_confirmed_at ? true : false,
           lastSignIn: request.user?.last_sign_in_at,
-          providers: request.user?.identities?.map((i: any) => i.provider) || [],
+          providers:
+            request.user?.identities?.map((i: any) => i.provider) || [],
         },
         custom: {
           id: request.customUser.id,

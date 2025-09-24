@@ -1,202 +1,203 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Session } from '@supabase/supabase-js';
-import { UserRole } from '../../../domain/user/value-objects/role.vo';
+import { ApiProperty } from "@nestjs/swagger";
+import { Session } from "@supabase/supabase-js";
+import { UserRole } from "../../../domain/user/value-objects/role.vo";
 
 export class UserResponseDto {
   @ApiProperty({
-    description: 'ID único do usuário',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: "ID único do usuário",
+    example: "123e4567-e89b-12d3-a456-426614174000",
   })
-  id!: string;
+  public id!: string;
 
   @ApiProperty({
-    description: 'Email do usuário',
-    example: 'usuario@exemplo.com',
+    description: "Email do usuário",
+    example: "usuario@exemplo.com",
   })
-  email!: string;
+  public email!: string;
 
   @ApiProperty({
-    description: 'Nome do usuário',
-    example: 'João Silva',
+    description: "Nome do usuário",
+    example: "João Silva",
     required: false,
   })
-  name?: string;
+  public name?: string;
 
   @ApiProperty({
-    description: 'Role do usuário',
+    description: "Role do usuário",
     example: UserRole.USER,
     enum: UserRole,
   })
-  role!: UserRole;
+  public role!: UserRole;
 }
 
 export class AuthResponseDto {
   @ApiProperty({
-    description: 'Mensagem de sucesso',
-    example: 'Usuário criado com sucesso',
+    description: "Mensagem de sucesso",
+    example: "Usuário criado com sucesso",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Dados do usuário',
+    description: "Dados do usuário",
     type: UserResponseDto,
   })
-  user!: UserResponseDto;
+  public user!: UserResponseDto;
 
   @ApiProperty({
-    description: 'Dados da sessão do Supabase',
+    description: "Dados da sessão do Supabase",
   })
-  session!: Session | null;
+  public session!: Session | null;
 }
 
 export class LoginResponseDto {
   @ApiProperty({
-    description: 'Mensagem de sucesso',
-    example: 'Login realizado com sucesso',
+    description: "Mensagem de sucesso",
+    example: "Login realizado com sucesso",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Dados do usuário',
+    description: "Dados do usuário",
     type: UserResponseDto,
   })
-  user!: UserResponseDto;
+  public user!: UserResponseDto;
 
   @ApiProperty({
-    description: 'Dados da sessão do Supabase',
+    description: "Dados da sessão do Supabase",
   })
-  session!: Session | null;
+  public session!: Session | null;
 }
 
 export class RefreshResponseDto {
   @ApiProperty({
-    description: 'Mensagem de sucesso',
-    example: 'Token renovado com sucesso',
+    description: "Mensagem de sucesso",
+    example: "Token renovado com sucesso",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Dados da sessão renovada',
-    example: 'Objeto de sessão do Supabase',
+    description: "Dados da sessão renovada",
+    example: "Objeto de sessão do Supabase",
   })
-  session!: Session | null;
+  public session!: Session | null;
 }
 
 export class LogoutResponseDto {
   @ApiProperty({
-    description: 'Mensagem de sucesso',
-    example: 'Logout realizado com sucesso',
+    description: "Mensagem de sucesso",
+    example: "Logout realizado com sucesso",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Status do logout',
+    description: "Status do logout",
     example: true,
   })
-  success!: boolean;
+  public success!: boolean;
 }
 
 export class MeResponseDto {
   @ApiProperty({
-    description: 'Mensagem de sucesso',
-    example: 'Usuário atual obtido com sucesso',
+    description: "Mensagem de sucesso",
+    example: "Usuário atual obtido com sucesso",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Dados do usuário atual',
+    description: "Dados do usuário atual",
     type: UserResponseDto,
   })
-  user!: UserResponseDto;
+  public user!: UserResponseDto;
 }
 
 export class ErrorResponseDto {
   @ApiProperty({
-    description: 'Mensagem de erro',
-    example: 'Credenciais inválidas',
+    description: "Mensagem de erro",
+    example: "Credenciais inválidas",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Código de erro específico',
-    example: 'INVALID_CREDENTIALS',
+    description: "Código de erro específico",
+    example: "INVALID_CREDENTIALS",
   })
-  error!: string;
+  public error!: string;
 
   @ApiProperty({
-    description: 'Código de status HTTP',
+    description: "Código de status HTTP",
     example: 400,
   })
-  statusCode!: number;
+  public statusCode!: number;
 
   @ApiProperty({
-    description: 'Timestamp do erro',
-    example: '2024-01-15T10:30:00Z',
+    description: "Timestamp do erro",
+    example: "2024-01-15T10:30:00Z",
   })
-  timestamp!: string;
+  public timestamp!: string;
 
   @ApiProperty({
-    description: 'Caminho da requisição',
-    example: '/auth/login',
+    description: "Caminho da requisição",
+    example: "/auth/login",
   })
-  path!: string;
+  public path!: string;
 
   @ApiProperty({
-    description: 'Método HTTP da requisição',
-    example: 'POST',
+    description: "Método HTTP da requisição",
+    example: "POST",
   })
-  method!: string;
+  public method!: string;
 
   @ApiProperty({
-    description: 'Detalhes adicionais do erro',
-    example: { email: 'usuario@exemplo.com' },
+    description: "Detalhes adicionais do erro",
+    example: { email: "usuario@exemplo.com" },
     required: false,
   })
-  details?: any;
+  public details?: any;
 }
 
 export class EmailNotConfirmedErrorDto {
   @ApiProperty({
-    description: 'Mensagem de erro',
-    example: 'Email não confirmado. Verifique sua caixa de entrada e confirme seu email antes de fazer login.',
+    description: "Mensagem de erro",
+    example:
+      "Email não confirmado. Verifique sua caixa de entrada e confirme seu email antes de fazer login.",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Código de erro específico',
-    example: 'EMAIL_NOT_CONFIRMED',
+    description: "Código de erro específico",
+    example: "EMAIL_NOT_CONFIRMED",
   })
-  error!: string;
+  public error!: string;
 
   @ApiProperty({
-    description: 'Código de status HTTP',
+    description: "Código de status HTTP",
     example: 403,
   })
-  statusCode!: number;
+  public statusCode!: number;
 
   @ApiProperty({
-    description: 'Timestamp do erro',
-    example: '2024-01-15T10:30:00Z',
+    description: "Timestamp do erro",
+    example: "2024-01-15T10:30:00Z",
   })
-  timestamp!: string;
+  public timestamp!: string;
 
   @ApiProperty({
-    description: 'Caminho da requisição',
-    example: '/auth/login',
+    description: "Caminho da requisição",
+    example: "/auth/login",
   })
-  path!: string;
+  public path!: string;
 
   @ApiProperty({
-    description: 'Método HTTP da requisição',
-    example: 'POST',
+    description: "Método HTTP da requisição",
+    example: "POST",
   })
-  method!: string;
+  public method!: string;
 
   @ApiProperty({
-    description: 'Detalhes do erro',
-    example: { email: 'usuario@exemplo.com', action: 'CONFIRM_EMAIL' },
+    description: "Detalhes do erro",
+    example: { email: "usuario@exemplo.com", action: "CONFIRM_EMAIL" },
   })
-  details!: {
+  public details!: {
     email: string;
     action: string;
   };
@@ -204,38 +205,38 @@ export class EmailNotConfirmedErrorDto {
 
 export class InvalidCredentialsErrorDto {
   @ApiProperty({
-    description: 'Mensagem de erro',
-    example: 'Credenciais inválidas. Verifique seu email e senha.',
+    description: "Mensagem de erro",
+    example: "Credenciais inválidas. Verifique seu email e senha.",
   })
-  message!: string;
+  public message!: string;
 
   @ApiProperty({
-    description: 'Código de erro específico',
-    example: 'INVALID_CREDENTIALS',
+    description: "Código de erro específico",
+    example: "INVALID_CREDENTIALS",
   })
-  error!: string;
+  public error!: string;
 
   @ApiProperty({
-    description: 'Código de status HTTP',
+    description: "Código de status HTTP",
     example: 401,
   })
-  statusCode!: number;
+  public statusCode!: number;
 
   @ApiProperty({
-    description: 'Timestamp do erro',
-    example: '2024-01-15T10:30:00Z',
+    description: "Timestamp do erro",
+    example: "2024-01-15T10:30:00Z",
   })
-  timestamp!: string;
+  public timestamp!: string;
 
   @ApiProperty({
-    description: 'Caminho da requisição',
-    example: '/auth/login',
+    description: "Caminho da requisição",
+    example: "/auth/login",
   })
-  path!: string;
+  public path!: string;
 
   @ApiProperty({
-    description: 'Método HTTP da requisição',
-    example: 'POST',
+    description: "Método HTTP da requisição",
+    example: "POST",
   })
-  method!: string;
+  public method!: string;
 }

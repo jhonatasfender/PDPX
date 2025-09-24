@@ -1,25 +1,34 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { PrismaService } from '../../infra/prisma/prisma.service';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Inject } from "@nestjs/common";
+import { UserSyncRepository } from "../../application/user/interfaces/user-sync.repository";
+import { PermissionRepository } from "../../infra/user/repositories/permission.repository";
 
 export enum UserRole {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-  SUPERADMIN = 'SUPERADMIN',
+  USER = "USER",
+  ADMIN = "ADMIN",
+  SUPERADMIN = "SUPERADMIN",
 }
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    private readonly prisma: PrismaService,
+  public constructor(
+    private readonly reflector: Reflector,
+    @Inject("UserSyncRepository")
+    private readonly userSyncRepository: UserSyncRepository,
+    private readonly permissionRepository: PermissionRepository,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>('roles', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
+    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
+      "roles",
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!requiredRoles) {
       return true;
@@ -29,27 +38,26 @@ export class RolesGuard implements CanActivate {
     const authUserId = request.user?.sub || request.user?.id;
 
     if (!authUserId) {
-      throw new ForbiddenException('Usuário não autenticado');
+      throw new ForbiddenException("Usuário não autenticado");
     }
 
-    const customUser = await this.prisma.users.findUnique({
-      where: { auth_user_id: authUserId },
-    });
+    const customUser =
+      await this.userSyncRepository.findCustomUserByAuthId(authUserId);
 
     if (!customUser) {
-      throw new ForbiddenException('Usuário não encontrado no sistema');
+      throw new ForbiddenException("Usuário não encontrado no sistema");
     }
 
     const userRole = customUser.role as UserRole;
-    
-    const hasRole = requiredRoles.some((role) => {
-      return this.hasPermission(userRole, role);
-    });
+
+    const hasRole = requiredRoles.some((role) =>
+      this.permissionRepository.hasRoleOrHigher(userRole, role),
+    );
 
     if (!hasRole) {
       throw new ForbiddenException({
-        message: 'Acesso negado. Permissões insuficientes.',
-        error: 'INSUFFICIENT_PERMISSIONS',
+        message: "Acesso negado. Permissões insuficientes.",
+        error: "INSUFFICIENT_PERMISSIONS",
         statusCode: 403,
         details: {
           requiredRoles,
@@ -62,15 +70,5 @@ export class RolesGuard implements CanActivate {
     request.customUser = customUser;
 
     return true;
-  }
-
-  private hasPermission(userRole: UserRole, requiredRole: UserRole): boolean {
-    const roleHierarchy = {
-      [UserRole.USER]: 1,
-      [UserRole.ADMIN]: 2,
-      [UserRole.SUPERADMIN]: 3,
-    };
-
-    return roleHierarchy[userRole] >= roleHierarchy[requiredRole];
   }
 }

@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../infra/prisma/prisma.service';
-import { UserSyncRepository, UserWithAuthData } from '../../../application/user/interfaces/user-sync.repository';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../infra/prisma/prisma.service";
+import {
+  UserSyncRepository,
+  UserWithAuthData,
+} from "../../../application/user/interfaces/user-sync.repository";
 
 @Injectable()
 export class UserSyncRepositoryImpl implements UserSyncRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  public constructor(private readonly prisma: PrismaService) {}
 
-  async syncUserFromAuth(authUserId: string): Promise<any> {
+  public async syncUserFromAuth(authUserId: string): Promise<any> {
     const authUser = await this.prisma.auth_users.findUnique({
       where: { id: authUserId },
       include: {
@@ -16,7 +19,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     });
 
     if (!authUser) {
-      throw new Error('Usuário não encontrado no Supabase Auth');
+      throw new Error("Usuário não encontrado no Supabase Auth");
     }
 
     const existingUser = await this.findCustomUserByAuthId(authUserId);
@@ -26,18 +29,18 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     } else {
       return await this.createCustomUser({
         auth_user_id: authUserId,
-        role: 'USER',
+        role: "USER",
       });
     }
   }
 
-  async getUserWithAuthData(userId: string): Promise<UserWithAuthData> {
+  public async getUserWithAuthData(userId: string): Promise<UserWithAuthData> {
     const customUser = await this.prisma.users.findUnique({
       where: { id: userId },
     });
 
     if (!customUser) {
-      throw new Error('Usuário customizado não encontrado');
+      throw new Error("Usuário customizado não encontrado");
     }
 
     const authUser = await this.prisma.auth_users.findUnique({
@@ -54,7 +57,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     };
   }
 
-  async getUserByEmail(email: string): Promise<UserWithAuthData | null> {
+  public async getUserByEmail(email: string): Promise<UserWithAuthData | null> {
     const authUser = await this.prisma.auth_users.findFirst({
       where: { email },
       include: {
@@ -75,15 +78,15 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     };
   }
 
-  async findCustomUserByAuthId(authUserId: string): Promise<any> {
+  public async findCustomUserByAuthId(authUserId: string): Promise<any> {
     return await this.prisma.users.findUnique({
       where: { auth_user_id: authUserId },
     });
   }
 
-  async createCustomUser(data: {
+  public async createCustomUser(data: {
     auth_user_id: string;
-    role: 'USER' | 'ADMIN' | 'SUPERADMIN';
+    role: "USER" | "ADMIN" | "SUPERADMIN";
   }): Promise<any> {
     return await this.prisma.users.create({
       data: {
@@ -93,9 +96,12 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     });
   }
 
-  async updateCustomUser(authUserId: string, data: {
-    role?: 'USER' | 'ADMIN' | 'SUPERADMIN';
-  }): Promise<any> {
+  public async updateCustomUser(
+    authUserId: string,
+    data: {
+      role?: "USER" | "ADMIN" | "SUPERADMIN";
+    },
+  ): Promise<any> {
     return await this.prisma.users.update({
       where: { auth_user_id: authUserId },
       data: {
@@ -104,16 +110,19 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     });
   }
 
-  async updateUserRole(authUserId: string, role: 'USER' | 'ADMIN' | 'SUPERADMIN'): Promise<any> {
+  public async updateUserRole(
+    authUserId: string,
+    role: "USER" | "ADMIN" | "SUPERADMIN",
+  ): Promise<any> {
     return await this.prisma.users.update({
       where: { auth_user_id: authUserId },
       data: { role },
     });
   }
 
-  async getAllUsersWithAuthData(): Promise<UserWithAuthData[]> {
+  public async getAllUsersWithAuthData(): Promise<UserWithAuthData[]> {
     const customUsers = await this.prisma.users.findMany({
-      orderBy: { auth_user_id: 'desc' },
+      orderBy: { auth_user_id: "desc" },
     });
 
     const usersWithAuth = await Promise.all(
@@ -129,7 +138,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
           custom: user,
           auth: authUser,
         };
-      })
+      }),
     );
 
     return usersWithAuth;
@@ -141,7 +150,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     }
 
     if (authUser.email) {
-      return authUser.email.split('@')[0];
+      return authUser.email.split("@")[0];
     }
 
     if (authUser.identities?.length > 0) {
@@ -154,6 +163,6 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
       }
     }
 
-    return 'Usuário';
+    return "Usuário";
   }
 }

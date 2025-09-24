@@ -1,9 +1,9 @@
 export class Email {
   private readonly value: string;
 
-  constructor(email: string) {
+  public constructor(email: string) {
     if (!this.isValid(email)) {
-      throw new Error('Email inválido');
+      throw new Error("Email inválido");
     }
     this.value = email.toLowerCase().trim();
   }
@@ -13,16 +13,15 @@ export class Email {
     return emailRegex.test(email);
   }
 
-  getValue(): string {
+  public getValue(): string {
     return this.value;
   }
 
-  equals(other: Email): boolean {
+  public equals(other: Email): boolean {
     return this.value === other.value;
   }
 
-  toString(): string {
+  public toString(): string {
     return this.value;
   }
 }
-
