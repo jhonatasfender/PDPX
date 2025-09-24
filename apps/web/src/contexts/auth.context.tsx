@@ -35,10 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await getCurrentUser();
       } else {
         const cookieToken = document.cookie
-          .split('; ')
-          .find(row => row.startsWith('access_token='))
-          ?.split('=')[1];
-        
+          .split("; ")
+          .find((row) => row.startsWith("access_token="))
+          ?.split("=")[1];
+
         if (cookieToken) {
           AuthService.setAuthToken(cookieToken);
           localStorage.setItem("access_token", cookieToken);
@@ -49,7 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Erro ao inicializar autenticação:", error);
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
-      document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie =
+        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       AuthService.removeAuthToken();
     } finally {
       setIsLoading(false);
@@ -66,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         localStorage.setItem("access_token", response.session.access_token);
         localStorage.setItem("refresh_token", response.session.refresh_token);
-        
+
         document.cookie = `access_token=${response.session.access_token}; path=/; max-age=${response.session.expires_in}; secure; samesite=strict`;
 
         AuthService.setAuthToken(response.session.access_token);
@@ -99,9 +100,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(null);
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
-      
-      document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      
+
+      document.cookie =
+        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
       AuthService.removeAuthToken();
     }
   };
@@ -119,9 +121,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(response.session);
         localStorage.setItem("access_token", response.session.access_token);
         localStorage.setItem("refresh_token", response.session.refresh_token);
-        
+
         document.cookie = `access_token=${response.session.access_token}; path=/; max-age=${response.session.expires_in}; secure; samesite=strict`;
-        
+
         AuthService.setAuthToken(response.session.access_token);
       }
     } catch (error) {

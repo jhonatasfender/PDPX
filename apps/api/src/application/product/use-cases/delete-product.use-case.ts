@@ -16,12 +16,17 @@ export interface DeleteProductResponse {
 @Injectable()
 export class DeleteProductUseCase {
   public constructor(
-    @Inject("ProductRepository") private readonly productRepository: ProductRepository,
-    @Inject("ProductImageRepository") private readonly productImageRepository: ProductImageRepository,
-    @Inject("ProductPriceRepository") private readonly productPriceRepository: ProductPriceRepository,
+    @Inject("ProductRepository")
+    private readonly productRepository: ProductRepository,
+    @Inject("ProductImageRepository")
+    private readonly productImageRepository: ProductImageRepository,
+    @Inject("ProductPriceRepository")
+    private readonly productPriceRepository: ProductPriceRepository,
   ) {}
 
-  public async execute(request: DeleteProductRequest): Promise<DeleteProductResponse> {
+  public async execute(
+    request: DeleteProductRequest,
+  ): Promise<DeleteProductResponse> {
     const existingProduct = await this.productRepository.findById(request.id);
     if (!existingProduct) {
       throw new ProductNotFoundException(request.id);

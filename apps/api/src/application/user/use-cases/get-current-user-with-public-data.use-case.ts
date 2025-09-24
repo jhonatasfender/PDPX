@@ -17,7 +17,8 @@ export interface GetCurrentUserWithPublicDataResponse {
 export class GetCurrentUserWithPublicDataUseCase {
   public constructor(
     @Inject("TokenService") private readonly tokenService: TokenService,
-    @Inject("UserSyncRepository") private readonly userSyncRepository: UserSyncRepository,
+    @Inject("UserSyncRepository")
+    private readonly userSyncRepository: UserSyncRepository,
   ) {}
 
   public async execute(
@@ -29,7 +30,9 @@ export class GetCurrentUserWithPublicDataUseCase {
       throw new Error("Usuário não encontrado");
     }
 
-    const publicUser = await this.userSyncRepository.findCustomUserByAuthId(user.id);
+    const publicUser = await this.userSyncRepository.findCustomUserByAuthId(
+      user.id,
+    );
 
     if (!publicUser) {
       throw new Error("Usuário não encontrado na tabela pública");

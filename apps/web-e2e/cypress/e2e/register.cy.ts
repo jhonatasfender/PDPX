@@ -8,29 +8,33 @@ describe("Registro", () => {
       .then((inbox: any) => {
         const email = inbox.emailAddress;
         const name = "Usuário Teste";
-        
+
         createdUserEmail = email;
 
         cy.interceptRegister();
         cy.registerViaUi({ email, password, name });
-        cy.wait("@authRegister").its("response.statusCode").should("be.within", 200, 299);
+        cy.wait("@authRegister")
+          .its("response.statusCode")
+          .should("be.within", 200, 299);
 
         cy.url().should("include", "/register");
-        cy.contains(/conta criada com sucesso|confirme seu email|verifique sua caixa de entrada/i).should("exist");
+        cy.contains(
+          /conta criada com sucesso|confirme seu email|verifique sua caixa de entrada/i,
+        ).should("exist");
 
         cy.mailslurp()
           .then((mailslurp: any) => mailslurp.waitForLatestEmail(inbox.id))
           .then((email: any) => {
-            const emailBody = email.body || '';
-            const emailSubject = email.subject || '';
-            
-            expect(emailSubject).to.include('Confirm Your Signup');
-            expect(emailBody).to.include('Confirm your signup');
-            expect(emailBody).to.include('Supabase');
-            
+            const emailBody = email.body || "";
+            const emailSubject = email.subject || "";
+
+            expect(emailSubject).to.include("Confirm Your Signup");
+            expect(emailBody).to.include("Confirm your signup");
+            expect(emailBody).to.include("Supabase");
+
             const urlRegex = /href="(https?:\/\/[^"]*verify[^"]*)"/i;
             const urlMatch = emailBody.match(urlRegex);
-            
+
             let confirmationLink = null;
             if (urlMatch && urlMatch[1]) {
               confirmationLink = urlMatch[1];
@@ -41,9 +45,9 @@ describe("Registro", () => {
             }
 
             expect(confirmationLink).to.exist;
-            expect(confirmationLink).to.include('token=');
-            expect(confirmationLink).to.include('type=signup');
-            
+            expect(confirmationLink).to.include("token=");
+            expect(confirmationLink).to.include("type=signup");
+
             cy.confirmEmailViaSupabaseAPI(confirmationLink!);
           });
       });
@@ -52,7 +56,9 @@ describe("Registro", () => {
   it("deve fazer login com usuário criado no teste anterior", () => {
     cy.interceptLogin();
     cy.loginViaUi({ email: createdUserEmail, password });
-    cy.wait("@authLogin").its("response.statusCode").should("be.within", 200, 299);
+    cy.wait("@authLogin")
+      .its("response.statusCode")
+      .should("be.within", 200, 299);
     cy.url().should("not.include", "/login");
   });
 
@@ -70,7 +76,9 @@ describe("Registro", () => {
     cy.get('[data-cy="register-submit"]').click();
 
     cy.wait("@authRegister").its("response.statusCode").should("eq", 409);
-    cy.contains(/usuário já existe com este email|email já está cadastrado/i).should("exist");
+    cy.contains(
+      /usuário já existe com este email|email já está cadastrado/i,
+    ).should("exist");
   });
 
   it("deve exibir erro com senhas diferentes", () => {
@@ -102,4 +110,3 @@ describe("Registro", () => {
     cy.contains(/Mínimo de 6 caracteres/i).should("exist");
   });
 });
-

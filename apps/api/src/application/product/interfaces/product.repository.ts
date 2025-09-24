@@ -21,14 +21,17 @@ export interface ProductRepository {
     stock?: number;
     isActive?: boolean;
   }): Promise<Product>;
-  update(id: string, data: {
-    slug?: string;
-    name?: string;
-    brand?: string;
-    sku?: string;
-    description?: string;
-    stock?: number;
-    isActive?: boolean;
-  }): Promise<Product>;
+  update(
+    id: string,
+    data: {
+      slug?: string;
+      name?: string;
+      brand?: string;
+      sku?: string;
+      description?: string;
+      stock?: number;
+      isActive?: boolean;
+    },
+  ): Promise<Product>;
   delete(id: string): Promise<void>;
 }

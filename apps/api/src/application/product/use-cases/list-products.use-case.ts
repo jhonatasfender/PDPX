@@ -31,12 +31,17 @@ export interface ListProductsResponse {
 @Injectable()
 export class ListProductsUseCase {
   public constructor(
-    @Inject("ProductRepository") private readonly productRepository: ProductRepository,
-    @Inject("ProductImageRepository") private readonly productImageRepository: ProductImageRepository,
-    @Inject("ProductPriceRepository") private readonly productPriceRepository: ProductPriceRepository,
+    @Inject("ProductRepository")
+    private readonly productRepository: ProductRepository,
+    @Inject("ProductImageRepository")
+    private readonly productImageRepository: ProductImageRepository,
+    @Inject("ProductPriceRepository")
+    private readonly productPriceRepository: ProductPriceRepository,
   ) {}
 
-  public async execute(request: ListProductsRequest): Promise<ListProductsResponse> {
+  public async execute(
+    request: ListProductsRequest,
+  ): Promise<ListProductsResponse> {
     const page = request.page || 1;
     const limit = request.limit || 10;
 
@@ -60,7 +65,7 @@ export class ListProductsUseCase {
           images,
           price,
         };
-      })
+      }),
     );
 
     const totalPages = Math.ceil(total / limit);

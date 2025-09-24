@@ -10,15 +10,17 @@ export class PrismaProductImageRepository implements ProductImageRepository {
   public async findByProductId(productId: string): Promise<ProductImage[]> {
     const images = await this.prisma.product_images.findMany({
       where: { product_id: productId },
-      orderBy: { position: 'asc' },
+      orderBy: { position: "asc" },
     });
 
-    return images.map(image => ProductImage.fromPrisma(image));
+    return images.map((image) => ProductImage.fromPrisma(image));
   }
 
-  public async findPrimaryByProductId(productId: string): Promise<ProductImage | null> {
+  public async findPrimaryByProductId(
+    productId: string,
+  ): Promise<ProductImage | null> {
     const image = await this.prisma.product_images.findFirst({
-      where: { 
+      where: {
         product_id: productId,
         is_primary: true,
       },
@@ -41,7 +43,7 @@ export class PrismaProductImageRepository implements ProductImageRepository {
   }): Promise<ProductImage> {
     let altValue: string | null = null;
     if (data.alt !== undefined && data.alt !== null) {
-      if (typeof data.alt === 'string' && data.alt.trim() !== '') {
+      if (typeof data.alt === "string" && data.alt.trim() !== "") {
         altValue = data.alt;
       }
     }
@@ -60,24 +62,27 @@ export class PrismaProductImageRepository implements ProductImageRepository {
     return ProductImage.fromPrisma(image);
   }
 
-  public async update(id: string, data: {
-    url?: string;
-    alt?: string | null;
-    isPrimary?: boolean;
-    position?: number;
-  }): Promise<ProductImage> {
+  public async update(
+    id: string,
+    data: {
+      url?: string;
+      alt?: string | null;
+      isPrimary?: boolean;
+      position?: number;
+    },
+  ): Promise<ProductImage> {
     const updateData: any = { ...data };
-    
+
     if (data.alt !== undefined) {
       let altValue: string | null = null;
       if (data.alt !== null) {
-        if (typeof data.alt === 'string' && data.alt.trim() !== '') {
+        if (typeof data.alt === "string" && data.alt.trim() !== "") {
           altValue = data.alt;
         }
       }
       updateData.alt = altValue;
     }
-    
+
     const image = await this.prisma.product_images.update({
       where: { id },
       data: updateData,
@@ -112,4 +117,3 @@ export class PrismaProductImageRepository implements ProductImageRepository {
     });
   }
 }
-

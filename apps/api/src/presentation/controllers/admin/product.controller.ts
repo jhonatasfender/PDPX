@@ -86,13 +86,39 @@ export class AdminProductController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Listar produtos",
-    description: "Lista todos os produtos com paginação e filtros (requer role ADMIN ou SUPERADMIN)",
+    description:
+      "Lista todos os produtos com paginação e filtros (requer role ADMIN ou SUPERADMIN)",
   })
-  @ApiQuery({ name: "page", required: false, type: Number, description: "Número da página" })
-  @ApiQuery({ name: "limit", required: false, type: Number, description: "Limite por página" })
-  @ApiQuery({ name: "search", required: false, type: String, description: "Termo de busca" })
-  @ApiQuery({ name: "brand", required: false, type: String, description: "Filtrar por marca" })
-  @ApiQuery({ name: "isActive", required: false, type: Boolean, description: "Filtrar por status" })
+  @ApiQuery({
+    name: "page",
+    required: false,
+    type: Number,
+    description: "Número da página",
+  })
+  @ApiQuery({
+    name: "limit",
+    required: false,
+    type: Number,
+    description: "Limite por página",
+  })
+  @ApiQuery({
+    name: "search",
+    required: false,
+    type: String,
+    description: "Termo de busca",
+  })
+  @ApiQuery({
+    name: "brand",
+    required: false,
+    type: String,
+    description: "Filtrar por marca",
+  })
+  @ApiQuery({
+    name: "isActive",
+    required: false,
+    type: Boolean,
+    description: "Filtrar por status",
+  })
   @ApiResponse({
     status: 200,
     description: "Lista de produtos obtida com sucesso",
@@ -117,7 +143,7 @@ export class AdminProductController {
       brand,
       isActive: isActive !== undefined ? Boolean(isActive) : undefined,
     };
-    
+
     const response = await this.listProductsUseCase.execute(request);
     return ProductMapper.toListProductsResponse(response);
   }
@@ -127,7 +153,8 @@ export class AdminProductController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Obter produto por ID",
-    description: "Obtém um produto específico por ID (requer role ADMIN ou SUPERADMIN)",
+    description:
+      "Obtém um produto específico por ID (requer role ADMIN ou SUPERADMIN)",
   })
   @ApiResponse({
     status: 200,
@@ -156,7 +183,8 @@ export class AdminProductController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Atualizar produto",
-    description: "Atualiza um produto existente (requer role ADMIN ou SUPERADMIN)",
+    description:
+      "Atualiza um produto existente (requer role ADMIN ou SUPERADMIN)",
   })
   @ApiResponse({
     status: 200,

@@ -1,7 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNumber, IsBoolean, IsOptional, IsArray, ValidateNested, MinLength, Min } from "class-validator";
+import {
+  IsString,
+  IsNumber,
+  IsBoolean,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  MinLength,
+  Min,
+} from "class-validator";
 import { Type } from "class-transformer";
-import { ProductImageRequestDto, ProductPriceRequestDto } from "./create-product.dto";
+import {
+  ProductImageRequestDto,
+  ProductPriceRequestDto,
+} from "./create-product.dto";
 
 export class UpdateProductDto {
   @ApiProperty({ description: "Slug único do produto", required: false })
@@ -46,7 +58,11 @@ export class UpdateProductDto {
   @Type(() => ProductPriceRequestDto)
   price?: ProductPriceRequestDto;
 
-  @ApiProperty({ description: "Imagens do produto", type: [ProductImageRequestDto], required: false })
+  @ApiProperty({
+    description: "Imagens do produto",
+    type: [ProductImageRequestDto],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
@@ -58,4 +74,3 @@ export class UpdateProductDto {
   @IsBoolean()
   isActive?: boolean;
 }
-

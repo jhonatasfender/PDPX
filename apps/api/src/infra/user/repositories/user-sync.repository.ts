@@ -10,7 +10,10 @@ import { PublicUser } from "../../../domain/entities/public-user.entity";
 export class UserSyncRepositoryImpl implements UserSyncRepository {
   public constructor(private readonly prisma: PrismaService) {}
 
-  public async syncUserFromAuth(authUserId: string, customName?: string): Promise<PublicUser> {
+  public async syncUserFromAuth(
+    authUserId: string,
+    customName?: string,
+  ): Promise<PublicUser> {
     const authUser = await this.prisma.auth_users.findUnique({
       where: { id: authUserId },
       include: {
@@ -28,7 +31,8 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     if (existingUser) {
       return existingUser;
     } else {
-      const extractedName = customName || this.extractNameFromAuthUser(authUser);
+      const extractedName =
+        customName || this.extractNameFromAuthUser(authUser);
       return await this.createCustomUser({
         auth_user_id: authUserId,
         role: "USER",
@@ -56,7 +60,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
 
     return {
       custom: customUser as PublicUser,
-      auth: authUser as UserWithAuthData['auth'],
+      auth: authUser as UserWithAuthData["auth"],
     };
   }
 
@@ -81,11 +85,13 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
 
     return {
       custom: customUser,
-      auth: authUser as UserWithAuthData['auth'],
+      auth: authUser as UserWithAuthData["auth"],
     };
   }
 
-  public async findCustomUserByAuthId(authUserId: string): Promise<PublicUser | null> {
+  public async findCustomUserByAuthId(
+    authUserId: string,
+  ): Promise<PublicUser | null> {
     return await this.prisma.users.findUnique({
       where: { auth_user_id: authUserId },
     });
@@ -146,7 +152,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
 
         return {
           custom: user as PublicUser,
-          auth: authUser as UserWithAuthData['auth'],
+          auth: authUser as UserWithAuthData["auth"],
         };
       }),
     );
@@ -161,9 +167,13 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
       identity_data?: unknown;
     }>;
   }): string {
-    if (authUser.raw_user_meta_data && typeof authUser.raw_user_meta_data === 'object' && authUser.raw_user_meta_data !== null) {
+    if (
+      authUser.raw_user_meta_data &&
+      typeof authUser.raw_user_meta_data === "object" &&
+      authUser.raw_user_meta_data !== null
+    ) {
       const metaData = authUser.raw_user_meta_data as Record<string, unknown>;
-      if (metaData.name && typeof metaData.name === 'string') {
+      if (metaData.name && typeof metaData.name === "string") {
         return metaData.name;
       }
     }
@@ -174,12 +184,19 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
 
     if (authUser.identities && authUser.identities.length > 0) {
       const identity = authUser.identities[0];
-      if (identity.identity_data && typeof identity.identity_data === 'object' && identity.identity_data !== null) {
+      if (
+        identity.identity_data &&
+        typeof identity.identity_data === "object" &&
+        identity.identity_data !== null
+      ) {
         const identityData = identity.identity_data as Record<string, unknown>;
-        if (identityData.name && typeof identityData.name === 'string') {
+        if (identityData.name && typeof identityData.name === "string") {
           return identityData.name;
         }
-        if (identityData.full_name && typeof identityData.full_name === 'string') {
+        if (
+          identityData.full_name &&
+          typeof identityData.full_name === "string"
+        ) {
           return identityData.full_name;
         }
       }

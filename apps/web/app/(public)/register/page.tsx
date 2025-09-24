@@ -44,7 +44,8 @@ export default function RegisterPage() {
       setIsSuccess(true);
     } catch (error: any) {
       if (error.response?.status === 409) {
-        const errorMessage = error.response?.data?.message || "Este email já está cadastrado";
+        const errorMessage =
+          error.response?.data?.message || "Este email já está cadastrado";
         methods.setError("email", {
           type: "manual",
           message: errorMessage,
@@ -55,7 +56,9 @@ export default function RegisterPage() {
           message: "Dados inválidos. Verifique os campos e tente novamente.",
         });
       } else {
-        const errorMessage = error.response?.data?.message || "Erro ao criar conta. Tente novamente.";
+        const errorMessage =
+          error.response?.data?.message ||
+          "Erro ao criar conta. Tente novamente.";
         methods.setError("root", {
           type: "manual",
           message: errorMessage,
@@ -90,7 +93,7 @@ export default function RegisterPage() {
                     </svg>
                   </div>
                 </div>
-                
+
                 <h1 className="text-2xl font-semibold tracking-tight text-neutral-100">
                   Conta criada com sucesso!
                 </h1>
@@ -99,10 +102,10 @@ export default function RegisterPage() {
             <CardContent>
               <div className="text-center space-y-4">
                 <p className="text-neutral-300">
-                  Enviamos um link de confirmação para o seu email. 
-                  Verifique sua caixa de entrada e clique no link para ativar sua conta.
+                  Enviamos um link de confirmação para o seu email. Verifique
+                  sua caixa de entrada e clique no link para ativar sua conta.
                 </p>
-                
+
                 <Alert variant="info">
                   <p className="text-sm">
                     Não recebeu o email? Verifique sua pasta de spam ou{" "}
@@ -111,7 +114,7 @@ export default function RegisterPage() {
                     </button>
                   </p>
                 </Alert>
-                
+
                 <div className="pt-4">
                   <Link
                     href="/login"
@@ -176,9 +179,9 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   data-cy="register-confirm-password"
                 />
-                <Button 
-                  type="submit" 
-                  className="w-full" 
+                <Button
+                  type="submit"
+                  className="w-full"
                   data-cy="register-submit"
                   disabled={isLoading}
                 >

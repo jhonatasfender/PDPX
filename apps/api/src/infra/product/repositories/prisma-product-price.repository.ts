@@ -10,25 +10,24 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
   public async findByProductId(productId: string): Promise<ProductPrice[]> {
     const prices = await this.prisma.product_prices.findMany({
       where: { product_id: productId },
-      orderBy: { created_at: 'desc' },
+      orderBy: { created_at: "desc" },
     });
 
-    return prices.map(price => ProductPrice.fromPrisma(price));
+    return prices.map((price) => ProductPrice.fromPrisma(price));
   }
 
-  public async findCurrentByProductId(productId: string): Promise<ProductPrice | null> {
+  public async findCurrentByProductId(
+    productId: string,
+  ): Promise<ProductPrice | null> {
     const now = new Date();
-    
+
     const price = await this.prisma.product_prices.findFirst({
-      where: { 
+      where: {
         product_id: productId,
         valid_from: { lte: now },
-        OR: [
-          { valid_to: null },
-          { valid_to: { gt: now } },
-        ],
+        OR: [{ valid_to: null }, { valid_to: { gt: now } }],
       },
-      orderBy: { created_at: 'desc' },
+      orderBy: { created_at: "desc" },
     });
 
     if (!price) {
@@ -60,12 +59,15 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
     return ProductPrice.fromPrisma(price);
   }
 
-  public async update(id: string, data: {
-    currency?: string;
-    amountCents?: number;
-    validFrom?: Date;
-    validTo?: Date | null;
-  }): Promise<ProductPrice> {
+  public async update(
+    id: string,
+    data: {
+      currency?: string;
+      amountCents?: number;
+      validFrom?: Date;
+      validTo?: Date | null;
+    },
+  ): Promise<ProductPrice> {
     const price = await this.prisma.product_prices.update({
       where: { id },
       data,
@@ -86,9 +88,12 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
     });
   }
 
-  public async setCurrentPrice(productId: string, priceId: string): Promise<void> {
+  public async setCurrentPrice(
+    productId: string,
+    priceId: string,
+  ): Promise<void> {
     const now = new Date();
-    
+
     await this.prisma.$transaction(async (tx) => {
       await tx.product_prices.updateMany({
         where: { product_id: productId },
@@ -97,7 +102,7 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
 
       await tx.product_prices.update({
         where: { id: priceId },
-        data: { 
+        data: {
           valid_from: now,
           valid_to: null,
         },
@@ -105,4 +110,3 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
     });
   }
 }
-

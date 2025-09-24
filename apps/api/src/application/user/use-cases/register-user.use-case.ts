@@ -40,7 +40,10 @@ export class RegisterUserUseCase {
     }
 
     try {
-      await this.userSyncRepository.syncUserFromAuth(authResponse.user.id, request.name);
+      await this.userSyncRepository.syncUserFromAuth(
+        authResponse.user.id,
+        request.name,
+      );
     } catch (error) {
       console.error("Erro ao sincronizar usuário:", error);
     }

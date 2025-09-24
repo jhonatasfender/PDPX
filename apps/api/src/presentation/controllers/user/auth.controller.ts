@@ -180,10 +180,15 @@ export class AuthController {
       throw new MissingTokenException();
     }
 
-    const result = await this.getCurrentUserWithPublicDataUseCase.execute({ token });
+    const result = await this.getCurrentUserWithPublicDataUseCase.execute({
+      token,
+    });
     return {
       message: "Usuário atual obtido com sucesso",
-      user: UserMapper.fromSupabaseWithPublicData(result.user, result.publicUser),
+      user: UserMapper.fromSupabaseWithPublicData(
+        result.user,
+        result.publicUser,
+      ),
     };
   }
 }

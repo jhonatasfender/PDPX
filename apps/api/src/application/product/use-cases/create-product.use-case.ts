@@ -5,7 +5,10 @@ import { ProductPriceRepository } from "../interfaces/product-price.repository";
 import { Product } from "../../../domain/entities/product.entity";
 import { ProductImage } from "../../../domain/entities/product-image.entity";
 import { ProductPrice } from "../../../domain/entities/product-price.entity";
-import { ProductSlugAlreadyExistsException, ProductSkuAlreadyExistsException } from "../../../domain/exceptions/product-exceptions";
+import {
+  ProductSlugAlreadyExistsException,
+  ProductSkuAlreadyExistsException,
+} from "../../../domain/exceptions/product-exceptions";
 
 export interface CreateProductRequest {
   slug: string;
@@ -36,13 +39,20 @@ export interface CreateProductResponse {
 @Injectable()
 export class CreateProductUseCase {
   public constructor(
-    @Inject("ProductRepository") private readonly productRepository: ProductRepository,
-    @Inject("ProductImageRepository") private readonly productImageRepository: ProductImageRepository,
-    @Inject("ProductPriceRepository") private readonly productPriceRepository: ProductPriceRepository,
+    @Inject("ProductRepository")
+    private readonly productRepository: ProductRepository,
+    @Inject("ProductImageRepository")
+    private readonly productImageRepository: ProductImageRepository,
+    @Inject("ProductPriceRepository")
+    private readonly productPriceRepository: ProductPriceRepository,
   ) {}
 
-  public async execute(request: CreateProductRequest): Promise<CreateProductResponse> {
-    const existingBySlug = await this.productRepository.findBySlug(request.slug);
+  public async execute(
+    request: CreateProductRequest,
+  ): Promise<CreateProductResponse> {
+    const existingBySlug = await this.productRepository.findBySlug(
+      request.slug,
+    );
     if (existingBySlug) {
       throw new ProductSlugAlreadyExistsException(request.slug);
     }
@@ -77,13 +87,13 @@ export class CreateProductUseCase {
     for (let i = 0; i < request.images.length; i++) {
       const imageData = request.images[i];
       const imageId = crypto.randomUUID();
-      
+
       const image = await this.productImageRepository.create({
         id: imageId,
         productId: productId,
         url: imageData.url,
         alt: imageData.alt,
-        isPrimary: imageData.isPrimary ?? (i === 0),
+        isPrimary: imageData.isPrimary ?? i === 0,
         position: imageData.position ?? i,
       });
 

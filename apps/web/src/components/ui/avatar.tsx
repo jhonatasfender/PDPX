@@ -36,7 +36,7 @@ export function Avatar({ name, email, size = "md", className }: AvatarProps) {
       className={cn(
         "flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 font-semibold text-white",
         sizeClasses[size],
-        className
+        className,
       )}
     >
       {initials}

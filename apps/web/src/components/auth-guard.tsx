@@ -29,15 +29,16 @@ export function AuthGuard({
 
     if (requireAuth && !user) {
       const currentPath = window.location.pathname;
-      const redirectUrl = redirectTo === "/login" && currentPath !== "/login" 
-        ? `${redirectTo}?redirect=${encodeURIComponent(currentPath)}`
-        : redirectTo;
+      const redirectUrl =
+        redirectTo === "/login" && currentPath !== "/login"
+          ? `${redirectTo}?redirect=${encodeURIComponent(currentPath)}`
+          : redirectTo;
       router.push(redirectUrl);
       return;
     }
 
     if (!requireAuth && user) {
-      const redirectParam = searchParams.get('redirect');
+      const redirectParam = searchParams.get("redirect");
       router.push(redirectParam || "/");
       return;
     }
@@ -46,7 +47,15 @@ export function AuthGuard({
       router.push("/");
       return;
     }
-  }, [user, isLoading, requireAuth, requireRole, redirectTo, router, searchParams]);
+  }, [
+    user,
+    isLoading,
+    requireAuth,
+    requireRole,
+    redirectTo,
+    router,
+    searchParams,
+  ]);
 
   if (isLoading) {
     return fallback || <AuthLoading />;

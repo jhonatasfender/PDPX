@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Armchair,
-  ShoppingCart,
-  Menu,
-  Search,
-  User,
-} from "lucide-react";
+import { Armchair, ShoppingCart, Menu, Search, User } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { UserMenu } from "../components/user-menu";
 import { useAuth } from "@/contexts/auth.context";

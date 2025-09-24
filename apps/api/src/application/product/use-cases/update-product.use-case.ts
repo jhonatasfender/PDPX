@@ -5,7 +5,11 @@ import { ProductPriceRepository } from "../interfaces/product-price.repository";
 import { Product } from "../../../domain/entities/product.entity";
 import { ProductImage } from "../../../domain/entities/product-image.entity";
 import { ProductPrice } from "../../../domain/entities/product-price.entity";
-import { ProductSlugAlreadyExistsException, ProductSkuAlreadyExistsException, ProductNotFoundException } from "../../../domain/exceptions/product-exceptions";
+import {
+  ProductSlugAlreadyExistsException,
+  ProductSkuAlreadyExistsException,
+  ProductNotFoundException,
+} from "../../../domain/exceptions/product-exceptions";
 
 export interface UpdateProductRequest {
   id: string;
@@ -38,19 +42,26 @@ export interface UpdateProductResponse {
 @Injectable()
 export class UpdateProductUseCase {
   public constructor(
-    @Inject("ProductRepository") private readonly productRepository: ProductRepository,
-    @Inject("ProductImageRepository") private readonly productImageRepository: ProductImageRepository,
-    @Inject("ProductPriceRepository") private readonly productPriceRepository: ProductPriceRepository,
+    @Inject("ProductRepository")
+    private readonly productRepository: ProductRepository,
+    @Inject("ProductImageRepository")
+    private readonly productImageRepository: ProductImageRepository,
+    @Inject("ProductPriceRepository")
+    private readonly productPriceRepository: ProductPriceRepository,
   ) {}
 
-  public async execute(request: UpdateProductRequest): Promise<UpdateProductResponse> {
+  public async execute(
+    request: UpdateProductRequest,
+  ): Promise<UpdateProductResponse> {
     const existingProduct = await this.productRepository.findById(request.id);
     if (!existingProduct) {
       throw new ProductNotFoundException(request.id);
     }
 
     if (request.slug && request.slug !== existingProduct.slug) {
-      const existingBySlug = await this.productRepository.findBySlug(request.slug);
+      const existingBySlug = await this.productRepository.findBySlug(
+        request.slug,
+      );
       if (existingBySlug) {
         throw new ProductSlugAlreadyExistsException(request.slug);
       }
@@ -77,11 +88,14 @@ export class UpdateProductUseCase {
     let images: ProductImage[] = [];
 
     if (request.price) {
-      const currentPrice = await this.productPriceRepository.findCurrentByProductId(request.id);
-      
-      if (currentPrice && 
-          currentPrice.currency === request.price.currency && 
-          currentPrice.amountCents === request.price.amountCents) {
+      const currentPrice =
+        await this.productPriceRepository.findCurrentByProductId(request.id);
+
+      if (
+        currentPrice &&
+        currentPrice.currency === request.price.currency &&
+        currentPrice.amountCents === request.price.amountCents
+      ) {
         price = currentPrice;
       } else {
         const priceId = crypto.randomUUID();
@@ -93,7 +107,9 @@ export class UpdateProductUseCase {
         });
       }
     } else {
-      price = await this.productPriceRepository.findCurrentByProductId(request.id);
+      price = await this.productPriceRepository.findCurrentByProductId(
+        request.id,
+      );
     }
 
     if (request.images) {
@@ -102,13 +118,13 @@ export class UpdateProductUseCase {
       for (let i = 0; i < request.images.length; i++) {
         const imageData = request.images[i];
         const imageId = imageData.id || crypto.randomUUID();
-        
+
         const image = await this.productImageRepository.create({
           id: imageId,
           productId: request.id,
           url: imageData.url,
           alt: imageData.alt,
-          isPrimary: imageData.isPrimary ?? (i === 0),
+          isPrimary: imageData.isPrimary ?? i === 0,
           position: imageData.position ?? i,
         });
 

@@ -1,5 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNumber, IsBoolean, IsOptional, IsArray, ValidateNested, MinLength, Min } from "class-validator";
+import {
+  IsString,
+  IsNumber,
+  IsBoolean,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  MinLength,
+  Min,
+} from "class-validator";
 import { Type, Transform } from "class-transformer";
 
 export class ProductImageRequestDto {
@@ -11,22 +20,30 @@ export class ProductImageRequestDto {
   @IsOptional()
   @IsString()
   @Transform(({ value }) => {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return null;
     }
-    if (typeof value === 'object' && Object.keys(value).length === 0) {
+    if (typeof value === "object" && Object.keys(value).length === 0) {
       return null;
     }
     return value;
   })
   alt?: string | null;
 
-  @ApiProperty({ description: "Se é a imagem principal", required: false, default: false })
+  @ApiProperty({
+    description: "Se é a imagem principal",
+    required: false,
+    default: false,
+  })
   @IsOptional()
   @IsBoolean()
   isPrimary?: boolean;
 
-  @ApiProperty({ description: "Posição da imagem", required: false, default: 0 })
+  @ApiProperty({
+    description: "Posição da imagem",
+    required: false,
+    default: 0,
+  })
   @IsOptional()
   @IsNumber()
   position?: number;
@@ -44,12 +61,18 @@ export class ProductPriceRequestDto {
 }
 
 export class CreateProductDto {
-  @ApiProperty({ description: "Slug único do produto", example: "sofa-modular-linho-cinza" })
+  @ApiProperty({
+    description: "Slug único do produto",
+    example: "sofa-modular-linho-cinza",
+  })
   @IsString()
   @MinLength(2)
   slug!: string;
 
-  @ApiProperty({ description: "Nome do produto", example: "Sofá Modular Conforto 3 Lugares" })
+  @ApiProperty({
+    description: "Nome do produto",
+    example: "Sofá Modular Conforto 3 Lugares",
+  })
   @IsString()
   @MinLength(2)
   name!: string;
@@ -59,7 +82,10 @@ export class CreateProductDto {
   @MinLength(1)
   brand!: string;
 
-  @ApiProperty({ description: "SKU único do produto", example: "SOFA-3L-MOD-CINZA" })
+  @ApiProperty({
+    description: "SKU único do produto",
+    example: "SOFA-3L-MOD-CINZA",
+  })
   @IsString()
   @MinLength(1)
   sku!: string;
@@ -79,15 +105,21 @@ export class CreateProductDto {
   @Type(() => ProductPriceRequestDto)
   price!: ProductPriceRequestDto;
 
-  @ApiProperty({ description: "Imagens do produto", type: [ProductImageRequestDto] })
+  @ApiProperty({
+    description: "Imagens do produto",
+    type: [ProductImageRequestDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductImageRequestDto)
   images!: ProductImageRequestDto[];
 
-  @ApiProperty({ description: "Se o produto está ativo", required: false, default: true })
+  @ApiProperty({
+    description: "Se o produto está ativo",
+    required: false,
+    default: true,
+  })
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }
-

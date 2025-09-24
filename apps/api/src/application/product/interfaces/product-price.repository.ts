@@ -11,14 +11,16 @@ export interface ProductPriceRepository {
     validFrom?: Date;
     validTo?: Date | null;
   }): Promise<ProductPrice>;
-  update(id: string, data: {
-    currency?: string;
-    amountCents?: number;
-    validFrom?: Date;
-    validTo?: Date | null;
-  }): Promise<ProductPrice>;
+  update(
+    id: string,
+    data: {
+      currency?: string;
+      amountCents?: number;
+      validFrom?: Date;
+      validTo?: Date | null;
+    },
+  ): Promise<ProductPrice>;
   delete(id: string): Promise<void>;
   deleteByProductId(productId: string): Promise<void>;
   setCurrentPrice(productId: string, priceId: string): Promise<void>;
 }
-

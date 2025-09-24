@@ -13,10 +13,16 @@ import {
 } from "../dto/product/product-response.dto";
 import { CreateProductDto } from "../dto/product/create-product.dto";
 import { UpdateProductDto } from "../dto/product/update-product.dto";
-import { CreateProductRequest, CreateProductResponse } from "../../application/product/use-cases/create-product.use-case";
+import {
+  CreateProductRequest,
+  CreateProductResponse,
+} from "../../application/product/use-cases/create-product.use-case";
 import { GetProductResponse } from "../../application/product/use-cases/get-product.use-case";
 import { ListProductsResponse } from "../../application/product/use-cases/list-products.use-case";
-import { UpdateProductRequest, UpdateProductResponse } from "../../application/product/use-cases/update-product.use-case";
+import {
+  UpdateProductRequest,
+  UpdateProductResponse,
+} from "../../application/product/use-cases/update-product.use-case";
 import { DeleteProductResponse } from "../../application/product/use-cases/delete-product.use-case";
 
 export class ProductMapper {
@@ -60,7 +66,9 @@ export class ProductMapper {
     };
   }
 
-  public static toCreateProductRequest(dto: CreateProductDto): CreateProductRequest {
+  public static toCreateProductRequest(
+    dto: CreateProductDto,
+  ): CreateProductRequest {
     return {
       slug: dto.slug,
       name: dto.name,
@@ -72,7 +80,7 @@ export class ProductMapper {
         currency: dto.price.currency,
         amountCents: dto.price.amountCents,
       },
-      images: dto.images.map(img => ({
+      images: dto.images.map((img) => ({
         url: img.url,
         alt: img.alt || null,
         isPrimary: img.isPrimary,
@@ -82,7 +90,10 @@ export class ProductMapper {
     };
   }
 
-  public static toUpdateProductRequest(id: string, dto: UpdateProductDto): UpdateProductRequest {
+  public static toUpdateProductRequest(
+    id: string,
+    dto: UpdateProductDto,
+  ): UpdateProductRequest {
     return {
       id,
       slug: dto.slug,
@@ -91,11 +102,13 @@ export class ProductMapper {
       sku: dto.sku,
       description: dto.description,
       stock: dto.stock,
-      price: dto.price ? {
-        currency: dto.price.currency,
-        amountCents: dto.price.amountCents,
-      } : undefined,
-      images: dto.images?.map(img => ({
+      price: dto.price
+        ? {
+            currency: dto.price.currency,
+            amountCents: dto.price.amountCents,
+          }
+        : undefined,
+      images: dto.images?.map((img) => ({
         url: img.url,
         alt: img.alt || null,
         isPrimary: img.isPrimary,
@@ -105,7 +118,9 @@ export class ProductMapper {
     };
   }
 
-  public static toCreateProductResponse(response: CreateProductResponse): CreateProductResponseDto {
+  public static toCreateProductResponse(
+    response: CreateProductResponse,
+  ): CreateProductResponseDto {
     return {
       product: this.fromDomain(response.product),
       images: response.images.map((img: any) => this.imageFromDomain(img)),
@@ -113,7 +128,9 @@ export class ProductMapper {
     };
   }
 
-  public static toGetProductResponse(response: GetProductResponse): ProductWithDetailsResponseDto {
+  public static toGetProductResponse(
+    response: GetProductResponse,
+  ): ProductWithDetailsResponseDto {
     return {
       product: this.fromDomain(response.product),
       images: response.images.map((img: any) => this.imageFromDomain(img)),
@@ -121,7 +138,9 @@ export class ProductMapper {
     };
   }
 
-  public static toUpdateProductResponse(response: UpdateProductResponse): UpdateProductResponseDto {
+  public static toUpdateProductResponse(
+    response: UpdateProductResponse,
+  ): UpdateProductResponseDto {
     return {
       product: this.fromDomain(response.product),
       images: response.images.map((img: any) => this.imageFromDomain(img)),
@@ -129,7 +148,9 @@ export class ProductMapper {
     };
   }
 
-  public static toListProductsResponse(response: ListProductsResponse): ListProductsResponseDto {
+  public static toListProductsResponse(
+    response: ListProductsResponse,
+  ): ListProductsResponseDto {
     return {
       products: response.products.map((item: any) => ({
         product: this.fromDomain(item.product),
@@ -143,7 +164,9 @@ export class ProductMapper {
     };
   }
 
-  public static toDeleteProductResponse(response: DeleteProductResponse): DeleteProductResponseDto {
+  public static toDeleteProductResponse(
+    response: DeleteProductResponse,
+  ): DeleteProductResponseDto {
     return {
       success: response.success,
       message: response.message,

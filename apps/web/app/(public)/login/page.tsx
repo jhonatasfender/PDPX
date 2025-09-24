@@ -36,11 +36,18 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error("Erro no login:", error);
       if (error.code === "INVALID_CREDENTIALS") {
-        setError("Credenciais incorretas. Verifique seu email e senha e tente novamente.");
-      } else if (error.code === "TOKEN_EXPIRED" || error.code === "INVALID_TOKEN") {
+        setError(
+          "Credenciais incorretas. Verifique seu email e senha e tente novamente.",
+        );
+      } else if (
+        error.code === "TOKEN_EXPIRED" ||
+        error.code === "INVALID_TOKEN"
+      ) {
         setError("Sessão expirada. Faça login novamente.");
       } else if (error.response?.status === 401) {
-        setError("Credenciais incorretas. Verifique seu email e senha e tente novamente.");
+        setError(
+          "Credenciais incorretas. Verifique seu email e senha e tente novamente.",
+        );
       } else {
         setError("Erro interno. Tente novamente em alguns instantes.");
       }
@@ -61,11 +68,7 @@ export default function LoginPage() {
           <CardContent>
             <Form<FormValues> methods={methods} onSubmit={onSubmit}>
               <div className="space-y-4">
-                {error && (
-                  <Alert variant="error">
-                    {error}
-                  </Alert>
-                )}
+                {error && <Alert variant="error">{error}</Alert>}
                 <FormField<FormValues>
                   name="email"
                   label="E-mail"

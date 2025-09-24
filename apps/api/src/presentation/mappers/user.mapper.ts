@@ -8,21 +8,20 @@ export class UserMapper {
     return {
       id: user?.id ?? "",
       email: user?.email ?? "",
-      name:
-        user?.user_metadata?.name ||
-        user?.user_metadata?.full_name,
+      name: user?.user_metadata?.name || user?.user_metadata?.full_name,
       role: user?.user_metadata?.role || "USER",
     } as UserResponseDto;
   }
 
   public static fromSupabaseWithPublicData(
     supabaseUser: SupabaseUser | null,
-    publicUser: PublicUser
+    publicUser: PublicUser,
   ): UserResponseDto {
     return {
       id: supabaseUser?.id ?? "",
       email: supabaseUser?.email ?? "",
-      name: publicUser.name || 
+      name:
+        publicUser.name ||
         supabaseUser?.user_metadata?.name ||
         supabaseUser?.user_metadata?.full_name ||
         "Usuário",

@@ -58,14 +58,14 @@ export class PrismaProductRepository implements ProductRepository {
 
     if (options?.search) {
       where.OR = [
-        { name: { contains: options.search, mode: 'insensitive' } },
-        { description: { contains: options.search, mode: 'insensitive' } },
-        { sku: { contains: options.search, mode: 'insensitive' } },
+        { name: { contains: options.search, mode: "insensitive" } },
+        { description: { contains: options.search, mode: "insensitive" } },
+        { sku: { contains: options.search, mode: "insensitive" } },
       ];
     }
 
     if (options?.brand) {
-      where.brand = { contains: options.brand, mode: 'insensitive' };
+      where.brand = { contains: options.brand, mode: "insensitive" };
     }
 
     if (options?.isActive !== undefined) {
@@ -77,13 +77,13 @@ export class PrismaProductRepository implements ProductRepository {
         where,
         skip,
         take: limit,
-        orderBy: { created_at: 'desc' },
+        orderBy: { created_at: "desc" },
       }),
       this.prisma.products.count({ where }),
     ]);
 
     return {
-      products: products.map(product => Product.fromPrisma(product)),
+      products: products.map((product) => Product.fromPrisma(product)),
       total,
     };
   }
@@ -114,15 +114,18 @@ export class PrismaProductRepository implements ProductRepository {
     return Product.fromPrisma(product);
   }
 
-  public async update(id: string, data: {
-    slug?: string;
-    name?: string;
-    brand?: string;
-    sku?: string;
-    description?: string;
-    stock?: number;
-    isActive?: boolean;
-  }): Promise<Product> {
+  public async update(
+    id: string,
+    data: {
+      slug?: string;
+      name?: string;
+      brand?: string;
+      sku?: string;
+      description?: string;
+      stock?: number;
+      isActive?: boolean;
+    },
+  ): Promise<Product> {
     const product = await this.prisma.products.update({
       where: { id },
       data: {

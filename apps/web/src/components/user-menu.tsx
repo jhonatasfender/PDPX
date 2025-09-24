@@ -18,12 +18,12 @@ interface UserMenuProps {
   logoutRedirectTo?: string;
 }
 
-export function UserMenu({ 
+export function UserMenu({
   menuItems = [
     { label: "Perfil", href: "/profile" },
     { label: "Meus Pedidos", href: "/pedidos" },
   ],
-  logoutRedirectTo = "/login"
+  logoutRedirectTo = "/login",
 }: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -62,10 +62,10 @@ export function UserMenu({
         className="h-8 w-8 overflow-hidden rounded-full border border-neutral-800 bg-neutral-900 p-0"
       >
         <span className="sr-only">Abrir menu do usuário</span>
-        <Avatar 
-          name={user.name} 
-          email={user.email} 
-          size="sm" 
+        <Avatar
+          name={user.name}
+          email={user.email}
+          size="sm"
           className="h-full w-full"
         />
       </Button>
@@ -77,7 +77,9 @@ export function UserMenu({
           )}
         >
           <div className="px-3 py-2 text-xs">
-            <div className="font-medium text-neutral-100">{user.name || user.email}</div>
+            <div className="font-medium text-neutral-100">
+              {user.name || user.email}
+            </div>
             <div className="truncate text-neutral-500">{user.email}</div>
           </div>
           <div className="my-1 h-px bg-neutral-800" />

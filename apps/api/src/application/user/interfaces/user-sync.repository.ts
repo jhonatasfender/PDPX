@@ -16,7 +16,10 @@ export interface UserWithAuthData {
 }
 
 export interface UserSyncRepository {
-  syncUserFromAuth(authUserId: string, customName?: string): Promise<PublicUser>;
+  syncUserFromAuth(
+    authUserId: string,
+    customName?: string,
+  ): Promise<PublicUser>;
   getUserWithAuthData(userId: string): Promise<UserWithAuthData>;
   getUserByEmail(email: string): Promise<UserWithAuthData | null>;
   updateUserRole(

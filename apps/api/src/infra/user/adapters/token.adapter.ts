@@ -115,7 +115,7 @@ export class SupabaseTokenAdapter implements TokenService {
         return false;
       }
 
-      const userExists = data.users.some(user => user.email === email);
+      const userExists = data.users.some((user) => user.email === email);
       return userExists;
     } catch (error) {
       console.error("Erro ao verificar se usuário existe:", error);

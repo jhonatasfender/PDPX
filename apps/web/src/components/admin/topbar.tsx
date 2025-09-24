@@ -30,7 +30,7 @@ export function AdminTopbar() {
               />
             </div>
           </Form>
-          <UserMenu 
+          <UserMenu
             menuItems={[
               { label: "Perfil", href: "/admin/profile" },
               { label: "Configurações", href: "/admin/configuracoes" },

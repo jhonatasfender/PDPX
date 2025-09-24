@@ -11,14 +11,16 @@ export interface ProductImageRepository {
     isPrimary?: boolean;
     position?: number;
   }): Promise<ProductImage>;
-  update(id: string, data: {
-    url?: string;
-    alt?: string | null;
-    isPrimary?: boolean;
-    position?: number;
-  }): Promise<ProductImage>;
+  update(
+    id: string,
+    data: {
+      url?: string;
+      alt?: string | null;
+      isPrimary?: boolean;
+      position?: number;
+    },
+  ): Promise<ProductImage>;
   delete(id: string): Promise<void>;
   deleteByProductId(productId: string): Promise<void>;
   setPrimary(productId: string, imageId: string): Promise<void>;
 }
-

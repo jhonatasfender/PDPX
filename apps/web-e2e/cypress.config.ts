@@ -12,7 +12,8 @@ export default defineConfig({
         process.env.API_BASE_URL ||
         process.env.NEXT_PUBLIC_API_BASE_URL ||
         "http://localhost:3010",
-      MAILSLURP_API_KEY: process.env.MAILSLURP_API_KEY || process.env.CYPRESS_MAILSLURP_API_KEY,
+      MAILSLURP_API_KEY:
+        process.env.MAILSLURP_API_KEY || process.env.CYPRESS_MAILSLURP_API_KEY,
     },
     specPattern: "cypress/e2e/**/*.cy.{ts,tsx}",
     supportFile: "cypress/support/e2e.ts",

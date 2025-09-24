@@ -8,9 +8,10 @@ import HeaderWrapper from "@/components/header-wrapper";
 export const metadata: Metadata = {
   title: {
     default: "PDPX - Móveis e Decoração",
-    template: "%s | PDPX"
+    template: "%s | PDPX",
   },
-  description: "Descubra nossa coleção exclusiva de móveis e itens de decoração. Qualidade, estilo e conforto para transformar seu espaço.",
+  description:
+    "Descubra nossa coleção exclusiva de móveis e itens de decoração. Qualidade, estilo e conforto para transformar seu espaço.",
   keywords: ["móveis", "decoração", "casa", "interior", "design", "PDPX"],
   authors: [{ name: "PDPX" }],
   creator: "PDPX",
@@ -29,7 +30,8 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: "https://pdpx.com.br",
     title: "PDPX - Móveis e Decoração",
-    description: "Descubra nossa coleção exclusiva de móveis e itens de decoração. Qualidade, estilo e conforto para transformar seu espaço.",
+    description:
+      "Descubra nossa coleção exclusiva de móveis e itens de decoração. Qualidade, estilo e conforto para transformar seu espaço.",
     siteName: "PDPX",
     images: [
       {
@@ -43,7 +45,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PDPX - Móveis e Decoração",
-    description: "Descubra nossa coleção exclusiva de móveis e itens de decoração. Qualidade, estilo e conforto para transformar seu espaço.",
+    description:
+      "Descubra nossa coleção exclusiva de móveis e itens de decoração. Qualidade, estilo e conforto para transformar seu espaço.",
     images: ["/og-image.jpg"],
     creator: "@pdpx",
   },

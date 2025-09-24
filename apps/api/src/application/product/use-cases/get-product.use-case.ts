@@ -22,12 +22,17 @@ export interface GetProductResponse {
 @Injectable()
 export class GetProductUseCase {
   public constructor(
-    @Inject("ProductRepository") private readonly productRepository: ProductRepository,
-    @Inject("ProductImageRepository") private readonly productImageRepository: ProductImageRepository,
-    @Inject("ProductPriceRepository") private readonly productPriceRepository: ProductPriceRepository,
+    @Inject("ProductRepository")
+    private readonly productRepository: ProductRepository,
+    @Inject("ProductImageRepository")
+    private readonly productImageRepository: ProductImageRepository,
+    @Inject("ProductPriceRepository")
+    private readonly productPriceRepository: ProductPriceRepository,
   ) {}
 
-  public async execute(request: GetProductRequest): Promise<GetProductResponse> {
+  public async execute(
+    request: GetProductRequest,
+  ): Promise<GetProductResponse> {
     let product: Product | null = null;
 
     if (request.id) {
@@ -43,9 +48,13 @@ export class GetProductUseCase {
       throw new ProductNotFoundException(identifier);
     }
 
-    const images = await this.productImageRepository.findByProductId(product.id);
+    const images = await this.productImageRepository.findByProductId(
+      product.id,
+    );
 
-    const price = await this.productPriceRepository.findCurrentByProductId(product.id);
+    const price = await this.productPriceRepository.findCurrentByProductId(
+      product.id,
+    );
 
     return {
       product,

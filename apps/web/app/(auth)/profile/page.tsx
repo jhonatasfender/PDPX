@@ -21,23 +21,17 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-neutral-300">
-              Nome
-            </label>
-            <p className="text-neutral-100">
-              {user?.name || "Não informado"}
-            </p>
+            <label className="text-sm font-medium text-neutral-300">Nome</label>
+            <p className="text-neutral-100">{user?.name || "Não informado"}</p>
           </div>
-          
+
           <div>
             <label className="text-sm font-medium text-neutral-300">
               E-mail
             </label>
-            <p className="text-neutral-100">
-              {user?.email}
-            </p>
+            <p className="text-neutral-100">{user?.email}</p>
           </div>
-          
+
           <div>
             <label className="text-sm font-medium text-neutral-300">
               Tipo de Conta
@@ -48,11 +42,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="pt-4">
-            <Button 
-              variant="secondary" 
-              onClick={logout}
-              className="w-full"
-            >
+            <Button variant="secondary" onClick={logout} className="w-full">
               Sair da Conta
             </Button>
           </div>

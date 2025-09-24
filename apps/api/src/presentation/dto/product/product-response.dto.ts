@@ -85,7 +85,10 @@ export class ProductWithDetailsResponseDto {
   @ApiProperty({ description: "Dados do produto" })
   product!: ProductResponseDto;
 
-  @ApiProperty({ description: "Imagens do produto", type: [ProductImageResponseDto] })
+  @ApiProperty({
+    description: "Imagens do produto",
+    type: [ProductImageResponseDto],
+  })
   images!: ProductImageResponseDto[];
 
   @ApiProperty({ description: "Preço atual do produto", nullable: true })
@@ -93,7 +96,10 @@ export class ProductWithDetailsResponseDto {
 }
 
 export class ListProductsResponseDto {
-  @ApiProperty({ description: "Lista de produtos com detalhes", type: [ProductWithDetailsResponseDto] })
+  @ApiProperty({
+    description: "Lista de produtos com detalhes",
+    type: [ProductWithDetailsResponseDto],
+  })
   products!: ProductWithDetailsResponseDto[];
 
   @ApiProperty({ description: "Total de produtos" })
@@ -113,7 +119,10 @@ export class CreateProductResponseDto {
   @ApiProperty({ description: "Produto criado" })
   product!: ProductResponseDto;
 
-  @ApiProperty({ description: "Imagens criadas", type: [ProductImageResponseDto] })
+  @ApiProperty({
+    description: "Imagens criadas",
+    type: [ProductImageResponseDto],
+  })
   images!: ProductImageResponseDto[];
 
   @ApiProperty({ description: "Preço criado" })
@@ -124,7 +133,10 @@ export class UpdateProductResponseDto {
   @ApiProperty({ description: "Produto atualizado" })
   product!: ProductResponseDto;
 
-  @ApiProperty({ description: "Imagens atualizadas", type: [ProductImageResponseDto] })
+  @ApiProperty({
+    description: "Imagens atualizadas",
+    type: [ProductImageResponseDto],
+  })
   images!: ProductImageResponseDto[];
 
   @ApiProperty({ description: "Preço atualizado", nullable: true })
