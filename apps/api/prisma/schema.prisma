@@ -19,6 +19,7 @@ model products {
   is_active      Boolean          @default(true)
   created_at     DateTime         @default(now()) @db.Timestamptz(6)
   updated_at     DateTime         @default(now()) @db.Timestamptz(6)
+  stock          Int              @default(0)
   product_images product_images[]
   product_prices product_prices[]
 

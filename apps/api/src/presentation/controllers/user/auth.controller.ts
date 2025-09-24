@@ -35,7 +35,7 @@ import { LogoutUserUseCase } from "../../../application/user/use-cases/logout-us
 import { GetCurrentUserUseCase } from "../../../application/user/use-cases/get-current-user.use-case";
 import { GetCurrentUserWithPublicDataUseCase } from "../../../application/user/use-cases/get-current-user-with-public-data.use-case";
 import { UserMapper } from "../../mappers/user.mapper";
-import { MissingTokenException } from "../../../domain/exceptions";
+import { MissingTokenException } from "../../../domain/exceptions/user-exceptions";
 
 @ApiTags("Autenticação")
 @Controller("auth")

@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { User, Session } from "@supabase/supabase-js";
 import { TokenService } from "../interfaces/token.interface";
 import { UserSyncRepository } from "../interfaces/user-sync.repository";
-import { UserAlreadyExistsException } from "../../../domain/exceptions";
+import { UserAlreadyExistsException } from "../../../domain/exceptions/user-exceptions";
 
 export interface RegisterUserRequest {
   email: string;

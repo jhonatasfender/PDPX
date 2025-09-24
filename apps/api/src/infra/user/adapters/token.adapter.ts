@@ -10,7 +10,7 @@ import {
   TokenExpiredException,
   InvalidTokenException,
   AuthServiceException,
-} from "../../../domain/exceptions";
+} from "../../../domain/exceptions/user-exceptions";
 
 @Injectable()
 export class SupabaseTokenAdapter implements TokenService {
@@ -55,7 +55,7 @@ export class SupabaseTokenAdapter implements TokenService {
   public async signOut(): Promise<void> {
     const { error } = await this.getClient().auth.signOut();
     if (error) {
-      throw new AuthServiceException("Erro ao fazer logout", error);
+      throw new AuthServiceException("Erro ao fazer logout");
     }
   }
 
@@ -73,7 +73,7 @@ export class SupabaseTokenAdapter implements TokenService {
       ) {
         throw new TokenExpiredException();
       }
-      throw new AuthServiceException("Erro ao renovar sessão", error);
+      throw new AuthServiceException("Erro ao renovar sessão");
     }
 
     return data;
@@ -92,7 +92,7 @@ export class SupabaseTokenAdapter implements TokenService {
       ) {
         throw new InvalidTokenException();
       }
-      throw new AuthServiceException("Erro ao verificar token", error);
+      throw new AuthServiceException("Erro ao verificar token");
     }
 
     if (!user) {
@@ -165,6 +165,6 @@ export class SupabaseTokenAdapter implements TokenService {
       throw new InvalidTokenException();
     }
 
-    throw new AuthServiceException(error.message, error);
+    throw new AuthServiceException(error.message);
   }
 }
