@@ -1,0 +1,25 @@
+title: Cypress E2E no monorepo
+
+scope: pdpx
+
+summary: |
+  Padrões para E2E com Cypress em monorepo Turborepo.
+
+rules: |
+  - Projeto: usar um app dedicado por aplicação: ex. `apps/web-e2e`.
+  - Config: `cypress.config.ts` com `baseUrl` vindo de `CYPRESS_BASE_URL`.
+  - Execução: Cypress NÃO deve subir o servidor `web`. O servidor roda em terminal separado.
+  - Autenticação: usar login programático via API (`/auth/login`) e salvar tokens em `localStorage` (`access_token`, `refresh_token`).
+  - Seletores: padronizar `data-cy="..."` nos componentes da `apps/web`.
+  - Dados: usar `@faker-js/faker` para gerar dados dinâmicos nos testes.
+  - Isolamento: limpar `localStorage` entre testes e evitar dependência entre specs.
+  - Backend real: não mockar o backend do PDPX em E2E; chamadas devem ir para a API real (ex.: `API_BASE_URL`).
+  - Interceptações: evitar `cy.intercept` para endpoints do PDPX; permitido apenas para serviços externos quando imprescindível.
+  - CI: partição por globs ou Cypress Cloud (`record`, `parallel`).
+  - Segurança: nunca versionar segredos; preferir variáveis de ambiente `CYPRESS_*`.
+
+how_to_run: |
+  - Em um terminal separado: iniciar `apps/web` (ex.: `pnpm -F @pdpx/web dev`).
+  - No app E2E: `pnpm -F @pdpx/web-e2e e2e:open` ou `e2e:run`.
+  - Definir `CYPRESS_BASE_URL` (ex.: `http://localhost:3000`) e `API_BASE_URL` se necessário.
+

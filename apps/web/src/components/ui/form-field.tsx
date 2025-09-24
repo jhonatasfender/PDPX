@@ -10,6 +10,7 @@ type BaseProps = {
   autoComplete?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   disabled?: boolean;
+  "data-cy"?: string;
 };
 
 export function FormField<T extends FieldValues>({
@@ -20,6 +21,7 @@ export function FormField<T extends FieldValues>({
   autoComplete,
   inputMode,
   disabled,
+  "data-cy": dataCy,
 }: BaseProps & { name: Path<T> }) {
   const { register, formState } = useFormContext<T>();
   const error = (formState.errors as any)?.[name]?.message as
@@ -35,6 +37,7 @@ export function FormField<T extends FieldValues>({
         autoComplete={autoComplete}
         inputMode={inputMode as any}
         disabled={disabled}
+        data-cy={dataCy}
         {...register(name)}
       />
       {error && <p className="mt-1 text-xs text-red-400">{error}</p>}

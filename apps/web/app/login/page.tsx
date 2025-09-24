@@ -7,7 +7,6 @@ import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import Link from "next/link";
 import { useAuth } from "@/contexts/auth.context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -57,6 +56,7 @@ export default function LoginPage() {
                   placeholder="voce@exemplo.com"
                   autoComplete="email"
                   disabled={isLoading}
+                  data-cy="login-email"
                 />
                 <FormField<FormValues>
                   name="password"
@@ -65,8 +65,14 @@ export default function LoginPage() {
                   placeholder="••••••"
                   autoComplete="current-password"
                   disabled={isLoading}
+                  data-cy="login-password"
                 />
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isLoading}
+                  data-cy="login-submit"
+                >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <Spinner size="sm" />

@@ -8,5 +8,3 @@ export interface UpdateUserRoleResponseDto {
     newRole: string;
   };
 }
-
-

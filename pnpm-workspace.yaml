@@ -8,5 +8,6 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - '@scarf/scarf'
   - '@tailwindcss/oxide'
+  - cypress
   - prisma
   - sharp
