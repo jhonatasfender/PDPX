@@ -2,13 +2,33 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { cn } from "../../lib/cn";
-import { Button } from "../ui/button";
+import { cn } from "@/lib/cn";
+import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/auth.context";
 
-export function UserMenu() {
+interface MenuItem {
+  label: string;
+  href: string;
+  onClick?: () => void;
+}
+
+interface UserMenuProps {
+  menuItems?: MenuItem[];
+  logoutRedirectTo?: string;
+}
+
+export function UserMenu({ 
+  menuItems = [
+    { label: "Perfil", href: "/profile" },
+    { label: "Meus Pedidos", href: "/pedidos" },
+  ],
+  logoutRedirectTo = "/login"
+}: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -19,11 +39,16 @@ export function UserMenu() {
     return () => window.removeEventListener("click", onClick);
   }, []);
 
-  const logout = () => {
-    router.push("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push(logoutRedirectTo);
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   };
 
-  const user = { name: "Jonatas Developer", email: "jonatas@example.com" };
+  if (!user) return null;
 
   return (
     <div className="relative" ref={ref}>
@@ -37,10 +62,11 @@ export function UserMenu() {
         className="h-8 w-8 overflow-hidden rounded-full border border-neutral-800 bg-neutral-900 p-0"
       >
         <span className="sr-only">Abrir menu do usuário</span>
-        <img
-          alt="Avatar"
-          src="https://api.dicebear.com/7.x/initials/svg?seed=JD&backgroundType=gradientLinear&radius=50&fontSize=40&scale=90"
-          className="h-full w-full object-cover"
+        <Avatar 
+          name={user.name} 
+          email={user.email} 
+          size="sm" 
+          className="h-full w-full"
         />
       </Button>
       {open && (
@@ -51,30 +77,28 @@ export function UserMenu() {
           )}
         >
           <div className="px-3 py-2 text-xs">
-            <div className="font-medium text-neutral-100">{user.name}</div>
+            <div className="font-medium text-neutral-100">{user.name || user.email}</div>
             <div className="truncate text-neutral-500">{user.email}</div>
           </div>
           <div className="my-1 h-px bg-neutral-800" />
-          <Link
-            href="/admin/profile"
-            className="block rounded-sm px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-900"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-          >
-            Perfil
-          </Link>
-          <Link
-            href="/admin/configuracoes"
-            className="block rounded-sm px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-900"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-          >
-            Configurações
-          </Link>
+          {menuItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="block rounded-sm px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-900"
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                item.onClick?.();
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
           <button
             className="block w-full rounded-sm px-3 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-900"
             role="menuitem"
-            onClick={logout}
+            onClick={handleLogout}
           >
             Sair
           </button>

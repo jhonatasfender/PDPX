@@ -7,24 +7,13 @@ import {
   Menu,
   Search,
   User,
-  LogOut,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { UserMenu } from "../components/user-menu";
 import { useAuth } from "@/contexts/auth.context";
-import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur">
@@ -43,7 +32,7 @@ export default function Header() {
           />
         </form>
 
-        <nav className="ml-auto flex items-center gap-2">
+        <nav className="ml-auto flex items-center gap-4">
           <Link href="/carrinho">
             <Button variant="secondary" size="sm" className="gap-2">
               <ShoppingCart size={16} />
@@ -52,20 +41,7 @@ export default function Header() {
           </Link>
 
           {user ? (
-            <div className="flex items-center gap-2">
-              <span className="hidden text-sm text-neutral-300 sm:inline">
-                Olá, {user.name || user.email}
-              </span>
-              <Button
-                onClick={handleLogout}
-                variant="secondary"
-                size="sm"
-                className="gap-2"
-              >
-                <LogOut size={16} />
-                <span className="hidden sm:inline">Sair</span>
-              </Button>
-            </div>
+            <UserMenu />
           ) : (
             <Link href="/login">
               <Button variant="secondary" size="sm" className="gap-2">

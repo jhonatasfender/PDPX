@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
-import { UserMenu } from "./user-menu";
+import { UserMenu } from "../user-menu";
 
 type SearchForm = { query: string };
 
@@ -30,7 +30,13 @@ export function AdminTopbar() {
               />
             </div>
           </Form>
-          <UserMenu />
+          <UserMenu 
+            menuItems={[
+              { label: "Perfil", href: "/admin/profile" },
+              { label: "Configurações", href: "/admin/configuracoes" },
+            ]}
+            logoutRedirectTo="/"
+          />
         </div>
       </div>
     </header>
