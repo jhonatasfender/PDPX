@@ -1,0 +1,15 @@
+import { User, Session } from '@supabase/supabase-js';
+
+export interface SupabaseAuthResponse {
+  user: User | null;
+  session: Session | null;
+}
+
+export interface TokenService {
+  signInWithPassword(email: string, password: string): Promise<SupabaseAuthResponse>;
+  signUp(email: string, password: string): Promise<SupabaseAuthResponse>;
+  signOut(): Promise<void>;
+  refreshSession(refreshToken: string): Promise<SupabaseAuthResponse>;
+  verifyAccessToken(token: string): Promise<User>;
+}
+
