@@ -26,13 +26,15 @@ const baseProducts: MockProduct[] = [
       },
       {
         id: "i3",
-        url: "https://images.unsplash.com/photo-1505691723518-36a5ac3b2d95?q=80&w=1200",
+        url: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200",
         alt: "Detalhe tecido",
         isPrimary: false,
         position: 2,
       },
     ],
     price: { currency: "BRL", amountCents: 349900 },
+    stock: 12,
+    isActive: true,
   },
   {
     id: "2",
@@ -66,6 +68,8 @@ const baseProducts: MockProduct[] = [
       },
     ],
     price: { currency: "BRL", amountCents: 189900 },
+    stock: 8,
+    isActive: true,
   },
   {
     id: "3",
@@ -99,6 +103,8 @@ const baseProducts: MockProduct[] = [
       },
     ],
     price: { currency: "BRL", amountCents: 259900 },
+    stock: 5,
+    isActive: true,
   },
 ];
 
@@ -129,6 +135,8 @@ const extraProducts: MockProduct[] = Array.from({ length: 300 }, (_, idx) => {
       position: p,
     })),
     price: { currency: "BRL", amountCents: 120000 + idx * 1375 },
+    stock: (idx * 3) % 20,
+    isActive: idx % 7 !== 0,
   };
 });
 

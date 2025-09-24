@@ -2,9 +2,9 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "../../src/components/ui/form";
-import { FormField } from "../../src/components/ui/form-field";
-import { Button } from "../../src/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { FormField } from "@/components/ui/form-field";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const schema = z.object({
