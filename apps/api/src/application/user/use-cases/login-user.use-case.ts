@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { User, Session } from '@supabase/supabase-js';
-import { TokenService } from '../interfaces/token.interface';
+import { ITokenService } from '../interfaces/token.interface';
 import { UserSyncRepository } from '../interfaces/user-sync.repository';
 
 export interface LoginUserRequest {
@@ -16,7 +16,7 @@ export interface LoginUserResponse {
 @Injectable()
 export class LoginUserUseCase {
   constructor(
-    @Inject('TokenService') private readonly tokenService: TokenService,
+    @Inject('TokenService') private readonly tokenService: ITokenService,
     @Inject('UserSyncRepository') private readonly userSyncRepository: UserSyncRepository,
   ) {}
 

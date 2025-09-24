@@ -185,8 +185,8 @@ export class AuthController {
       user: {
         id: result.user.id,
         email: result.user.email || '',
-        name: result.user.user_metadata?.name || result.user.user_metadata?.full_name,
-        role: result.user.user_metadata?.role || 'USER',
+        name: result.customUser?.name || result.user.user_metadata?.name || result.user.user_metadata?.full_name,
+        role: (result.customUser?.role as any) || 'USER',
       },
     };
   }

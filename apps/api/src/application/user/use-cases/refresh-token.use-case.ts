@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Session } from '@supabase/supabase-js';
-import { TokenService } from '../interfaces/token.interface';
+import { ITokenService } from '../interfaces/token.interface';
 
 export interface RefreshTokenRequest {
   refreshToken: string;
@@ -13,7 +13,7 @@ export interface RefreshTokenResponse {
 @Injectable()
 export class RefreshTokenUseCase {
   constructor(
-    @Inject('TokenService') private readonly tokenService: TokenService,
+    @Inject('TokenService') private readonly tokenService: ITokenService,
   ) {}
 
   async execute(request: RefreshTokenRequest): Promise<RefreshTokenResponse> {

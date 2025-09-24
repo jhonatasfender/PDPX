@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import "./globals.css";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
+import { AuthProvider } from "@/contexts/auth.context";
 import HeaderWrapper from "@/components/header-wrapper";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -11,8 +12,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className="bg-neutral-950 text-neutral-100"
       >
         <ReactQueryProvider>
-          <HeaderWrapper />
-          {children}
+          <AuthProvider>
+            <HeaderWrapper />
+            {children}
+          </AuthProvider>
         </ReactQueryProvider>
       </body>
     </html>

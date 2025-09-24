@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { User, Session } from '@supabase/supabase-js';
-import { TokenService } from '../interfaces/token.interface';
+import { ITokenService } from '../interfaces/token.interface';
 import { UserSyncRepository } from '../interfaces/user-sync.repository';
 
 export interface RegisterUserRequest {
@@ -17,12 +17,12 @@ export interface RegisterUserResponse {
 @Injectable()
 export class RegisterUserUseCase {
   constructor(
-    @Inject('TokenService') private readonly tokenService: TokenService,
+    @Inject('TokenService') private readonly tokenService: ITokenService,
     @Inject('UserSyncRepository') private readonly userSyncRepository: UserSyncRepository,
   ) {}
 
   async execute(request: RegisterUserRequest): Promise<RegisterUserResponse> {
-    const authResponse = await this.tokenService.signUp(request.email, request.password);
+    const authResponse = await this.tokenService.signUp(request.email, request.password, request.name);
     
     if (!authResponse.user) {
       throw new Error('Falha ao criar usuário');

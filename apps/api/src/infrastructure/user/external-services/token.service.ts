@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseClient, User, Session } from '@supabase/supabase-js';
-import { TokenService } from '../../../application/user/interfaces/token.interface';
+import { ITokenService } from '../../../application/user/interfaces/token.interface';
 import { SupabaseService } from './supabase.service';
 import {
   EmailNotConfirmedException,
@@ -13,7 +13,7 @@ import {
 } from '../../../domain/exceptions/auth.exceptions';
 
 @Injectable()
-export class SupabaseTokenService implements TokenService {
+export class SupabaseTokenService implements ITokenService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   private getClient(): SupabaseClient {
@@ -33,10 +33,16 @@ export class SupabaseTokenService implements TokenService {
     return data;
   }
 
-  async signUp(email: string, password: string): Promise<{ user: User | null; session: Session | null }> {
+  async signUp(email: string, password: string, name?: string): Promise<{ user: User | null; session: Session | null }> {
     const { data, error } = await this.getClient().auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          name: name,
+          full_name: name,
+        }
+      }
     });
 
     if (error) {
