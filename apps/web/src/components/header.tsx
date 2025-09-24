@@ -1,8 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import { Armchair, ShoppingCart, Menu, Search } from "lucide-react";
+import { Armchair, ShoppingCart, Menu, Search, User, LogOut } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { useAuth } from "@/contexts/auth.context";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
@@ -27,6 +43,31 @@ export default function Header() {
               <span className="hidden sm:inline">Carrinho</span>
             </Button>
           </Link>
+          
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="hidden text-sm text-neutral-300 sm:inline">
+                Olá, {user.name || user.email}
+              </span>
+              <Button
+                onClick={handleLogout}
+                variant="secondary"
+                size="sm"
+                className="gap-2"
+              >
+                <LogOut size={16} />
+                <span className="hidden sm:inline">Sair</span>
+              </Button>
+            </div>
+          ) : (
+            <Link href="/login">
+              <Button variant="secondary" size="sm" className="gap-2">
+                <User size={16} />
+                <span className="hidden sm:inline">Entrar</span>
+              </Button>
+            </Link>
+          )}
+          
           <Button
             aria-label="Menu"
             variant="secondary"

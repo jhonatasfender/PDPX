@@ -71,6 +71,7 @@ model user_profiles {
 model users {
   id            String          @id @default(uuid()) @db.Uuid
   auth_user_id  String          @unique @db.Uuid
+  name          String?
   role          UserRole        @default(USER)
   auth_sessions auth_sessions[]
 

@@ -31,22 +31,34 @@ async function bootstrap() {
     },
   });
 
-  const port = process.env.API_PORT ? Number(process.env.API_PORT) : 3010;
+  const basePort = process.env.API_PORT ? Number(process.env.API_PORT) : 3010;
   app.enableShutdownHooks();
   const maxAttempts = 5;
   const delayMs = 500;
   let attempt = 0;
+  let port = basePort;
   // Retry listen to avoid EADDRINUSE races on rapid restarts
   // (previous process may still be releasing the port)
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
       await app.listen(port);
+      // eslint-disable-next-line no-console
+      console.log(`[API] Listening on port ${port}`);
       break;
     } catch (err: any) {
       if (err?.code === "EADDRINUSE" && attempt < maxAttempts) {
         attempt++;
         await new Promise((r) => setTimeout(r, delayMs));
+        continue;
+      } else if (err?.code === "EADDRINUSE" && attempt >= maxAttempts) {
+        // After exhausting attempts, try next port
+        port += 1;
+        attempt = 0;
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[API] Port in use. Switching to port ${port} and retrying...`,
+        );
         continue;
       }
       throw err;

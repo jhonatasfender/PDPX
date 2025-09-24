@@ -10,7 +10,11 @@ export interface TokenService {
     email: string,
     password: string,
   ): Promise<SupabaseAuthResponse>;
-  signUp(email: string, password: string): Promise<SupabaseAuthResponse>;
+  signUp(
+    email: string,
+    password: string,
+    name?: string,
+  ): Promise<SupabaseAuthResponse>;
   signOut(): Promise<void>;
   refreshSession(refreshToken: string): Promise<SupabaseAuthResponse>;
   verifyAccessToken(token: string): Promise<User>;

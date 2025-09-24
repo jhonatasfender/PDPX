@@ -29,7 +29,6 @@ export class RegisterUserUseCase {
       request.email,
       request.password,
     );
-
     if (!authResponse.user) {
       throw new Error("Falha ao criar usuário");
     }
