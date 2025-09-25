@@ -18,7 +18,10 @@ import {
 import { AuthGuard } from "../../guards/auth.guard";
 import { RolesGuard } from "../../guards/roles.guard";
 import { RequireUser } from "../../decorators/roles.decorator";
-import { CurrentUser, CurrentUserData } from "../../decorators/current-user.decorator";
+import {
+  CurrentUser,
+  CurrentUserData,
+} from "../../decorators/current-user.decorator";
 import { BagMapper } from "../../mappers/bag.mapper";
 import { AddItemToBagDto } from "../../dto/bag/add-item-to-bag.dto";
 import { UpdateItemQuantityDto } from "../../dto/bag/update-item-quantity.dto";
@@ -128,7 +131,10 @@ export class BagController {
     if (!user.custom?.id) {
       throw new UserNotAuthenticatedException();
     }
-    const request = BagMapper.toUpdateItemQuantityRequest(user.custom.id, updateQuantityDto);
+    const request = BagMapper.toUpdateItemQuantityRequest(
+      user.custom.id,
+      updateQuantityDto,
+    );
     const response = await this.updateItemQuantityUseCase.execute(request);
     return BagMapper.toUpdateItemQuantityResponse(response);
   }
@@ -156,7 +162,10 @@ export class BagController {
     if (!user.custom?.id) {
       throw new UserNotAuthenticatedException();
     }
-    const request = BagMapper.toRemoveItemRequest(user.custom.id, removeItemDto);
+    const request = BagMapper.toRemoveItemRequest(
+      user.custom.id,
+      removeItemDto,
+    );
     const response = await this.removeItemFromBagUseCase.execute(request);
     return BagMapper.toRemoveItemFromBagResponse(response);
   }

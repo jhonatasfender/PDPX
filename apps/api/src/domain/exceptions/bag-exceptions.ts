@@ -92,7 +92,11 @@ export class BagLimitExceededException extends HttpException {
 }
 
 export class InsufficientStockException extends HttpException {
-  public constructor(productId: string, requestedQuantity: number, availableStock: number) {
+  public constructor(
+    productId: string,
+    requestedQuantity: number,
+    availableStock: number,
+  ) {
     super(
       {
         message: `Estoque insuficiente para o produto '${productId}'. Solicitado: ${requestedQuantity}, Disponível: ${availableStock}`,

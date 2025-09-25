@@ -5,9 +5,7 @@ import Link from "next/link";
 
 import { useState } from "react";
 import { useProducts } from "../../hooks/use-products";
-import type {
-  ApiProductWithDetails,
-} from "../../types/product";
+import type { ApiProductWithDetails } from "../../types/product";
 import { CurrencyFormatter } from "../../lib/format";
 import { Button } from "../ui/button";
 import { Table, THead, TBody, TR, TH, TD } from "../ui/table";
@@ -250,7 +248,10 @@ export function ProductsTable() {
         {isFetching && (
           <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
             <div className="relative z-10">
-              <ProductsTableWithPaginationSkeleton rows={limit} showPagination={false} />
+              <ProductsTableWithPaginationSkeleton
+                rows={limit}
+                showPagination={false}
+              />
             </div>
           </div>
         )}

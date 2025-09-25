@@ -23,10 +23,7 @@ type ProductResp = {
   price?: { amountCents: number };
 };
 
-export async function GET(
-  _req: Request,
-  ctx: any,
-) {
+export async function GET(_req: Request, ctx: any) {
   const slug = typeof ctx?.params?.slug === "string" ? ctx.params.slug : "";
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 

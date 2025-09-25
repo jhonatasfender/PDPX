@@ -68,7 +68,10 @@ export class PrismaBagRepository implements BagRepository {
     return Bag.fromPrisma(bag);
   }
 
-  public async updateExpiresAt(id: string, expiresAt: Date | null): Promise<Bag> {
+  public async updateExpiresAt(
+    id: string,
+    expiresAt: Date | null,
+  ): Promise<Bag> {
     const bag = await this.prisma.bags.update({
       where: { id },
       data: { expires_at: expiresAt },

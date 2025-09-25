@@ -3,7 +3,10 @@ import { BagItem } from "../../../domain/entities/bag-item.entity";
 export interface BagItemRepository {
   findById(id: string): Promise<BagItem | null>;
   findByBagId(bagId: string): Promise<BagItem[]>;
-  findByBagIdAndProductId(bagId: string, productId: string): Promise<BagItem | null>;
+  findByBagIdAndProductId(
+    bagId: string,
+    productId: string,
+  ): Promise<BagItem | null>;
   create(data: {
     id: string;
     bagId: string;

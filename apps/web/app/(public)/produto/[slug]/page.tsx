@@ -216,7 +216,9 @@ export async function generateMetadata({
       process.env.NEXT_PUBLIC_SITE_URL ||
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
     const pagePath = `/produto/${product.slug}`;
-    const ogImageUrl = siteUrl ? `${siteUrl}${pagePath}/opengraph-image` : `${pagePath}/opengraph-image`;
+    const ogImageUrl = siteUrl
+      ? `${siteUrl}${pagePath}/opengraph-image`
+      : `${pagePath}/opengraph-image`;
 
     return {
       title,

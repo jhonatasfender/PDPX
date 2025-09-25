@@ -16,9 +16,7 @@ import {
   AddItemToBagRequest,
   AddItemToBagResponse,
 } from "../../application/bag/use-cases/add-item-to-bag.use-case";
-import {
-  GetBagResponse,
-} from "../../application/bag/use-cases/get-bag.use-case";
+import { GetBagResponse } from "../../application/bag/use-cases/get-bag.use-case";
 import {
   UpdateItemQuantityRequest,
   UpdateItemQuantityResponse,
@@ -27,9 +25,7 @@ import {
   RemoveItemFromBagRequest,
   RemoveItemFromBagResponse,
 } from "../../application/bag/use-cases/remove-item-from-bag.use-case";
-import {
-  ClearBagResponse,
-} from "../../application/bag/use-cases/clear-bag.use-case";
+import { ClearBagResponse } from "../../application/bag/use-cases/clear-bag.use-case";
 
 export class BagMapper {
   public static bagToDto(bag: Bag): BagResponseDto {
@@ -90,9 +86,7 @@ export class BagMapper {
     };
   }
 
-  public static toGetBagResponse(
-    response: GetBagResponse,
-  ): GetBagResponseDto {
+  public static toGetBagResponse(response: GetBagResponse): GetBagResponseDto {
     return {
       bag: response.bag ? this.bagToDto(response.bag) : null,
       bagItems: response.bagItems.map((item) => this.bagItemToDto(item)),

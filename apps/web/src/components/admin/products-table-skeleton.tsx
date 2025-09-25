@@ -8,7 +8,9 @@ interface ProductsPaginationSkeletonProps {
   showPagination?: boolean;
 }
 
-export function ProductsTableSkeleton({ rows = 5 }: ProductsTableSkeletonProps) {
+export function ProductsTableSkeleton({
+  rows = 5,
+}: ProductsTableSkeletonProps) {
   return (
     <Table data-cy="admin-products-table-skeleton">
       <THead>
@@ -82,9 +84,9 @@ export function ProductsPaginationSkeleton() {
   );
 }
 
-export function ProductsTableWithPaginationSkeleton({ 
-  rows = 5, 
-  showPagination = true 
+export function ProductsTableWithPaginationSkeleton({
+  rows = 5,
+  showPagination = true,
 }: ProductsTableSkeletonProps & ProductsPaginationSkeletonProps) {
   return (
     <>
