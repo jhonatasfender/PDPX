@@ -25,9 +25,9 @@ type ProductResp = {
 
 export async function GET(
   _req: Request,
-  { params }: { params: { slug: string } },
+  ctx: any,
 ) {
-  const slug = params.slug;
+  const slug = typeof ctx?.params?.slug === "string" ? ctx.params.slug : "";
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   let product: ProductResp | null = null;
