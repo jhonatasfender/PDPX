@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import { AuthProvider } from "@/contexts/auth.context";
+import { BagProvider } from "@/contexts/bag.context";
 import HeaderWrapper from "@/components/header-wrapper";
 import { Toaster } from "sonner";
 
@@ -83,9 +84,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       >
         <ReactQueryProvider>
           <AuthProvider>
-            <HeaderWrapper />
-            {children}
-            <Toaster position="top-right" theme="dark" richColors closeButton />
+            <BagProvider>
+              <HeaderWrapper />
+              {children}
+              <Toaster position="top-right" theme="dark" richColors closeButton />
+            </BagProvider>
           </AuthProvider>
         </ReactQueryProvider>
       </body>
