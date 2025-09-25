@@ -12,17 +12,17 @@ type AddToBagButtonProps = {
   size?: "sm" | "md" | "lg";
 };
 
-export function AddToBagButton({ 
-  productId, 
+export function AddToBagButton({
+  productId,
   className,
   variant = "primary",
-  size = "md"
+  size = "md",
 }: AddToBagButtonProps) {
   const { addItem, bagItems } = useBagContext();
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
-  const existingItem = bagItems.find(item => item.productId === productId);
+  const existingItem = bagItems.find((item) => item.productId === productId);
   const isInBag = !!existingItem;
 
   const handleAddToBag = async () => {
@@ -44,12 +44,7 @@ export function AddToBagButton({
   if (isInBag) {
     return (
       <div className="flex items-center gap-2">
-        <Button
-          variant="secondary"
-          size={size}
-          className={className}
-          disabled
-        >
+        <Button variant="secondary" size={size} className={className} disabled>
           <ShoppingCart size={16} />
           No Carrinho
         </Button>
@@ -69,11 +64,11 @@ export function AddToBagButton({
         >
           <Minus size={14} />
         </Button>
-        
+
         <span className="min-w-[2rem] text-center text-sm font-medium text-neutral-100">
           {quantity}
         </span>
-        
+
         <Button
           variant="ghost"
           size="sm"

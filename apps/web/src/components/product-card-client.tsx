@@ -13,7 +13,10 @@ type ProductCardClientProps = {
   priority?: boolean;
 };
 
-export function ProductCardClient({ product, priority = false }: ProductCardClientProps) {
+export function ProductCardClient({
+  product,
+  priority = false,
+}: ProductCardClientProps) {
   const images = (product.images || []).filter(
     (img) =>
       img &&
@@ -49,7 +52,7 @@ export function ProductCardClient({ product, priority = false }: ProductCardClie
           )}
         </div>
       </Link>
-      
+
       <div className="p-3">
         <Link href={`/produto/${product.slug}`}>
           <h2 className="line-clamp-2 text-sm font-medium text-neutral-100">
@@ -57,13 +60,13 @@ export function ProductCardClient({ product, priority = false }: ProductCardClie
           </h2>
           <p className="text-xs text-neutral-400">{product.brand}</p>
         </Link>
-        
+
         <div className="mt-2 flex items-center justify-between">
           <div className="text-base font-semibold text-neutral-50">
             {CurrencyFormatter.formatBRLFromCents(product.price.amountCents)}
           </div>
-          
-          <div 
+
+          <div
             className="opacity-0 transition-opacity group-hover:opacity-100"
             onClick={(e) => e.preventDefault()}
           >

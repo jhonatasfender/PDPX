@@ -8,7 +8,10 @@ export default function Loading() {
         <div className="lg:col-span-2">
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-24 animate-pulse rounded-lg bg-neutral-800" />
+              <div
+                key={i}
+                className="h-24 animate-pulse rounded-lg bg-neutral-800"
+              />
             ))}
           </div>
         </div>

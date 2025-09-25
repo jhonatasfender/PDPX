@@ -16,7 +16,9 @@ class BagService {
     return response.data;
   }
 
-  public async addItem(data: AddItemToBagRequest): Promise<AddItemToBagResponse> {
+  public async addItem(
+    data: AddItemToBagRequest,
+  ): Promise<AddItemToBagResponse> {
     const response = await api.post<AddItemToBagResponse>("/bag/items", data);
     return response.data;
   }

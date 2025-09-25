@@ -6,7 +6,8 @@ import { CurrencyFormatter } from "../../lib/format";
 import { useBagContext } from "../../contexts/bag.context";
 
 export function BagSummary() {
-  const { bagItems, totalItems, totalPrice, clearBag, isClearing } = useBagContext();
+  const { bagItems, totalItems, totalPrice, clearBag, isClearing } =
+    useBagContext();
 
   if (bagItems.length === 0) {
     return (
@@ -48,7 +49,9 @@ export function BagSummary() {
         <div className="border-t border-neutral-800 pt-3">
           <div className="flex justify-between text-lg font-semibold text-neutral-100">
             <span>Total</span>
-            <span>{CurrencyFormatter.formatBRLFromCents(totalPrice * 100)}</span>
+            <span>
+              {CurrencyFormatter.formatBRLFromCents(totalPrice * 100)}
+            </span>
           </div>
         </div>
       </div>

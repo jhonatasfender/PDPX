@@ -22,12 +22,15 @@ export default function Loading() {
             </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900">
+            <div
+              key={i}
+              className="overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900"
+            >
               <Skeleton className="aspect-[4/3] w-full" />
-              
+
               <div className="p-3">
                 <Skeleton className="h-4 w-3/4 mb-2" />
                 <Skeleton className="h-3 w-1/2 mb-2" />

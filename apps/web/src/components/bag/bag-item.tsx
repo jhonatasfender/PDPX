@@ -46,7 +46,10 @@ export function BagItemComponent({ item, product }: BagItemProps) {
   };
 
   const image = product?.images?.find(
-    (img) => img.url && img.url !== "string" && (img.url.startsWith("http") || img.url.startsWith("/"))
+    (img) =>
+      img.url &&
+      img.url !== "string" &&
+      (img.url.startsWith("http") || img.url.startsWith("/")),
   );
 
   return (
@@ -91,11 +94,11 @@ export function BagItemComponent({ item, product }: BagItemProps) {
             <Minus size={14} />
           )}
         </Button>
-        
+
         <span className="min-w-[2rem] text-center text-sm font-medium text-neutral-100">
           {item.quantity}
         </span>
-        
+
         <Button
           variant="ghost"
           size="sm"

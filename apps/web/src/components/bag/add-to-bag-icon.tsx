@@ -14,7 +14,7 @@ export function AddToBagIcon({ productId, className }: AddToBagIconProps) {
   const { addItem, bagItems } = useBagContext();
   const [isAdding, setIsAdding] = useState(false);
 
-  const existingItem = bagItems.find(item => item.productId === productId);
+  const existingItem = bagItems.find((item) => item.productId === productId);
   const isInBag = !!existingItem;
 
   const handleAddToBag = async () => {

@@ -19,7 +19,9 @@ export default function Error({
         <h1 className="text-2xl font-bold text-neutral-100">Carrinho</h1>
       </div>
       <div className="rounded-lg border border-red-800/40 bg-red-900/20 p-6 text-center">
-        <h2 className="mb-2 text-lg font-semibold text-red-300">Algo deu errado!</h2>
+        <h2 className="mb-2 text-lg font-semibold text-red-300">
+          Algo deu errado!
+        </h2>
         <p className="mb-4 text-red-300">
           {error.message || "Falha ao carregar carrinho"}
         </p>

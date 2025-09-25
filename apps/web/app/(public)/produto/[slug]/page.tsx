@@ -145,7 +145,11 @@ export default async function PDPPage({
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row md:gap-3">
-            <AddToBagButton productId={product.id} className="w-full" size="lg" />
+            <AddToBagButton
+              productId={product.id}
+              className="w-full"
+              size="lg"
+            />
             <Link href="/carrinho" className="w-full">
               <Button variant="secondary" size="lg" className="w-full gap-2">
                 <ShoppingCart size={18} />
