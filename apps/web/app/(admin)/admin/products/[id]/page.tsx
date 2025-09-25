@@ -33,9 +33,9 @@ async function getProduct(id: string): Promise<ApiProductWithDetails> {
 export default async function AdminProductViewPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const data = await getProduct(id);
   const { product, price, images } = data;
 
