@@ -186,13 +186,28 @@ export async function generateMetadata({
       `/public/products/${slug}`,
     );
 
-    const images = Array.isArray(product.images) ? product.images : [];
-    const primary = images.find((i) => i.isPrimary) ?? images[0];
-    const title = `${product.name} — ${product.brand}`;
-    const description = product.description
-      ? product.description.replace(/<[^>]*>/g, "").slice(0, 160)
-      : undefined;
-    const imageUrl = primary?.url;
+    const baseTitle = `${product.name} — ${product.brand} | PDPX`;
+    const paddedTitle =
+      baseTitle.length < 30 ? `${baseTitle} · Comprar online` : baseTitle;
+    const title = paddedTitle.length > 60
+      ? `${paddedTitle.slice(0, 57).trimEnd()}...`
+      : paddedTitle;
+
+    const plainDesc = product.description
+      ? product.description.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()
+      : "";
+    const priceText = product.price
+      ? `Preço ${CurrencyFormatter.formatBRLFromCents(product.price.amountCents)}. `
+      : "";
+    let description = `${product.name} da ${product.brand}. ${priceText}${plainDesc}`.trim();
+    if (description.length < 55) {
+      description = `${product.name} da ${product.brand}. ${priceText}Entrega rápida, 1 ano de garantia e troca em 30 dias.`;
+    }
+    if (description.length > 200) {
+      description = `${description.slice(0, 197).trimEnd()}...`;
+    }
+
+    const ogImageUrl = `/produto/${product.slug}/opengraph-image`;
 
     return {
       title,
@@ -200,25 +215,23 @@ export async function generateMetadata({
       alternates: { canonical: `/produto/${product.slug}` },
       openGraph: {
         type: "website",
-        title: product.name,
-        description: description || undefined,
+        title,
+        description,
         url: `/produto/${product.slug}`,
-        images: imageUrl
-          ? [
-              {
-                url: imageUrl,
-                width: 1200,
-                height: 630,
-                alt: product.name,
-              },
-            ]
-          : undefined,
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ],
       },
       twitter: {
         card: "summary_large_image",
         title,
-        description: description || undefined,
-        images: imageUrl ? [imageUrl] : undefined,
+        description,
+        images: [ogImageUrl],
       },
     };
   } catch {
