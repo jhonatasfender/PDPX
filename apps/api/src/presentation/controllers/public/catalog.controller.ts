@@ -1,16 +1,27 @@
-import { Controller, Get, HttpCode, HttpStatus, Query } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Query,
+  Param,
+  NotFoundException,
+} from "@nestjs/common";
 import { ListProductsUseCase } from "../../../application/product/use-cases/list-products.use-case";
+import { GetProductUseCase } from "../../../application/product/use-cases/get-product.use-case";
 import { ProductPublicMapper } from "../../mappers/product-public.mapper";
 import { ProductFiltersMapper } from "../../mappers/product-filters.mapper";
 import {
   ListPublicCatalogResponseDto,
   PublicFiltersResponseDto,
+  PublicCatalogProductDto,
 } from "../../dto/product/product-response.dto";
 
 @Controller("public")
 export class CatalogPublicController {
   public constructor(
     private readonly listProductsUseCase: ListProductsUseCase,
+    private readonly getProductUseCase: GetProductUseCase,
   ) {}
 
   @Get("products")
@@ -50,5 +61,27 @@ export class CatalogPublicController {
       isActive: true,
     });
     return ProductFiltersMapper.toPublicFilters(resp);
+  }
+
+  @Get("products/:slug")
+  @HttpCode(HttpStatus.OK)
+  public async getPublicProductBySlug(
+    @Param("slug") slug: string,
+  ): Promise<PublicCatalogProductDto> {
+    try {
+      const result = await this.getProductUseCase.execute({ slug });
+      return ProductPublicMapper.toPublicCatalog({
+        product: result.product,
+        images: result.images,
+        price: result.price
+          ? {
+              currency: result.price.currency,
+              amountCents: result.price.amountCents,
+            }
+          : null,
+      });
+    } catch (error) {
+      throw new NotFoundException("Produto não encontrado");
+    }
   }
 }

@@ -13,7 +13,12 @@ type Filters = {
   sort?: string;
 };
 
-export default function CatalogFilters() {
+type CatalogFiltersProps = {
+  brands: string[];
+  price: { minCents: number; maxCents: number };
+};
+
+export default function CatalogFilters({ brands, price }: CatalogFiltersProps) {
   const methods = useForm<Filters>({
     defaultValues: { categories: {}, brands: {}, sort: "relevance" },
   });
@@ -21,67 +26,76 @@ export default function CatalogFilters() {
   return (
     <aside className="space-y-6 rounded-lg border border-neutral-800 p-4 md:space-y-7 md:p-5">
       <Form<Filters> methods={methods}>
-        <div>
-          <h3 className="mb-3 text-sm font-medium text-neutral-200">
-            Categorias
-          </h3>
-          <div className="space-y-2.5">
-            <FormCheckbox<Filters> name="categories.sofas" label="Sofás" />
-            <FormCheckbox<Filters>
-              name="categories.poltronas"
-              label="Poltronas"
-            />
-            <FormCheckbox<Filters> name="categories.mesas" label="Mesas" />
+        <div className="space-y-5 md:space-y-6">
+          <div>
+            <h3 className="mb-3 text-sm font-medium text-neutral-200">
+              Categorias
+            </h3>
+            <div className="space-y-2.5">
+              <FormCheckbox<Filters> name="categories.sofas" label="Sofás" />
+              <FormCheckbox<Filters>
+                name="categories.poltronas"
+                label="Poltronas"
+              />
+              <FormCheckbox<Filters> name="categories.mesas" label="Mesas" />
+            </div>
           </div>
-        </div>
 
-        <div>
-          <h3 className="mb-3 text-sm font-medium text-neutral-200">Preço</h3>
-          <div className="flex items-center gap-3 md:gap-4">
-            <FormField<Filters>
-              name="priceMin"
-              label=" "
-              placeholder="Mín."
-              type="number"
-            />
-            <span className="text-neutral-500">—</span>
-            <FormField<Filters>
-              name="priceMax"
-              label=" "
-              placeholder="Máx."
-              type="number"
+          <div>
+            <h3 className="mb-3 text-sm font-medium text-neutral-200">Preço</h3>
+            <div className="flex items-center gap-3 md:gap-4">
+              <FormField<Filters>
+                name="priceMin"
+                label=" "
+                placeholder={
+                  price?.minCents
+                    ? String(Math.floor(price.minCents / 100))
+                    : "Mín."
+                }
+                type="number"
+              />
+              <span className="text-neutral-500">—</span>
+              <FormField<Filters>
+                name="priceMax"
+                label=" "
+                placeholder={
+                  price?.maxCents
+                    ? String(Math.ceil(price.maxCents / 100))
+                    : "Máx."
+                }
+                type="number"
+              />
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-medium text-neutral-200">Marca</h3>
+            <div className="space-y-2.5">
+              {brands.map((b) => (
+                <FormCheckbox<Filters>
+                  key={b}
+                  name={
+                    `brands.${b.toLowerCase().replace(/\s+/g, "")}` as const
+                  }
+                  label={b}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-medium text-neutral-200">
+              Ordenar
+            </h3>
+            <FormSelect<Filters>
+              name="sort"
+              options={[
+                { value: "relevance", label: "Relevância" },
+                { value: "price-asc", label: "Preço: menor para maior" },
+                { value: "price-desc", label: "Preço: maior para menor" },
+              ]}
             />
           </div>
-        </div>
-
-        <div>
-          <h3 className="mb-3 text-sm font-medium text-neutral-200">Marca</h3>
-          <div className="space-y-2.5">
-            <FormCheckbox<Filters>
-              name="brands.casaeconforto"
-              label="Casa&Conforto"
-            />
-            <FormCheckbox<Filters>
-              name="brands.studiolounge"
-              label="StudioLounge"
-            />
-            <FormCheckbox<Filters>
-              name="brands.naturacasa"
-              label="NaturaCasa"
-            />
-          </div>
-        </div>
-
-        <div>
-          <h3 className="mb-3 text-sm font-medium text-neutral-200">Ordenar</h3>
-          <FormSelect<Filters>
-            name="sort"
-            options={[
-              { value: "relevance", label: "Relevância" },
-              { value: "price-asc", label: "Preço: menor para maior" },
-              { value: "price-desc", label: "Preço: maior para menor" },
-            ]}
-          />
         </div>
       </Form>
     </aside>

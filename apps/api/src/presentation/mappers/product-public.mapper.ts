@@ -1,9 +1,27 @@
-import { PublicCatalogProductDTO, PublicImageDTO } from "@pdpx/types";
+type PublicImage = {
+  id: string;
+  url: string;
+  alt: string | null;
+  isPrimary: boolean;
+  position: number;
+};
+type PublicItemInput = {
+  product: {
+    id: string;
+    slug: string;
+    name: string;
+    brand: string;
+    sku: string;
+    description: string;
+    stock: number;
+    isActive: boolean;
+  };
+  images: PublicImage[];
+  price?: { currency: string; amountCents: number } | null;
+};
 
 export class ProductPublicMapper {
-  public static toPublicCatalog(
-    item: PublicCatalogProductDTO,
-  ): PublicCatalogProductDTO {
+  public static toPublicCatalog(item: PublicItemInput) {
     return {
       id: item.product.id,
       slug: item.product.slug,
@@ -11,7 +29,7 @@ export class ProductPublicMapper {
       brand: item.product.brand,
       sku: item.product.sku,
       description: item.product.description,
-      images: item.images.map((img: PublicImageDTO) => ({
+      images: item.images.map((img) => ({
         id: img.id,
         url: img.url,
         alt: img.alt,

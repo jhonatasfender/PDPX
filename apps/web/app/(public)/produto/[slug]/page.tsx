@@ -12,7 +12,7 @@ import {
   Star,
   BadgePercent,
 } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { RadioSwatch } from "@/components/ui/radio-swatch";
 import { ProductGallery } from "@/components/product-gallery";
 import { CurrencyFormatter } from "@/lib/format";
@@ -20,40 +20,51 @@ import { CurrencyFormatter } from "@/lib/format";
 export default async function PDPPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
 
-  const { data } = await api.get<{ products: PublicCatalogProductDTO[] }>(
-    "/public/products",
-    {
-      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-      params: { search: slug },
-    },
-  );
+  let product: PublicCatalogProductDTO | null = null;
+  try {
+    const { data } = await api.get<PublicCatalogProductDTO>(
+      `/public/products/${slug}`,
+      {
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      },
+    );
+    product = data;
+  } catch (err: any) {
+    if (err?.response?.status === 404) {
+      notFound();
+    }
+    throw err;
+  }
 
-  const product = (data.products || []).find((p) => p.slug === slug);
-  if (!product) notFound();
-
-  const primary = product.images.find((i) => i.isPrimary) ?? product.images[0];
-  const gallery = product.images.filter((i) => i.id !== primary.id);
+  const images = Array.isArray(product.images) ? product.images : [];
+  const primary = images.find((i) => i.isPrimary) ?? images[0];
+  const gallery = primary ? images.filter((i) => i.id !== primary.id) : images;
 
   return (
     <main className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-6 md:grid-cols-2 md:gap-12 md:px-6">
       <section>
-        <ProductGallery images={[primary, ...gallery]} />
+        {images.length > 0 ? (
+          <ProductGallery images={primary ? [primary, ...gallery] : images} />
+        ) : (
+          <div className="flex h-[360px] w-full items-center justify-center rounded-md border border-neutral-800 text-neutral-500">
+            Sem imagens
+          </div>
+        )}
       </section>
 
       <section className="space-y-5 md:space-y-6">
         <nav className="-mb-1">
           <Link
             href="/"
-            className={
-              buttonVariants({ variant: "secondary", size: "sm" }) +
-              " inline-flex items-center gap-2"
-            }
+            className="inline-flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900/40 px-3 py-1.5 text-sm text-neutral-200 transition-colors hover:bg-neutral-900"
+            aria-label="Voltar ao catálogo"
+            data-cy="pdp-back"
           >
             <ChevronLeft size={16} /> Voltar ao catálogo
           </Link>
@@ -153,9 +164,10 @@ export default async function PDPPage({
               <Truck size={18} /> Frete rápido
             </div>
           </div>
-          <article className="prose prose-invert max-w-none p-5 text-sm leading-relaxed text-neutral-300">
-            {product.description}
-          </article>
+          <article
+            className="prose prose-invert max-w-none p-5 text-sm leading-relaxed text-neutral-300"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          />
         </div>
       </section>
     </main>

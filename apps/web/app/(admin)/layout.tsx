@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
-import { AuthGuard } from "@/components/auth-guard";
+import { AdminGuard } from "./AdminGuard";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthGuard requireAuth requireRole="ADMIN">
+    <AdminGuard>
       <div className="min-h-screen bg-neutral-950 text-neutral-100">
         <div className="grid grid-cols-1 md:grid-cols-[240px_1fr]">
           <aside className="hidden border-r border-neutral-800 md:block">
@@ -17,6 +17,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-    </AuthGuard>
+    </AdminGuard>
   );
 }
