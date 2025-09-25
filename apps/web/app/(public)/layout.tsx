@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return <Suspense>{children}</Suspense>;
 }

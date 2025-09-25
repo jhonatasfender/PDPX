@@ -83,7 +83,10 @@ export class PrismaProductRepository implements ProductRepository {
     ]);
 
     return {
-      products: products.map((product) => Product.fromPrisma(product)),
+      products: products.map(
+        (product: Parameters<typeof Product.fromPrisma>[0]) =>
+          Product.fromPrisma(product),
+      ),
       total,
     };
   }

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { Prisma } from "@prisma/client";
 import { ProductPriceRepository } from "../../../application/product/interfaces/product-price.repository";
 import { ProductPrice } from "../../../domain/entities/product-price.entity";
 
@@ -13,7 +14,9 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
       orderBy: { created_at: "desc" },
     });
 
-    return prices.map((price) => ProductPrice.fromPrisma(price));
+    return prices.map((price: Parameters<typeof ProductPrice.fromPrisma>[0]) =>
+      ProductPrice.fromPrisma(price),
+    );
   }
 
   public async findCurrentByProductId(
@@ -94,7 +97,7 @@ export class PrismaProductPriceRepository implements ProductPriceRepository {
   ): Promise<void> {
     const now = new Date();
 
-    await this.prisma.$transaction(async (tx) => {
+    await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.product_prices.updateMany({
         where: { product_id: productId },
         data: { valid_to: now },

@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "pnpm start:dev",
-    "build": "nest build",
+    "build": "prisma generate && nest build",
     "start": "nest start",
     "start:dev": "NODE_OPTIONS=--inspect nest start --watch",
     "lint": "eslint .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@pdpx/types": "workspace:*",
@@ -24,7 +25,8 @@
     "class-validator": "^0.14.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "@vendia/serverless-express": "^4.12.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",

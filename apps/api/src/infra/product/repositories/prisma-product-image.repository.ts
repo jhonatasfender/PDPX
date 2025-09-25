@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { Prisma } from "@prisma/client";
 import { ProductImageRepository } from "../../../application/product/interfaces/product-image.repository";
 import { ProductImage } from "../../../domain/entities/product-image.entity";
 
@@ -13,7 +14,9 @@ export class PrismaProductImageRepository implements ProductImageRepository {
       orderBy: { position: "asc" },
     });
 
-    return images.map((image) => ProductImage.fromPrisma(image));
+    return images.map((image: Parameters<typeof ProductImage.fromPrisma>[0]) =>
+      ProductImage.fromPrisma(image),
+    );
   }
 
   public async findPrimaryByProductId(
@@ -104,7 +107,7 @@ export class PrismaProductImageRepository implements ProductImageRepository {
   }
 
   public async setPrimary(productId: string, imageId: string): Promise<void> {
-    await this.prisma.$transaction(async (tx) => {
+    await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.product_images.updateMany({
         where: { product_id: productId },
         data: { is_primary: false },
