@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CurrencyFormatter } from "@/lib/format";
 import { ProductGallery } from "@/components/product-gallery";
-import type { ApiProductWithDetails } from "@/types/api";
+import type { ApiProductWithDetails, ApiProductImage } from "@/types/product";
 import { api } from "@/lib/http";
 import type { AxiosError } from "axios";
 
@@ -76,7 +76,11 @@ export default async function AdminProductViewPage({
         <section className="rounded-lg border border-neutral-800 p-4 overflow-x-hidden">
           <div className="mx-auto w-full max-w-full md:max-w-screen-lg overflow-hidden">
             <ProductGallery
-              images={images.map(({ id, url, alt }) => ({ id, url, alt }))}
+              images={images.map((img: Pick<ApiProductImage, "id" | "url" | "alt">) => ({
+                id: img.id,
+                url: img.url,
+                alt: img.alt,
+              }))}
             />
           </div>
         </section>
@@ -142,7 +146,7 @@ export default async function AdminProductViewPage({
               </tr>
             </thead>
             <tbody>
-              {images.map((img) => (
+              {images.map((img: ApiProductImage) => (
                 <tr key={img.id} className="border-b border-neutral-900">
                   <td className="py-2 pr-4 text-neutral-300 break-all">
                     {img.url}
