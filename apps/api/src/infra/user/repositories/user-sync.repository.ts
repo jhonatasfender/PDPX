@@ -273,7 +273,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
   private async upsertUserProfileForUser(
     userId: string,
     name?: string,
-    role?: Prisma.UserRole,
+    role?: $Enums.UserRole,
   ): Promise<void> {
     try {
       await this.prisma.user_profiles.upsert({
@@ -297,7 +297,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     id: string;
     auth_user_id: string;
     name: string | null;
-    role: Prisma.UserRole;
+    role: $Enums.UserRole;
   }): PublicUser {
     return {
       id: row.id,
