@@ -11,7 +11,7 @@ import type {
   CreateProductRequest,
   UpdateProductRequest,
   ProductsQueryParams,
-} from "../types/api";
+} from "../types/product";
 
 export function useProducts(params?: ProductsQueryParams, productId?: string) {
   const queryClient = useQueryClient();

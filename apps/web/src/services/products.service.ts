@@ -6,7 +6,7 @@ import {
   ApiProductWithDetails,
   DeleteProductResponse,
   ToggleProductStatusResponse,
-} from "../types/api";
+} from "../types/product";
 import { api } from "@/lib/http";
 
 class ProductsService {
