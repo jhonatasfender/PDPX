@@ -96,3 +96,13 @@ export interface UpdateProductRequest {
   }>;
   isActive?: boolean;
 }
+
+export interface DeleteProductResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ToggleProductStatusResponse {
+  product: ApiProduct;
+  message: string;
+}

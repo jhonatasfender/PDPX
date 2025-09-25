@@ -25,6 +25,7 @@ import { GetProductUseCase } from "../application/product/use-cases/get-product.
 import { ListProductsUseCase } from "../application/product/use-cases/list-products.use-case";
 import { UpdateProductUseCase } from "../application/product/use-cases/update-product.use-case";
 import { DeleteProductUseCase } from "../application/product/use-cases/delete-product.use-case";
+import { ToggleProductStatusUseCase } from "../application/product/use-cases/toggle-product-status.use-case";
 import { PrismaProductRepository } from "../infra/product/repositories/prisma-product.repository";
 import { PrismaProductImageRepository } from "../infra/product/repositories/prisma-product-image.repository";
 import { PrismaProductPriceRepository } from "../infra/product/repositories/prisma-product-price.repository";
@@ -67,6 +68,7 @@ import { PrismaProductPriceRepository } from "../infra/product/repositories/pris
     ListProductsUseCase,
     UpdateProductUseCase,
     DeleteProductUseCase,
+    ToggleProductStatusUseCase,
     {
       provide: "ProductRepository",
       useClass: PrismaProductRepository,

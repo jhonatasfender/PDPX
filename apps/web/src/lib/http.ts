@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
-  timeout: 10_000,
+  timeout: 30_000,
   headers: { "Content-Type": "application/json" },
 });
 

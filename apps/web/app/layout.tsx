@@ -4,6 +4,7 @@ import "./globals.css";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import { AuthProvider } from "@/contexts/auth.context";
 import HeaderWrapper from "@/components/header-wrapper";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -84,6 +85,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <AuthProvider>
             <HeaderWrapper />
             {children}
+            <Toaster 
+              position="top-right"
+              theme="dark"
+              richColors
+              closeButton
+            />
           </AuthProvider>
         </ReactQueryProvider>
       </body>

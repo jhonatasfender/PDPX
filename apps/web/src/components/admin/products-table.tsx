@@ -3,61 +3,83 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { productsService } from "../../services/products.service";
+import { useProducts } from "../../hooks/use-products";
 import type {
-  ApiProductsResponse,
   ApiProductWithDetails,
 } from "../../types/api";
 import { CurrencyFormatter } from "../../lib/format";
 import { Button } from "../ui/button";
 import { Table, THead, TBody, TR, TH, TD } from "../ui/table";
-import { Eye, Pencil, Power, Trash2, ImageOff } from "lucide-react";
+import { ConfirmationModal } from "../ui/confirmation-modal";
+import { Eye, Pencil, Trash2, ImageOff, Play, Pause } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { ProductsTableSkeleton } from "./products-table-skeleton";
 
 export function ProductsTable() {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
+  const [productToDelete, setProductToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
-  const { data, isLoading, isError, error, refetch } =
-    useQuery<ApiProductsResponse>({
-      queryKey: ["admin-products", page, limit],
-      queryFn: ({ signal }) =>
-        productsService.getProducts(
-          { page, limit },
-          { signal, timeoutMs: 10000 },
-        ),
-      refetchOnWindowFocus: false,
-      staleTime: 60_000,
-      gcTime: 300_000,
-      placeholderData: (prev) => prev as ApiProductsResponse | undefined,
+  const {
+    products,
+    total,
+    totalPages,
+    currentPage,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+    deleteProduct,
+    toggleProductStatus,
+    isDeleting,
+    isToggling,
+  } = useProducts({ page, limit });
+
+  const handleDeleteClick = (product: ApiProductWithDetails) => {
+    setProductToDelete({
+      id: product.product.id,
+      name: product.product.name,
     });
+  };
 
-  const products = data?.products ?? [];
-  const total = data?.total ?? 0;
-  const totalPages = data?.totalPages ?? 1;
-  const currentPage = data?.page ?? page;
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+    await deleteProduct(productToDelete.id);
+    setProductToDelete(null);
+  };
 
-  if (products.length === 0) {
-    return (
-      <div
-        className="rounded-lg border border-neutral-800 p-8 text-center"
-        data-cy="admin-products-empty"
-      >
-        <p className="text-neutral-400">Nenhum produto encontrado</p>
-      </div>
-    );
-  }
+  const handleCancelDelete = () => {
+    setProductToDelete(null);
+  };
+
+  const handleToggleStatus = async (product: ApiProductWithDetails) => {
+      await toggleProductStatus(product.product.id);
+  };
+
 
   if (isLoading) {
     return (
-      <div
-        className="flex items-center justify-center py-8"
-        data-cy="admin-products-loading"
-      >
-        <span className="ml-2">Carregando produtos...</span>
-      </div>
+      <>
+        <ProductsTableSkeleton rows={limit} />
+        <div
+          className="mt-4 flex items-center justify-between"
+          data-cy="admin-products-pagination-skeleton"
+        >
+          <div className="flex items-center gap-2 text-sm text-neutral-400">
+            <div className="h-4 w-32 bg-neutral-800 rounded animate-pulse" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-20 bg-neutral-800 rounded animate-pulse" />
+            <div className="h-8 w-20 bg-neutral-800 rounded animate-pulse" />
+            <div className="h-8 w-24 bg-neutral-800 rounded animate-pulse" />
+          </div>
+        </div>
+      </>
     );
   }
 
@@ -81,9 +103,21 @@ export function ProductsTable() {
     );
   }
 
+  if (products.length === 0) {
+    return (
+      <div
+        className="rounded-lg border border-neutral-800 p-8 text-center"
+        data-cy="admin-products-empty"
+      >
+        <p className="text-neutral-400">Nenhum produto encontrado</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      <Table data-cy="admin-products-table">
+      <div className="relative">
+        <Table data-cy="admin-products-table">
         <THead>
           <TR>
             <TH data-cy="th-produto">Produto</TH>
@@ -198,8 +232,14 @@ export function ProductsTable() {
                       size="sm"
                       title={product.isActive ? "Desativar" : "Ativar"}
                       data-cy="action-toggle-status"
+                      onClick={() => handleToggleStatus(productData)}
+                      disabled={isToggling}
                     >
-                      <Power size={16} />
+                      {product.isActive ? (
+                        <Pause size={16} />
+                      ) : (
+                        <Play size={16} />
+                      )}
                       <span className="sr-only">
                         {product.isActive ? "Desativar" : "Ativar"}
                       </span>
@@ -209,6 +249,7 @@ export function ProductsTable() {
                       size="sm"
                       title="Excluir"
                       data-cy="action-excluir"
+                      onClick={() => handleDeleteClick(productData)}
                     >
                       <Trash2 size={16} />
                       <span className="sr-only">Excluir</span>
@@ -220,6 +261,15 @@ export function ProductsTable() {
           })}
         </TBody>
       </Table>
+      
+      {isFetching && (
+        <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
+          <div className="relative z-10">
+            <ProductsTableSkeleton rows={limit} />
+          </div>
+        </div>
+      )}
+      </div>
 
       <div
         className="mt-4 flex items-center justify-between"
@@ -268,6 +318,18 @@ export function ProductsTable() {
           </select>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={!!productToDelete}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar Exclusão"
+        message={`Tem certeza que deseja excluir o produto "${productToDelete?.name}"? Esta ação não pode ser desfeita.`}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </>
   );
 }
