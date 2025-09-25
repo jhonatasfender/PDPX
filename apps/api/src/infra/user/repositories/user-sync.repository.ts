@@ -198,7 +198,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
             id: user.id,
             auth_user_id: user.auth_user_id,
             name: user.name,
-              role: profile?.role ?? $Enums.UserRole.USER,
+            role: profile?.role ?? $Enums.UserRole.USER,
           }),
           auth: authUser as UserWithAuthData["auth"],
         };

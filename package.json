@@ -10,6 +10,7 @@
     "e2e:open": "pnpm -F @pdpx/web-e2e e2e:open"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
     "turbo": "^2.5.7"
   }
 }

@@ -23,7 +23,10 @@ export interface UserSyncRepository {
   ): Promise<PublicUser>;
   getUserWithAuthData(userId: string): Promise<UserWithAuthData>;
   getUserByEmail(email: string): Promise<UserWithAuthData | null>;
-  updateUserRole(authUserId: string, role: $Enums.UserRole): Promise<PublicUser>;
+  updateUserRole(
+    authUserId: string,
+    role: $Enums.UserRole,
+  ): Promise<PublicUser>;
   getAllUsersWithAuthData(): Promise<UserWithAuthData[]>;
   findCustomUserByAuthId(authUserId: string): Promise<PublicUser | null>;
   createCustomUser(data: {
