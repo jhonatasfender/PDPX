@@ -126,10 +126,13 @@ export class PrismaProductRepository implements ProductRepository {
       isActive?: boolean;
     },
   ): Promise<Product> {
+    const { isActive, ...restData } = data;
+    
     const product = await this.prisma.products.update({
       where: { id },
       data: {
-        ...data,
+        ...restData,
+        is_active: isActive,
         updated_at: new Date(),
       },
     });

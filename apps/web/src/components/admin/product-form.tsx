@@ -7,7 +7,7 @@ import { FormField } from "@/components/ui/form-field";
 import { FormSelect } from "@/components/ui/form-select";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Button } from "@/components/ui/button";
-import { useCreateProduct } from "@/hooks/use-create-product";
+import { useProducts } from "@/hooks/use-products";
 
 export const productFormSchema = z.object({
   name: z.string().min(2, "Informe o nome"),
@@ -59,14 +59,14 @@ export function AdminProductForm({
     name: "images" as any,
   });
 
-  const { createProduct, isCreating } = useCreateProduct();
+  const { createProductFromForm, isCreating } = useProducts();
 
   return (
     <Form<ProductFormValues>
       methods={methods}
       onSubmit={async (v) => {
         if (onSubmit) await onSubmit(v);
-        else await createProduct(v);
+        else await createProductFromForm(v);
       }}
     >
       <div

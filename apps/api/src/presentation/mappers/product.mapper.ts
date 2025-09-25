@@ -10,6 +10,7 @@ import {
   CreateProductResponseDto,
   UpdateProductResponseDto,
   DeleteProductResponseDto,
+  ToggleProductStatusResponseDto,
 } from "../dto/product/product-response.dto";
 import { CreateProductDto } from "../dto/product/create-product.dto";
 import { UpdateProductDto } from "../dto/product/update-product.dto";
@@ -24,6 +25,7 @@ import {
   UpdateProductResponse,
 } from "../../application/product/use-cases/update-product.use-case";
 import { DeleteProductResponse } from "../../application/product/use-cases/delete-product.use-case";
+import { ToggleProductStatusResponse } from "../../application/product/use-cases/toggle-product-status.use-case";
 
 import { ProductCoreMapper } from "./product-core.mapper";
 
@@ -143,6 +145,15 @@ export class ProductMapper {
   ): DeleteProductResponseDto {
     return {
       success: response.success,
+      message: response.message,
+    };
+  }
+
+  public static toToggleProductStatusResponse(
+    response: ToggleProductStatusResponse,
+  ): ToggleProductStatusResponseDto {
+    return {
+      product: ProductCoreMapper.productToDto(response.product),
       message: response.message,
     };
   }

@@ -208,3 +208,11 @@ export class DeleteProductResponseDto {
   @ApiProperty({ description: "Mensagem de resposta" })
   public message!: string;
 }
+
+export class ToggleProductStatusResponseDto {
+  @ApiProperty({ description: "Produto atualizado" })
+  public product!: ProductResponseDto;
+
+  @ApiProperty({ description: "Mensagem de resposta" })
+  public message!: string;
+}

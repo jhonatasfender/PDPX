@@ -4,6 +4,8 @@ import {
   CreateProductRequest,
   UpdateProductRequest,
   ApiProductWithDetails,
+  DeleteProductResponse,
+  ToggleProductStatusResponse,
 } from "../types/api";
 import { api } from "@/lib/http";
 
@@ -45,19 +47,33 @@ class ProductsService {
   public async updateProduct(
     id: string,
     data: UpdateProductRequest,
+    options?: { signal?: AbortSignal; timeoutMs?: number },
   ): Promise<ApiProductWithDetails> {
     const response = await api.put<ApiProductWithDetails>(
       `/admin/products/${id}`,
       data,
+      {
+        signal: options?.signal,
+        timeout: options?.timeoutMs || 30000,
+      },
     );
     return response.data;
   }
 
   public async deleteProduct(
     id: string,
-  ): Promise<{ success: boolean; message: string }> {
-    const response = await api.delete<{ success: boolean; message: string }>(
+  ): Promise<DeleteProductResponse> {
+    const response = await api.delete<DeleteProductResponse>(
       `/admin/products/${id}`,
+    );
+    return response.data;
+  }
+
+  public async toggleProductStatus(
+    id: string,
+  ): Promise<ToggleProductStatusResponse> {
+    const response = await api.patch<ToggleProductStatusResponse>(
+      `/admin/products/${id}/toggle-status`,
     );
     return response.data;
   }

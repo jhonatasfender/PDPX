@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -30,6 +31,7 @@ import {
   CreateProductResponseDto,
   UpdateProductResponseDto,
   DeleteProductResponseDto,
+  ToggleProductStatusResponseDto,
   ProductWithDetailsResponseDto,
   ListProductsResponseDto,
 } from "../../dto/product/product-response.dto";
@@ -38,6 +40,7 @@ import { GetProductUseCase } from "../../../application/product/use-cases/get-pr
 import { ListProductsUseCase } from "../../../application/product/use-cases/list-products.use-case";
 import { UpdateProductUseCase } from "../../../application/product/use-cases/update-product.use-case";
 import { DeleteProductUseCase } from "../../../application/product/use-cases/delete-product.use-case";
+import { ToggleProductStatusUseCase } from "../../../application/product/use-cases/toggle-product-status.use-case";
 
 @ApiTags("Administração - Produtos")
 @Controller("admin/products")
@@ -50,6 +53,7 @@ export class AdminProductController {
     private readonly listProductsUseCase: ListProductsUseCase,
     private readonly updateProductUseCase: UpdateProductUseCase,
     private readonly deleteProductUseCase: DeleteProductUseCase,
+    private readonly toggleProductStatusUseCase: ToggleProductStatusUseCase,
   ) {}
 
   @Post()
@@ -211,6 +215,35 @@ export class AdminProductController {
     const request = ProductMapper.toUpdateProductRequest(id, updateProductDto);
     const response = await this.updateProductUseCase.execute(request);
     return ProductMapper.toUpdateProductResponse(response);
+  }
+
+  @Patch(":id/toggle-status")
+  @RequireAdmin()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: "Ativar/Desativar produto",
+    description: "Alterna o status ativo/inativo de um produto (requer role ADMIN ou SUPERADMIN)",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Status do produto alterado com sucesso",
+    type: ToggleProductStatusResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Produto não encontrado",
+  })
+  @ApiResponse({
+    status: 403,
+    description: "Acesso negado - permissões insuficientes",
+  })
+  public async toggleProductStatus(
+    @Param("id") id: string,
+    @CurrentUser() user: User,
+  ): Promise<ToggleProductStatusResponseDto> {
+    const request = { id };
+    const response = await this.toggleProductStatusUseCase.execute(request);
+    return ProductMapper.toToggleProductStatusResponse(response);
   }
 
   @Delete(":id")
