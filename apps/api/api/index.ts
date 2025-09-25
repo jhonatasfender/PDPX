@@ -1,2 +1,2 @@
-import handler from "../dist/src/vercel";
+import handler from "../src/vercel";
 export default handler;
