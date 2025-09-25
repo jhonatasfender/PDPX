@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/product-card";
+import { ProductCardClient } from "@/components/product-card-client";
 import CatalogFilters from "@/components/catalog-filters";
 import { cookies } from "next/headers";
 import { api } from "@/lib/http";
@@ -34,7 +34,7 @@ export default async function Page() {
         <CatalogFilters brands={filters.brands} price={filters.price} />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p: PublicCatalogProductDTO, idx: number) => (
-            <ProductCard key={p.id} product={p} priority={idx < 3} />
+            <ProductCardClient key={p.id} product={p} priority={idx < 3} />
           ))}
         </div>
       </div>

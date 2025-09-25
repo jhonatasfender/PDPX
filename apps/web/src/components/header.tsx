@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Armchair, ShoppingCart, Menu, Search, User } from "lucide-react";
+import { Armchair, Menu, Search, User } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { UserMenu } from "./user-menu/user-menu";
 import { If } from "@/components/ui/if";
 import { useAuth } from "@/contexts/auth.context";
+import { BagIcon } from "./bag/bag-icon";
 
 export default function Header() {
   const { user } = useAuth();
@@ -28,12 +29,7 @@ export default function Header() {
         </form>
 
         <nav className="ml-auto flex items-center gap-4">
-          <Link href="/carrinho">
-            <Button variant="secondary" size="sm" className="gap-2">
-              <ShoppingCart size={16} />
-              <span className="hidden sm:inline">Carrinho</span>
-            </Button>
-          </Link>
+          <BagIcon className="p-2 hover:bg-neutral-800 rounded-md transition-colors" />
 
           <If condition={!!user}>
             <UserMenu />

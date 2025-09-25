@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RadioSwatch } from "@/components/ui/radio-swatch";
 import { ProductGallery } from "@/components/product-gallery";
+import { AddToBagButton } from "@/components/bag/add-to-bag-button";
 import { CurrencyFormatter } from "@/lib/format";
 
 export default async function PDPPage({
@@ -144,12 +145,13 @@ export default async function PDPPage({
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row md:gap-3">
-            <Button size="lg" className="w-full gap-2">
-              <ShoppingCart size={18} /> Adicionar ao carrinho
-            </Button>
-            <Button variant="secondary" size="lg" className="w-full">
-              Comprar agora
-            </Button>
+            <AddToBagButton productId={product.id} className="w-full" size="lg" />
+            <Link href="/carrinho" className="w-full">
+              <Button variant="secondary" size="lg" className="w-full gap-2">
+                <ShoppingCart size={18} />
+                Ver Carrinho
+              </Button>
+            </Link>
           </div>
         </div>
 
