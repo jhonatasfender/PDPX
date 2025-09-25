@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class InvalidParametersException extends HttpException {
-  constructor(message: string) {
+  public constructor(message: string) {
     super(
       {
         message,

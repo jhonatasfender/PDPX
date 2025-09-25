@@ -1,4 +1,5 @@
 import { PublicUser } from "../../../domain/entities/public-user.entity";
+import { UserRole } from "@prisma/client";
 
 export interface UserWithAuthData {
   custom: PublicUser;
@@ -22,21 +23,17 @@ export interface UserSyncRepository {
   ): Promise<PublicUser>;
   getUserWithAuthData(userId: string): Promise<UserWithAuthData>;
   getUserByEmail(email: string): Promise<UserWithAuthData | null>;
-  updateUserRole(
-    authUserId: string,
-    role: "USER" | "ADMIN" | "SUPERADMIN",
-  ): Promise<PublicUser>;
+  updateUserRole(authUserId: string, role: UserRole): Promise<PublicUser>;
   getAllUsersWithAuthData(): Promise<UserWithAuthData[]>;
   findCustomUserByAuthId(authUserId: string): Promise<PublicUser | null>;
   createCustomUser(data: {
     auth_user_id: string;
-    role: "USER" | "ADMIN" | "SUPERADMIN";
     name?: string;
   }): Promise<PublicUser>;
   updateCustomUser(
     authUserId: string,
     data: {
-      role?: "USER" | "ADMIN" | "SUPERADMIN";
+      role?: UserRole;
       name?: string;
     },
   ): Promise<PublicUser>;

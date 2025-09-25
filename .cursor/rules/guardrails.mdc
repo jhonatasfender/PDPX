@@ -65,6 +65,7 @@ Estas regras garantem consistência, qualidade e alinhamento às exigências do 
   - Evitar omissão de `public` — explicitar a intenção para todos os membros.
   - Proibir uso direto de `PrismaService` fora de `infra/**`. Guards, Controllers e UseCases devem depender de repositórios/adapters via tokens.
   - Duplicação de regras (ex.: hierarquia de roles) deve ser centralizada em um único `PermissionRepository` (ou equivalente) para reutilização.
+ - Comentários em código: não adicionar comentários em novos edits. Código deve ser autoexplicativo por nomes claros e tipagens. Justificativas e decisões devem ir nos arquivos MDC/rules, não inline no código.
 
 ## Observabilidade e Logs
 - Logs estruturados com correlação de request. Não logar dados sensíveis.

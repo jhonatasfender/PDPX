@@ -5,6 +5,7 @@ import {
   UserWithAuthData,
 } from "../../../application/user/interfaces/user-sync.repository";
 import { PublicUser } from "../../../domain/entities/public-user.entity";
+import { UserRole as DbUserRole } from "@prisma/client";
 
 @Injectable()
 export class UserSyncRepositoryImpl implements UserSyncRepository {
@@ -29,15 +30,25 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     const existingUser = await this.findCustomUserByAuthId(authUserId);
 
     if (existingUser) {
+      await this.upsertUserProfileForUser(
+        existingUser.id,
+        existingUser.name ?? undefined,
+        existingUser.role as DbUserRole,
+      );
       return existingUser;
     } else {
       const extractedName =
         customName || this.extractNameFromAuthUser(authUser);
-      return await this.createCustomUser({
+      const created = await this.createCustomUser({
         auth_user_id: authUserId,
-        role: "USER",
         name: extractedName,
       });
+      await this.upsertUserProfileForUser(
+        created.id,
+        extractedName,
+        DbUserRole.USER,
+      );
+      return created;
     }
   }
 
@@ -92,48 +103,69 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
   public async findCustomUserByAuthId(
     authUserId: string,
   ): Promise<PublicUser | null> {
-    return await this.prisma.users.findUnique({
+    const row = await this.prisma.users.findUnique({
       where: { auth_user_id: authUserId },
+      select: { id: true, auth_user_id: true, name: true },
+    });
+    if (!row) return null;
+    const profile = await this.prisma.user_profiles.findUnique({
+      where: { user_id: row.id },
+      select: { role: true },
+    });
+    return this.toPublicUser({
+      id: row.id,
+      auth_user_id: row.auth_user_id,
+      name: row.name,
+      role: profile?.role ?? DbUserRole.USER,
     });
   }
 
   public async createCustomUser(data: {
     auth_user_id: string;
-    role: "USER" | "ADMIN" | "SUPERADMIN";
     name?: string;
   }): Promise<PublicUser> {
-    return await this.prisma.users.create({
+    const row = await this.prisma.users.create({
       data: {
         auth_user_id: data.auth_user_id,
-        role: data.role,
         name: data.name,
       },
+      select: { id: true, auth_user_id: true, name: true },
     });
+    return this.toPublicUser({ ...row, role: DbUserRole.USER });
   }
 
   public async updateCustomUser(
     authUserId: string,
     data: {
-      role?: "USER" | "ADMIN" | "SUPERADMIN";
+      role?: DbUserRole;
       name?: string;
     },
   ): Promise<PublicUser> {
-    return await this.prisma.users.update({
+    const updated = await this.prisma.users.update({
       where: { auth_user_id: authUserId },
       data: {
-        ...data,
+        name: data.name,
       },
+      select: { id: true, auth_user_id: true, name: true },
+    });
+    await this.upsertUserProfileForAuthUser(authUserId, data.name, data.role);
+    return this.toPublicUser({
+      ...updated,
+      role: data.role ?? DbUserRole.USER,
     });
   }
 
   public async updateUserRole(
     authUserId: string,
-    role: "USER" | "ADMIN" | "SUPERADMIN",
+    role: DbUserRole,
   ): Promise<PublicUser> {
-    return await this.prisma.users.update({
+    const updated = await this.prisma.users.findUnique({
       where: { auth_user_id: authUserId },
-      data: { role },
+      select: { id: true, auth_user_id: true, name: true },
     });
+    if (!updated) throw new Error("Usuário customizado não encontrado");
+    await this.upsertUserProfileForAuthUser(authUserId, undefined, role);
+    return this.toPublicUser({ ...updated, role });
   }
 
   public async getAllUsersWithAuthData(): Promise<UserWithAuthData[]> {
@@ -150,8 +182,17 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
           },
         });
 
+        const profile = await this.prisma.user_profiles.findUnique({
+          where: { user_id: user.id },
+          select: { role: true },
+        });
         return {
-          custom: user as PublicUser,
+          custom: this.toPublicUser({
+            id: user.id,
+            auth_user_id: user.auth_user_id,
+            name: user.name,
+            role: profile?.role ?? DbUserRole.USER,
+          }),
           auth: authUser as UserWithAuthData["auth"],
         };
       }),
@@ -203,5 +244,59 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     }
 
     return "Usuário";
+  }
+
+  private async upsertUserProfileForAuthUser(
+    authUserId: string,
+    name?: string,
+    role?: DbUserRole,
+  ): Promise<void> {
+    const user = await this.prisma.users.findUnique({
+      where: { auth_user_id: authUserId },
+      select: { id: true, name: true },
+    });
+    if (!user) return;
+    await this.upsertUserProfileForUser(
+      user.id,
+      name ?? user.name ?? "Usuário",
+      role ?? DbUserRole.USER,
+    );
+  }
+
+  private async upsertUserProfileForUser(
+    userId: string,
+    name?: string,
+    role?: DbUserRole,
+  ): Promise<void> {
+    try {
+      await this.prisma.user_profiles.upsert({
+        where: { user_id: userId },
+        create: {
+          user_id: userId,
+          name: name ?? "Usuário",
+          role: role ?? DbUserRole.USER,
+        },
+        update: {
+          name: name ?? "Usuário",
+          role: role ?? DbUserRole.USER,
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao sincronizar user_profiles:", error);
+    }
+  }
+
+  private toPublicUser(row: {
+    id: string;
+    auth_user_id: string;
+    name: string | null;
+    role: DbUserRole;
+  }): PublicUser {
+    return {
+      id: row.id,
+      auth_user_id: row.auth_user_id,
+      name: row.name,
+      role: row.role,
+    };
   }
 }

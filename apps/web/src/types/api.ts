@@ -52,8 +52,8 @@ export interface ProductsQueryParams {
   search?: string;
   brand?: string;
   isActive?: boolean;
-  sortBy?: 'name' | 'createdAt' | 'price' | 'stock';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "name" | "createdAt" | "price" | "stock";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface CreateProductRequest {

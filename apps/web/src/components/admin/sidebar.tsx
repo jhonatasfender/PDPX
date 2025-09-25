@@ -9,14 +9,23 @@ export function AdminSidebar() {
   ];
 
   return (
-    <div className="flex h-full min-h-screen flex-col bg-neutral-950">
-      <div className="flex items-center gap-2 border-b border-neutral-800 p-4">
+    <div
+      className="flex h-full min-h-screen flex-col bg-neutral-950"
+      data-cy="admin-sidebar"
+    >
+      <div
+        className="flex items-center gap-2 border-b border-neutral-800 p-4"
+        data-cy="admin-sidebar-header"
+      >
         <Boxes size={18} className="text-neutral-300" />
         <span className="text-sm font-semibold text-neutral-200">
           PDPX Admin
         </span>
       </div>
-      <nav className="flex flex-1 flex-col gap-1 p-2">
+      <nav
+        className="flex flex-1 flex-col gap-1 p-2"
+        data-cy="admin-sidebar-nav"
+      >
         {nav.map((item) => (
           <AdminNavItem
             key={item.href}
@@ -26,7 +35,10 @@ export function AdminSidebar() {
           />
         ))}
       </nav>
-      <div className="border-t border-neutral-800 p-3 text-xs text-neutral-500">
+      <div
+        className="border-t border-neutral-800 p-3 text-xs text-neutral-500"
+        data-cy="admin-sidebar-footer"
+      >
         v0.1.0
       </div>
     </div>

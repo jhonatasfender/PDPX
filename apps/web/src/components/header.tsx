@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { Armchair, ShoppingCart, Menu, Search, User } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { UserMenu } from "../components/user-menu";
+import { UserMenu } from "./user-menu/user-menu";
+import { If } from "@/components/ui/if";
 import { useAuth } from "@/contexts/auth.context";
 
 export default function Header() {
@@ -34,16 +35,22 @@ export default function Header() {
             </Button>
           </Link>
 
-          {user ? (
+          <If condition={!!user}>
             <UserMenu />
-          ) : (
+          </If>
+          <If condition={!user}>
             <Link href="/login">
-              <Button variant="secondary" size="sm" className="gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="gap-2"
+                data-cy="header-login"
+              >
                 <User size={16} />
                 <span className="hidden sm:inline">Entrar</span>
               </Button>
             </Link>
-          )}
+          </If>
 
           <Button
             aria-label="Menu"

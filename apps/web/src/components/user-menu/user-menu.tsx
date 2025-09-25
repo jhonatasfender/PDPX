@@ -1,17 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/auth.context";
+import { MenuList, type MenuItem as MenuListItem } from "./menu-list";
+import { If } from "@/components/ui/if";
 
-interface MenuItem {
-  label: string;
-  href: string;
-  onClick?: () => void;
-}
+interface MenuItem extends MenuListItem {}
 
 interface UserMenuProps {
   menuItems?: MenuItem[];
@@ -60,6 +57,7 @@ export function UserMenu({
         variant="secondary"
         size="sm"
         className="h-8 w-8 overflow-hidden rounded-full border border-neutral-800 bg-neutral-900 p-0"
+        data-cy="user-menu-trigger"
       >
         <span className="sr-only">Abrir menu do usuário</span>
         <Avatar
@@ -69,12 +67,13 @@ export function UserMenu({
           className="h-full w-full"
         />
       </Button>
-      {open && (
+      <If condition={open}>
         <div
           role="menu"
           className={cn(
             "absolute right-0 mt-2 w-44 rounded-md border border-neutral-800 bg-neutral-950 p-1 shadow-lg",
           )}
+          data-cy="user-menu-dropdown"
         >
           <div className="px-3 py-2 text-xs">
             <div className="font-medium text-neutral-100">
@@ -83,29 +82,24 @@ export function UserMenu({
             <div className="truncate text-neutral-500">{user.email}</div>
           </div>
           <div className="my-1 h-px bg-neutral-800" />
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block rounded-sm px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-900"
-              role="menuitem"
-              onClick={() => {
-                setOpen(false);
-                item.onClick?.();
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <MenuList
+            items={menuItems}
+            role={user.role}
+            onItemClick={(item) => {
+              setOpen(false);
+              item.onClick?.();
+            }}
+          />
           <button
             className="block w-full rounded-sm px-3 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-900"
             role="menuitem"
+            data-cy="user-menu-logout"
             onClick={handleLogout}
           >
             Sair
           </button>
         </div>
-      )}
+      </If>
     </div>
   );
 }

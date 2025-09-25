@@ -9,8 +9,8 @@ export default async function AdminProductEditPage({ params }: Props) {
   const { id } = await params;
   return (
     <div className="space-y-4">
-      <nav className="-mb-2">
-        <Link href="/admin/products">
+      <nav className="-mb-2" data-cy="admin-edit-nav">
+        <Link href="/admin/products" data-cy="admin-edit-back">
           <Button
             variant="secondary"
             size="sm"
@@ -23,7 +23,10 @@ export default async function AdminProductEditPage({ params }: Props) {
       <h1 className="text-2xl font-semibold tracking-tight">
         Editar produto #{id}
       </h1>
-      <div className="rounded-lg border border-neutral-800 p-4">
+      <div
+        className="rounded-lg border border-neutral-800 p-4"
+        data-cy="admin-edit-form"
+      >
         <AdminProductForm submitLabel="Salvar alterações" />
       </div>
     </div>

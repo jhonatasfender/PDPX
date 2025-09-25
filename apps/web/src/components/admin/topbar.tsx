@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
-import { UserMenu } from "../user-menu";
+import { UserMenu } from "../user-menu/user-menu";
 
 type SearchForm = { query: string };
 

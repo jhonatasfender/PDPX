@@ -59,6 +59,7 @@ export function ProductGallery({ images }: { images: Img[] }) {
                   src={img.url}
                   alt={img.alt ?? ""}
                   fill
+                  sizes="(max-width: 768px) 100vw, 600px"
                   className="object-cover"
                   priority
                 />
@@ -111,6 +112,7 @@ export function ProductGallery({ images }: { images: Img[] }) {
                 src={img.url}
                 alt={img.alt ?? ""}
                 fill
+                sizes="80px"
                 className="object-cover"
               />
             </button>

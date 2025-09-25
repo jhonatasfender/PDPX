@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class AuthServiceException extends HttpException {
-  constructor(message: string) {
+  public constructor(message: string) {
     super(
       {
         message,
@@ -14,7 +14,7 @@ export class AuthServiceException extends HttpException {
 }
 
 export class EmailNotConfirmedException extends HttpException {
-  constructor(email: string) {
+  public constructor(email: string) {
     super(
       {
         message: `Email '${email}' não foi confirmado. Verifique sua caixa de entrada.`,
@@ -27,7 +27,7 @@ export class EmailNotConfirmedException extends HttpException {
 }
 
 export class InvalidCredentialsException extends HttpException {
-  constructor() {
+  public constructor() {
     super(
       {
         message: "Credenciais inválidas",
@@ -40,7 +40,7 @@ export class InvalidCredentialsException extends HttpException {
 }
 
 export class InvalidTokenException extends HttpException {
-  constructor() {
+  public constructor() {
     super(
       {
         message: "Token inválido",
@@ -53,7 +53,7 @@ export class InvalidTokenException extends HttpException {
 }
 
 export class MissingTokenException extends HttpException {
-  constructor() {
+  public constructor() {
     super(
       {
         message: "Token não fornecido",
@@ -66,7 +66,7 @@ export class MissingTokenException extends HttpException {
 }
 
 export class TokenExpiredException extends HttpException {
-  constructor() {
+  public constructor() {
     super(
       {
         message: "Token expirado",
@@ -79,7 +79,7 @@ export class TokenExpiredException extends HttpException {
 }
 
 export class UserAlreadyExistsException extends HttpException {
-  constructor(email: string) {
+  public constructor(email: string) {
     super(
       {
         message: `Usuário com email '${email}' já existe`,
@@ -92,7 +92,7 @@ export class UserAlreadyExistsException extends HttpException {
 }
 
 export class UserNotFoundException extends HttpException {
-  constructor(identifier: string) {
+  public constructor(identifier: string) {
     super(
       {
         message: `Usuário '${identifier}' não encontrado`,

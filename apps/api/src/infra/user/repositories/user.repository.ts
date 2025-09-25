@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../../infra/prisma/prisma.service";
-import { UserRole } from "../../../domain/user/value-objects/role.vo";
+import { UserRole } from "@prisma/client";
 
 @Injectable()
 export class UserRepository {
@@ -21,16 +21,12 @@ export class UserRepository {
       data: {
         id: data.id,
         auth_user_id: data.auth_user_id,
-        role: data.role || UserRole.USER,
       },
     });
   }
 
-  public async updateRole(id: string, role: UserRole) {
-    return this.prisma.users.update({
-      where: { id },
-      data: { role },
-    });
+  public async updateRole() {
+    return Promise.resolve();
   }
 
   public async findAll() {
@@ -38,7 +34,6 @@ export class UserRepository {
       select: {
         id: true,
         auth_user_id: true,
-        role: true,
       },
     });
   }

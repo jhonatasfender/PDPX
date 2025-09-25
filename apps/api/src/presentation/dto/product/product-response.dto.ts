@@ -2,97 +2,97 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class ProductImageResponseDto {
   @ApiProperty({ description: "ID da imagem" })
-  id!: string;
+  public id!: string;
 
   @ApiProperty({ description: "ID do produto" })
-  productId!: string;
+  public productId!: string;
 
   @ApiProperty({ description: "URL da imagem" })
-  url!: string;
+  public url!: string;
 
   @ApiProperty({ description: "Texto alternativo da imagem", nullable: true })
-  alt!: string | null;
+  public alt!: string | null;
 
   @ApiProperty({ description: "Se é a imagem principal" })
-  isPrimary!: boolean;
+  public isPrimary!: boolean;
 
   @ApiProperty({ description: "Posição da imagem" })
-  position!: number;
+  public position!: number;
 
   @ApiProperty({ description: "Data de criação" })
-  createdAt!: Date;
+  public createdAt!: Date;
 }
 
 export class ProductPriceResponseDto {
   @ApiProperty({ description: "ID do preço" })
-  id!: string;
+  public id!: string;
 
   @ApiProperty({ description: "ID do produto" })
-  productId!: string;
+  public productId!: string;
 
   @ApiProperty({ description: "Moeda do preço" })
-  currency!: string;
+  public currency!: string;
 
   @ApiProperty({ description: "Valor em centavos" })
-  amountCents!: number;
+  public amountCents!: number;
 
   @ApiProperty({ description: "Valor em moeda" })
-  amount!: number;
+  public amount!: number;
 
   @ApiProperty({ description: "Data de início da validade" })
-  validFrom!: Date;
+  public validFrom!: Date;
 
   @ApiProperty({ description: "Data de fim da validade", nullable: true })
-  validTo!: Date | null;
+  public validTo!: Date | null;
 
   @ApiProperty({ description: "Data de criação" })
-  createdAt!: Date;
+  public createdAt!: Date;
 }
 
 export class ProductResponseDto {
   @ApiProperty({ description: "ID do produto" })
-  id!: string;
+  public id!: string;
 
   @ApiProperty({ description: "Slug único do produto" })
-  slug!: string;
+  public slug!: string;
 
   @ApiProperty({ description: "Nome do produto" })
-  name!: string;
+  public name!: string;
 
   @ApiProperty({ description: "Marca do produto" })
-  brand!: string;
+  public brand!: string;
 
   @ApiProperty({ description: "SKU único do produto" })
-  sku!: string;
+  public sku!: string;
 
   @ApiProperty({ description: "Descrição do produto" })
-  description!: string;
+  public description!: string;
 
   @ApiProperty({ description: "Quantidade em estoque" })
-  stock!: number;
+  public stock!: number;
 
   @ApiProperty({ description: "Se o produto está ativo" })
-  isActive!: boolean;
+  public isActive!: boolean;
 
   @ApiProperty({ description: "Data de criação" })
-  createdAt!: Date;
+  public createdAt!: Date;
 
   @ApiProperty({ description: "Data de atualização" })
-  updatedAt!: Date;
+  public updatedAt!: Date;
 }
 
 export class ProductWithDetailsResponseDto {
   @ApiProperty({ description: "Dados do produto" })
-  product!: ProductResponseDto;
+  public product!: ProductResponseDto;
 
   @ApiProperty({
     description: "Imagens do produto",
     type: [ProductImageResponseDto],
   })
-  images!: ProductImageResponseDto[];
+  public images!: ProductImageResponseDto[];
 
   @ApiProperty({ description: "Preço atual do produto", nullable: true })
-  price!: ProductPriceResponseDto | null;
+  public price!: ProductPriceResponseDto | null;
 }
 
 export class ListProductsResponseDto {
@@ -100,53 +100,111 @@ export class ListProductsResponseDto {
     description: "Lista de produtos com detalhes",
     type: [ProductWithDetailsResponseDto],
   })
-  products!: ProductWithDetailsResponseDto[];
+  public products!: ProductWithDetailsResponseDto[];
 
   @ApiProperty({ description: "Total de produtos" })
-  total!: number;
+  public total!: number;
 
   @ApiProperty({ description: "Página atual" })
-  page!: number;
+  public page!: number;
 
   @ApiProperty({ description: "Limite por página" })
-  limit!: number;
+  public limit!: number;
 
   @ApiProperty({ description: "Total de páginas" })
-  totalPages!: number;
+  public totalPages!: number;
+}
+
+// Public catalog lightweight image DTO (no productId/createdAt)
+
+export class PublicImageDto {
+  @ApiProperty()
+  public id!: string;
+  @ApiProperty()
+  public url!: string;
+  @ApiProperty({ nullable: true })
+  public alt!: string | null;
+  @ApiProperty()
+  public isPrimary!: boolean;
+  @ApiProperty()
+  public position!: number;
+}
+
+export class PublicCatalogProductDto {
+  @ApiProperty()
+  public id!: string;
+  @ApiProperty()
+  public slug!: string;
+  @ApiProperty()
+  public name!: string;
+  @ApiProperty()
+  public brand!: string;
+  @ApiProperty()
+  public sku!: string;
+  @ApiProperty()
+  public description!: string;
+  @ApiProperty({ type: [PublicImageDto] })
+  public images!: PublicImageDto[];
+  @ApiProperty({ type: () => Object })
+  public price!: { currency: string; amountCents: number };
+  @ApiProperty()
+  public stock!: number;
+  @ApiProperty()
+  public isActive!: boolean;
+}
+
+export class ListPublicCatalogResponseDto {
+  @ApiProperty({ type: [PublicCatalogProductDto] })
+  public products!: PublicCatalogProductDto[];
+  @ApiProperty()
+  public total!: number;
+  @ApiProperty()
+  public page!: number;
+  @ApiProperty()
+  public limit!: number;
+  @ApiProperty()
+  public totalPages!: number;
+}
+
+export class PublicFiltersResponseDto {
+  @ApiProperty({ type: [String] })
+  public brands!: string[];
+  @ApiProperty({ type: () => Object })
+  public price!: { minCents: number; maxCents: number };
 }
 
 export class CreateProductResponseDto {
   @ApiProperty({ description: "Produto criado" })
-  product!: ProductResponseDto;
+  public product!: ProductResponseDto;
 
   @ApiProperty({
     description: "Imagens criadas",
     type: [ProductImageResponseDto],
   })
-  images!: ProductImageResponseDto[];
+  public images!: ProductImageResponseDto[];
 
   @ApiProperty({ description: "Preço criado" })
-  price!: ProductPriceResponseDto;
+  public price!: ProductPriceResponseDto;
 }
 
 export class UpdateProductResponseDto {
   @ApiProperty({ description: "Produto atualizado" })
-  product!: ProductResponseDto;
+  public product!: ProductResponseDto;
 
   @ApiProperty({
     description: "Imagens atualizadas",
     type: [ProductImageResponseDto],
   })
-  images!: ProductImageResponseDto[];
+  public images!: ProductImageResponseDto[];
 
   @ApiProperty({ description: "Preço atualizado", nullable: true })
-  price!: ProductPriceResponseDto | null;
+  public price!: ProductPriceResponseDto | null;
 }
 
 export class DeleteProductResponseDto {
   @ApiProperty({ description: "Se a operação foi bem-sucedida" })
-  success!: boolean;
+  public success!: boolean;
 
   @ApiProperty({ description: "Mensagem de resposta" })
-  message!: string;
+  public message!: string;
 }

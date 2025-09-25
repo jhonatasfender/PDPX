@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { mockProduct } from "@/mocks/pdp";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
+import { api } from "@/lib/http";
+import type { PublicCatalogProductDTO } from "@pdpx/types";
 import {
   ShoppingCart,
   Truck,
@@ -14,8 +17,25 @@ import { RadioSwatch } from "@/components/ui/radio-swatch";
 import { ProductGallery } from "@/components/product-gallery";
 import { CurrencyFormatter } from "@/lib/format";
 
-export default async function PDPPage() {
-  const product = mockProduct;
+export default async function PDPPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { slug } = params;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+
+  const { data } = await api.get<{ products: PublicCatalogProductDTO[] }>(
+    "/public/products",
+    {
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      params: { search: slug },
+    },
+  );
+
+  const product = (data.products || []).find((p) => p.slug === slug);
+  if (!product) notFound();
 
   const primary = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const gallery = product.images.filter((i) => i.id !== primary.id);

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class ProductNotFoundException extends HttpException {
-  constructor(identifier: string) {
+  public constructor(identifier: string) {
     super(
       {
         message: `Produto '${identifier}' não encontrado`,
@@ -14,7 +14,7 @@ export class ProductNotFoundException extends HttpException {
 }
 
 export class ProductSlugAlreadyExistsException extends HttpException {
-  constructor(slug: string) {
+  public constructor(slug: string) {
     super(
       {
         message: `Já existe um produto com o slug '${slug}'`,
@@ -27,7 +27,7 @@ export class ProductSlugAlreadyExistsException extends HttpException {
 }
 
 export class ProductSkuAlreadyExistsException extends HttpException {
-  constructor(sku: string) {
+  public constructor(sku: string) {
     super(
       {
         message: `Já existe um produto com o SKU '${sku}'`,

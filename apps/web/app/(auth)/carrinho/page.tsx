@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockCart } from "@/mocks/cart";
+const mockCart: any[] = [];
 import { CurrencyFormatter } from "@/lib/format";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ export default function CartPage() {
                   src={item.product.images[0].url}
                   alt={item.product.name}
                   fill
+                  sizes="112px"
                   className="object-cover"
                 />
               </div>

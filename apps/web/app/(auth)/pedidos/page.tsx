@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/contexts/auth.context";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { CurrencyFormatter } from "@/lib/format";
 
@@ -25,8 +24,6 @@ const mockPedidos = [
 ];
 
 export default function PedidosPage() {
-  const { user } = useAuth();
-
   return (
     <main className="mx-auto max-w-4xl p-4">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight text-neutral-100">

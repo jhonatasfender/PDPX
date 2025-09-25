@@ -9,6 +9,7 @@ type BaseProps = {
   type?: string;
   autoComplete?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  step?: number | string;
   disabled?: boolean;
   "data-cy"?: string;
 };
@@ -20,13 +21,13 @@ export function FormField<T extends FieldValues>({
   type = "text",
   autoComplete,
   inputMode,
+  step,
   disabled,
   "data-cy": dataCy,
 }: BaseProps & { name: Path<T> }) {
   const { register, formState } = useFormContext<T>();
-  const error = (formState.errors as any)?.[name]?.message as
-    | string
-    | undefined;
+  const fieldErrors = formState.errors as Record<string, { message?: string }>;
+  const error = fieldErrors[name as string]?.message;
 
   return (
     <div>
@@ -35,7 +36,8 @@ export function FormField<T extends FieldValues>({
         type={type}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        inputMode={inputMode as any}
+        inputMode={inputMode}
+        step={step}
         disabled={disabled}
         data-cy={dataCy}
         {...register(name)}

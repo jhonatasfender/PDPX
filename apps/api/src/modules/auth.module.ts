@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { AuthController } from "../presentation/controllers/user/auth.controller";
 import { AdminController } from "../presentation/controllers/admin/admin.controller";
 import { AdminProductController } from "../presentation/controllers/admin/product.controller";
+import { CatalogPublicController } from "../presentation/controllers/public/catalog.controller";
 import { RegisterUserUseCase } from "../application/user/use-cases/register-user.use-case";
 import { LoginUserUseCase } from "../application/user/use-cases/login-user.use-case";
 import { RefreshTokenUseCase } from "../application/user/use-cases/refresh-token.use-case";
@@ -29,7 +30,12 @@ import { PrismaProductImageRepository } from "../infra/product/repositories/pris
 import { PrismaProductPriceRepository } from "../infra/product/repositories/prisma-product-price.repository";
 
 @Module({
-  controllers: [AuthController, AdminController, AdminProductController],
+  controllers: [
+    AuthController,
+    AdminController,
+    AdminProductController,
+    CatalogPublicController,
+  ],
   providers: [
     RegisterUserUseCase,
     LoginUserUseCase,

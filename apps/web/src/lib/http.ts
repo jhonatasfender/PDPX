@@ -8,7 +8,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const token = localStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -24,7 +24,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       const errorData = error.response.data as any;
-      
+
       if (errorData?.error === "INVALID_CREDENTIALS") {
         const customError = new Error(
           errorData.message ||
@@ -34,9 +34,12 @@ api.interceptors.response.use(
         (customError as any).status = 401;
         return Promise.reject(customError);
       }
-      
-      if (errorData?.error === "INVALID_TOKEN" || errorData?.error === "TOKEN_EXPIRED") {
-        if (typeof window === 'undefined') {
+
+      if (
+        errorData?.error === "INVALID_TOKEN" ||
+        errorData?.error === "TOKEN_EXPIRED"
+      ) {
+        if (typeof window === "undefined") {
           return Promise.reject(error);
         }
 
@@ -48,22 +51,25 @@ api.interceptors.response.use(
             throw new Error("Refresh token não encontrado");
           }
 
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`, {
-            refreshToken,
-          });
+          const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
+            {
+              refreshToken,
+            },
+          );
 
           const { session } = response.data;
           if (session) {
             localStorage.setItem("access_token", session.access_token);
             localStorage.setItem("refresh_token", session.refresh_token);
-            
+
             originalRequest.headers.Authorization = `Bearer ${session.access_token}`;
             return api(originalRequest);
           }
         } catch (refreshError) {
           localStorage.removeItem("access_token");
           localStorage.removeItem("refresh_token");
-          window.location.href = '/login';
+          window.location.href = "/login";
           return Promise.reject(refreshError);
         }
       }
@@ -77,7 +83,7 @@ api.interceptors.response.use(
         return Promise.reject(customError);
       }
     }
-    
+
     return Promise.reject(error);
   },
 );

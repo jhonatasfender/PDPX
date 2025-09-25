@@ -25,47 +25,9 @@ import {
 } from "../../application/product/use-cases/update-product.use-case";
 import { DeleteProductResponse } from "../../application/product/use-cases/delete-product.use-case";
 
+import { ProductCoreMapper } from "./product-core.mapper";
+
 export class ProductMapper {
-  public static fromDomain(product: Product): ProductResponseDto {
-    return {
-      id: product.id,
-      slug: product.slug,
-      name: product.name,
-      brand: product.brand,
-      sku: product.sku,
-      description: product.description,
-      stock: product.stock,
-      isActive: product.isActive,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
-    };
-  }
-
-  public static imageFromDomain(image: ProductImage): ProductImageResponseDto {
-    return {
-      id: image.id,
-      productId: image.productId,
-      url: image.url,
-      alt: image.alt,
-      isPrimary: image.isPrimary,
-      position: image.position,
-      createdAt: image.createdAt,
-    };
-  }
-
-  public static priceFromDomain(price: ProductPrice): ProductPriceResponseDto {
-    return {
-      id: price.id,
-      productId: price.productId,
-      currency: price.currency,
-      amountCents: price.amountCents,
-      amount: price.getAmountInCurrency(),
-      validFrom: price.validFrom,
-      validTo: price.validTo,
-      createdAt: price.createdAt,
-    };
-  }
-
   public static toCreateProductRequest(
     dto: CreateProductDto,
   ): CreateProductRequest {
@@ -122,9 +84,11 @@ export class ProductMapper {
     response: CreateProductResponse,
   ): CreateProductResponseDto {
     return {
-      product: this.fromDomain(response.product),
-      images: response.images.map((img: any) => this.imageFromDomain(img)),
-      price: this.priceFromDomain(response.price),
+      product: ProductCoreMapper.productToDto(response.product),
+      images: response.images.map((img: ProductImage) =>
+        ProductCoreMapper.imageToDto(img),
+      ),
+      price: ProductCoreMapper.priceToDto(response.price),
     };
   }
 
@@ -132,9 +96,13 @@ export class ProductMapper {
     response: GetProductResponse,
   ): ProductWithDetailsResponseDto {
     return {
-      product: this.fromDomain(response.product),
-      images: response.images.map((img: any) => this.imageFromDomain(img)),
-      price: response.price ? this.priceFromDomain(response.price) : null,
+      product: ProductCoreMapper.productToDto(response.product),
+      images: response.images.map((img: ProductImage) =>
+        ProductCoreMapper.imageToDto(img),
+      ),
+      price: response.price
+        ? ProductCoreMapper.priceToDto(response.price)
+        : null,
     };
   }
 
@@ -142,9 +110,13 @@ export class ProductMapper {
     response: UpdateProductResponse,
   ): UpdateProductResponseDto {
     return {
-      product: this.fromDomain(response.product),
-      images: response.images.map((img: any) => this.imageFromDomain(img)),
-      price: response.price ? this.priceFromDomain(response.price) : null,
+      product: ProductCoreMapper.productToDto(response.product),
+      images: response.images.map((img: ProductImage) =>
+        ProductCoreMapper.imageToDto(img),
+      ),
+      price: response.price
+        ? ProductCoreMapper.priceToDto(response.price)
+        : null,
     };
   }
 
@@ -153,9 +125,11 @@ export class ProductMapper {
   ): ListProductsResponseDto {
     return {
       products: response.products.map((item: any) => ({
-        product: this.fromDomain(item.product),
-        images: item.images.map((img: any) => this.imageFromDomain(img)),
-        price: item.price ? this.priceFromDomain(item.price) : null,
+        product: ProductCoreMapper.productToDto(item.product),
+        images: item.images.map((img: ProductImage) =>
+          ProductCoreMapper.imageToDto(img),
+        ),
+        price: item.price ? ProductCoreMapper.priceToDto(item.price) : null,
       })),
       total: response.total,
       page: response.page,

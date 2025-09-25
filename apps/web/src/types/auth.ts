@@ -1,8 +1,10 @@
+import type { UserRole } from "@pdpx/types";
+
 export type User = {
   id: string;
   email: string;
   name?: string;
-  role: "USER" | "ADMIN";
+  role: UserRole;
 };
 
 export type AuthSession = {

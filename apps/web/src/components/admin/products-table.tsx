@@ -2,165 +2,272 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { productsService } from "../../services/products.service";
-import { ApiProductWithDetails } from "../../types/api";
+import type {
+  ApiProductsResponse,
+  ApiProductWithDetails,
+} from "../../types/api";
 import { CurrencyFormatter } from "../../lib/format";
 import { Button } from "../ui/button";
 import { Table, THead, TBody, TR, TH, TD } from "../ui/table";
-import { Eye, Pencil, Power, Trash2, Loader2 } from "lucide-react";
+import { Eye, Pencil, Power, Trash2, ImageOff } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export function ProductsTable() {
-  const [products, setProducts] = useState<ApiProductWithDetails[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await productsService.getProducts();
-        setProducts(response.products);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao carregar produtos');
-        console.error('Erro ao carregar produtos:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, isLoading, isError, error, refetch } =
+    useQuery<ApiProductsResponse>({
+      queryKey: ["admin-products", page, limit],
+      queryFn: ({ signal }) =>
+        productsService.getProducts(
+          { page, limit },
+          { signal, timeoutMs: 10000 },
+        ),
+      refetchOnWindowFocus: false,
+      staleTime: 60_000,
+      gcTime: 300_000,
+      placeholderData: (prev) => prev as ApiProductsResponse | undefined,
+    });
 
-    fetchProducts();
-  }, []);
+  const products = data?.products ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = data?.totalPages ?? 1;
+  const currentPage = data?.page ?? page;
 
-  if (loading) {
+  if (products.length === 0) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin" />
+      <div
+        className="rounded-lg border border-neutral-800 p-8 text-center"
+        data-cy="admin-products-empty"
+      >
+        <p className="text-neutral-400">Nenhum produto encontrado</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div
+        className="flex items-center justify-center py-8"
+        data-cy="admin-products-loading"
+      >
         <span className="ml-2">Carregando produtos...</span>
       </div>
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
-      <div className="rounded-lg border border-red-800/40 bg-red-900/20 p-4">
-        <p className="text-red-300">Erro: {error}</p>
-        <Button 
-          variant="secondary" 
-          size="sm" 
-          onClick={() => window.location.reload()}
+      <div
+        className="rounded-lg border border-red-800/40 bg-red-900/20 p-4"
+        data-cy="admin-products-error"
+      >
+        <p className="text-red-300" data-cy="admin-products-error-message">
+          Erro: {(error as any)?.message ?? "Falha ao carregar"}
+        </p>
+        <button
           className="mt-2"
+          data-cy="admin-products-retry"
+          onClick={() => refetch()}
         >
           Tentar novamente
-        </Button>
+        </button>
       </div>
     );
   }
 
-  if (products.length === 0) {
-    return (
-      <div className="rounded-lg border border-neutral-800 p-8 text-center">
-        <p className="text-neutral-400">Nenhum produto encontrado</p>
-      </div>
-    );
-  }
   return (
-    <Table>
-      <THead>
-        <TR>
-          <TH>Produto</TH>
-          <TH>Marca</TH>
-          <TH>SKU</TH>
-          <TH>Estoque</TH>
-          <TH>Status</TH>
-          <TH>Preço</TH>
-          <TH className="text-right">Ações</TH>
-        </TR>
-      </THead>
-      <TBody>
-        {products.map((productData) => {
-          const { product, images, price } = productData;
-          const img = images[0];
-          return (
-            <TR key={product.id}>
-              <TD>
-                <div className="flex items-center gap-3">
-                  <div className="relative h-12 w-16 overflow-hidden rounded-md bg-neutral-800">
-                    {img && img.url && img.url !== "string" && (img.url.startsWith("http") || img.url.startsWith("/")) ? (
-                      <Image
-                        src={img.url}
-                        alt={img.alt ?? product.name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-neutral-500">
-                        <span className="text-xs">Sem imagem</span>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <div className="line-clamp-1 font-medium text-neutral-100">
-                      {product.name}
+    <>
+      <Table data-cy="admin-products-table">
+        <THead>
+          <TR>
+            <TH data-cy="th-produto">Produto</TH>
+            <TH data-cy="th-marca">Marca</TH>
+            <TH data-cy="th-sku">SKU</TH>
+            <TH data-cy="th-estoque">Estoque</TH>
+            <TH data-cy="th-status">Status</TH>
+            <TH data-cy="th-preco">Preço</TH>
+            <TH className="text-right" data-cy="th-acoes">
+              Ações
+            </TH>
+          </TR>
+        </THead>
+        <TBody>
+          {products.map((productData: ApiProductWithDetails) => {
+            const { product, images, price } = productData;
+            const img = Array.isArray(images)
+              ? images.find((i) => i && i.url && i.url !== "string")
+              : undefined;
+            return (
+              <TR key={product.id} data-cy={`admin-product-row-${product.id}`}>
+                <TD data-cy="col-produto">
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-12 w-16 min-h-[48px] min-w-[64px] flex-shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                      {img &&
+                      img.url &&
+                      (img.url.startsWith("http") ||
+                        img.url.startsWith("/")) ? (
+                        <Image
+                          src={img.url}
+                          alt={img.alt ?? product.name}
+                          fill
+                          sizes="(max-width: 768px) 64px, 64px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-neutral-600">
+                          <ImageOff size={18} aria-hidden="true" />
+                          <span className="sr-only">Sem imagem</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="text-xs text-neutral-500">/{product.slug}</div>
+                    <div>
+                      <div className="line-clamp-1 font-medium text-neutral-100">
+                        {product.name}
+                      </div>
+                      <div className="text-xs text-neutral-500">
+                        /{product.slug}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </TD>
-              <TD className="text-neutral-300">{product.brand}</TD>
-              <TD className="text-neutral-300">{product.sku}</TD>
-              <TD className="text-neutral-300">{product.stock}</TD>
-              <TD>
-                <span
-                  className={cn(
-                    "rounded-md px-2 py-1 text-xs",
-                    product.isActive
-                      ? "border border-green-800/40 bg-green-900/20 text-green-300"
-                      : "border border-neutral-800 text-neutral-400",
-                  )}
-                >
-                  {product.isActive ? "Ativo" : "Inativo"}
-                </span>
-              </TD>
-              <TD className="font-medium text-neutral-100">
-                {CurrencyFormatter.formatBRLFromCents(price.amountCents)}
-              </TD>
-              <TD>
-                <div className="flex justify-end gap-1.5">
-                  <Link href={`/admin/products/${product.id}`}>
-                    <Button variant="ghost" size="sm" title="Visualizar">
-                      <Eye size={16} />
-                      <span className="sr-only">Ver</span>
-                    </Button>
-                  </Link>
-                  <Link href={`/admin/products/${product.id}/edit`}>
-                    <Button variant="secondary" size="sm" title="Editar">
-                      <Pencil size={16} />
-                      <span className="sr-only">Editar</span>
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    title={product.isActive ? "Desativar" : "Ativar"}
+                </TD>
+                <TD className="text-neutral-300" data-cy="col-marca">
+                  {product.brand}
+                </TD>
+                <TD className="text-neutral-300" data-cy="col-sku">
+                  {product.sku}
+                </TD>
+                <TD className="text-neutral-300" data-cy="col-estoque">
+                  {product.stock}
+                </TD>
+                <TD data-cy="col-status">
+                  <span
+                    className={cn(
+                      "rounded-md px-2 py-1 text-xs",
+                      product.isActive
+                        ? "border border-green-800/40 bg-green-900/20 text-green-300"
+                        : "border border-neutral-800 text-neutral-400",
+                    )}
                   >
-                    <Power size={16} />
-                    <span className="sr-only">
-                      {product.isActive ? "Desativar" : "Ativar"}
-                    </span>
-                  </Button>
-                  <Button variant="danger" size="sm" title="Excluir">
-                    <Trash2 size={16} />
-                    <span className="sr-only">Excluir</span>
-                  </Button>
-                </div>
-              </TD>
-            </TR>
-          );
-        })}
-      </TBody>
-    </Table>
+                    {product.isActive ? "Ativo" : "Inativo"}
+                  </span>
+                </TD>
+                <TD
+                  className="font-medium text-neutral-100"
+                  data-cy="col-preco"
+                >
+                  {CurrencyFormatter.formatBRLFromCents(price.amountCents)}
+                </TD>
+                <TD data-cy="col-acoes">
+                  <div className="flex justify-end gap-1.5" data-cy="acoes">
+                    <Link
+                      href={`/admin/products/${product.id}`}
+                      data-cy="btn-ver"
+                    >
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        title="Visualizar"
+                        data-cy="action-ver"
+                      >
+                        <Eye size={16} />
+                        <span className="sr-only">Ver</span>
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`/admin/products/${product.id}/edit`}
+                      data-cy="btn-editar"
+                    >
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        title="Editar"
+                        data-cy="action-editar"
+                      >
+                        <Pencil size={16} />
+                        <span className="sr-only">Editar</span>
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title={product.isActive ? "Desativar" : "Ativar"}
+                      data-cy="action-toggle-status"
+                    >
+                      <Power size={16} />
+                      <span className="sr-only">
+                        {product.isActive ? "Desativar" : "Ativar"}
+                      </span>
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      title="Excluir"
+                      data-cy="action-excluir"
+                    >
+                      <Trash2 size={16} />
+                      <span className="sr-only">Excluir</span>
+                    </Button>
+                  </div>
+                </TD>
+              </TR>
+            );
+          })}
+        </TBody>
+      </Table>
+
+      <div
+        className="mt-4 flex items-center justify-between"
+        data-cy="admin-products-pagination"
+      >
+        <div
+          className="flex items-center gap-2 text-sm text-neutral-400"
+          data-cy="admin-products-page-info"
+        >
+          <span>
+            Página {currentPage} de {totalPages} • {total} itens
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            className="rounded-md border border-neutral-800 px-3 py-1.5 text-sm text-neutral-100 disabled:opacity-50"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage <= 1}
+            data-cy="admin-products-prev"
+          >
+            Anterior
+          </button>
+          <button
+            className="rounded-md border border-neutral-800 px-3 py-1.5 text-sm text-neutral-100 disabled:opacity-50"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage >= totalPages}
+            data-cy="admin-products-next"
+          >
+            Próxima
+          </button>
+          <select
+            className="ml-2 rounded-md border border-neutral-800 bg-neutral-900 p-1 text-sm text-neutral-100"
+            value={limit}
+            onChange={(e) => {
+              const newLimit = Number(e.target.value) || 10;
+              setLimit(newLimit);
+              setPage(1);
+            }}
+            data-cy="admin-products-page-size"
+          >
+            {[10, 20, 50].map((n) => (
+              <option key={n} value={n}>
+                {n}/página
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </>
   );
 }

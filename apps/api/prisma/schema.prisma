@@ -73,30 +73,11 @@ model users {
   id            String          @id @default(uuid()) @db.Uuid
   auth_user_id  String          @unique @db.Uuid
   name          String?
-  role          UserRole        @default(USER)
-  auth_sessions auth_sessions[]
 
-  @@index([role])
   @@index([auth_user_id])
   @@schema("public")
 }
 
-model auth_sessions {
-  id            String   @id @default(uuid()) @db.Uuid
-  user_id       String   @db.Uuid
-  token         String   @unique
-  refresh_token String   @unique
-  expires_at    DateTime @db.Timestamptz(6)
-  created_at    DateTime @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime @default(now()) @db.Timestamptz(6)
-  user          users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id])
-  @@index([token])
-  @@index([refresh_token])
-  @@index([expires_at])
-  @@schema("public")
-}
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model auth_users {

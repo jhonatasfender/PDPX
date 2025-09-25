@@ -20,43 +20,43 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   @MinLength(2)
-  slug?: string;
+  public slug?: string;
 
   @ApiProperty({ description: "Nome do produto", required: false })
   @IsOptional()
   @IsString()
   @MinLength(2)
-  name?: string;
+  public name?: string;
 
   @ApiProperty({ description: "Marca do produto", required: false })
   @IsOptional()
   @IsString()
   @MinLength(1)
-  brand?: string;
+  public brand?: string;
 
   @ApiProperty({ description: "SKU único do produto", required: false })
   @IsOptional()
   @IsString()
   @MinLength(1)
-  sku?: string;
+  public sku?: string;
 
   @ApiProperty({ description: "Descrição do produto", required: false })
   @IsOptional()
   @IsString()
   @MinLength(10)
-  description?: string;
+  public description?: string;
 
   @ApiProperty({ description: "Quantidade em estoque", required: false })
   @IsOptional()
   @IsNumber()
   @Min(0)
-  stock?: number;
+  public stock?: number;
 
   @ApiProperty({ description: "Preço do produto", required: false })
   @IsOptional()
   @ValidateNested()
   @Type(() => ProductPriceRequestDto)
-  price?: ProductPriceRequestDto;
+  public price?: ProductPriceRequestDto;
 
   @ApiProperty({
     description: "Imagens do produto",
@@ -67,10 +67,10 @@ export class UpdateProductDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductImageRequestDto)
-  images?: ProductImageRequestDto[];
+  public images?: ProductImageRequestDto[];
 
   @ApiProperty({ description: "Se o produto está ativo", required: false })
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  public isActive?: boolean;
 }

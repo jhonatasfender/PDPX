@@ -22,6 +22,10 @@ export default [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "@typescript-eslint/explicit-member-accessibility": [
+        "error",
+        { accessibility: "explicit" },
+      ],
     },
   },
 ];

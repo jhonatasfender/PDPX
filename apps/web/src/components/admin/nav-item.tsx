@@ -20,6 +20,7 @@ export function AdminNavItem({ href, label, icon: Icon }: Props) {
         "flex items-center gap-2 rounded-md px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-900",
         active && "bg-neutral-900 text-neutral-100",
       )}
+      data-cy={`admin-nav-${label.toLowerCase().replace(/\s+/g, "-")}`}
     >
       <Icon size={16} /> {label}
     </Link>

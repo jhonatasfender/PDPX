@@ -14,7 +14,7 @@ import { Type, Transform } from "class-transformer";
 export class ProductImageRequestDto {
   @ApiProperty({ description: "URL da imagem" })
   @IsString()
-  url!: string;
+  public url!: string;
 
   @ApiProperty({ description: "Texto alternativo da imagem", required: false })
   @IsOptional()
@@ -28,7 +28,7 @@ export class ProductImageRequestDto {
     }
     return value;
   })
-  alt?: string | null;
+  public alt?: string | null;
 
   @ApiProperty({
     description: "Se é a imagem principal",
@@ -37,7 +37,7 @@ export class ProductImageRequestDto {
   })
   @IsOptional()
   @IsBoolean()
-  isPrimary?: boolean;
+  public isPrimary!: boolean;
 
   @ApiProperty({
     description: "Posição da imagem",
@@ -46,18 +46,18 @@ export class ProductImageRequestDto {
   })
   @IsOptional()
   @IsNumber()
-  position?: number;
+  public position!: number;
 }
 
 export class ProductPriceRequestDto {
   @ApiProperty({ description: "Moeda do preço", example: "BRL" })
   @IsString()
-  currency!: string;
+  public currency!: string;
 
   @ApiProperty({ description: "Valor em centavos", example: 349900 })
   @IsNumber()
   @Min(0)
-  amountCents!: number;
+  public amountCents!: number;
 }
 
 export class CreateProductDto {
@@ -67,7 +67,7 @@ export class CreateProductDto {
   })
   @IsString()
   @MinLength(2)
-  slug!: string;
+  public slug!: string;
 
   @ApiProperty({
     description: "Nome do produto",
@@ -75,12 +75,12 @@ export class CreateProductDto {
   })
   @IsString()
   @MinLength(2)
-  name!: string;
+  public name!: string;
 
   @ApiProperty({ description: "Marca do produto", example: "Casa&Conforto" })
   @IsString()
   @MinLength(1)
-  brand!: string;
+  public brand!: string;
 
   @ApiProperty({
     description: "SKU único do produto",
@@ -88,22 +88,22 @@ export class CreateProductDto {
   })
   @IsString()
   @MinLength(1)
-  sku!: string;
+  public sku!: string;
 
   @ApiProperty({ description: "Descrição do produto" })
   @IsString()
   @MinLength(10)
-  description!: string;
+  public description!: string;
 
   @ApiProperty({ description: "Quantidade em estoque", example: 12 })
   @IsNumber()
   @Min(0)
-  stock!: number;
+  public stock!: number;
 
   @ApiProperty({ description: "Preço do produto" })
   @ValidateNested()
   @Type(() => ProductPriceRequestDto)
-  price!: ProductPriceRequestDto;
+  public price!: ProductPriceRequestDto;
 
   @ApiProperty({
     description: "Imagens do produto",
@@ -112,7 +112,7 @@ export class CreateProductDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductImageRequestDto)
-  images!: ProductImageRequestDto[];
+  public images!: ProductImageRequestDto[];
 
   @ApiProperty({
     description: "Se o produto está ativo",
@@ -121,5 +121,5 @@ export class CreateProductDto {
   })
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  public isActive?: boolean;
 }
