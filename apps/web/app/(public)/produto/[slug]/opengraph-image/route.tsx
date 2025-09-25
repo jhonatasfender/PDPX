@@ -48,7 +48,9 @@ export async function GET(
 
   const titleBase = product ? `${product.name} — ${product.brand}` : "PDPX";
   const title =
-    titleBase.length > 42 ? `${titleBase.slice(0, 39).trimEnd()}...` : titleBase;
+    titleBase.length > 42
+      ? `${titleBase.slice(0, 39).trimEnd()}...`
+      : titleBase;
   const price = formatBRL(product?.price?.amountCents);
 
   return new ImageResponse(
@@ -97,5 +99,3 @@ export async function GET(
     size,
   );
 }
-
-

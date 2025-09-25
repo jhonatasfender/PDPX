@@ -33,7 +33,8 @@ export default function Error({ error, reset }: ErrorProps) {
               Erro ao carregar produto
             </h2>
             <p className="text-sm text-red-400 mt-1">
-              {error.message || "Ocorreu um erro inesperado ao carregar os dados do produto."}
+              {error.message ||
+                "Ocorreu um erro inesperado ao carregar os dados do produto."}
             </p>
           </div>
           <Button

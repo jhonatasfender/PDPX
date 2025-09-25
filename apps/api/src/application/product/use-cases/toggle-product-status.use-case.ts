@@ -32,8 +32,8 @@ export class ToggleProductStatusUseCase {
       isActive: newStatus,
     });
 
-    const message = newStatus 
-      ? "Produto ativado com sucesso" 
+    const message = newStatus
+      ? "Produto ativado com sucesso"
       : "Produto desativado com sucesso";
 
     return {

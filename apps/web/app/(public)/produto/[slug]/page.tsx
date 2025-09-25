@@ -189,17 +189,22 @@ export async function generateMetadata({
     const baseTitle = `${product.name} — ${product.brand} | PDPX`;
     const paddedTitle =
       baseTitle.length < 30 ? `${baseTitle} · Comprar online` : baseTitle;
-    const title = paddedTitle.length > 60
-      ? `${paddedTitle.slice(0, 57).trimEnd()}...`
-      : paddedTitle;
+    const title =
+      paddedTitle.length > 60
+        ? `${paddedTitle.slice(0, 57).trimEnd()}...`
+        : paddedTitle;
 
     const plainDesc = product.description
-      ? product.description.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()
+      ? product.description
+          .replace(/<[^>]*>/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
       : "";
     const priceText = product.price
       ? `Preço ${CurrencyFormatter.formatBRLFromCents(product.price.amountCents)}. `
       : "";
-    let description = `${product.name} da ${product.brand}. ${priceText}${plainDesc}`.trim();
+    let description =
+      `${product.name} da ${product.brand}. ${priceText}${plainDesc}`.trim();
     if (description.length < 55) {
       description = `${product.name} da ${product.brand}. ${priceText}Entrega rápida, 1 ano de garantia e troca em 30 dias.`;
     }

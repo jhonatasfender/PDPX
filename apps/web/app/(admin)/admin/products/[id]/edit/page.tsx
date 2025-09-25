@@ -13,34 +13,37 @@ export default function AdminProductEditPage() {
   const router = useRouter();
   const params = useParams();
   const productId = params.id as string;
-  
-  const { product, updateProduct, isUpdating } = useProducts(undefined, productId);
+
+  const { product, updateProduct, isUpdating } = useProducts(
+    undefined,
+    productId,
+  );
 
   const handleUpdate = async (values: any) => {
-      const updateData = {
-        name: values.name,
-        brand: values.brand,
-        sku: values.sku,
-        description: values.description,
-        stock: values.stock,
-        isActive: values.isActive === "true",
-        price: {
-          currency: "BRL",
-          amountCents: Math.round(values.price * 100),
-        },
-        images: values.images?.map((img: any, index: number) => ({
+    const updateData = {
+      name: values.name,
+      brand: values.brand,
+      sku: values.sku,
+      description: values.description,
+      stock: values.stock,
+      isActive: values.isActive === "true",
+      price: {
+        currency: "BRL",
+        amountCents: Math.round(values.price * 100),
+      },
+      images:
+        values.images?.map((img: any, index: number) => ({
           url: img.url,
           alt: img.alt || null,
           isPrimary: img.isPrimary || false,
           position: img.position || index,
         })) || [],
-      };
+    };
 
-      await updateProduct({ id: productId, data: updateData });
-      toast.success("Produto atualizado com sucesso");
-      router.push("/admin/products");
+    await updateProduct({ id: productId, data: updateData });
+    toast.success("Produto atualizado com sucesso");
+    router.push("/admin/products");
   };
-
 
   const defaultValues = {
     name: product?.product.name || "",
@@ -48,14 +51,17 @@ export default function AdminProductEditPage() {
     sku: product?.product.sku || "",
     price: (product?.price.amountCents || 0) / 100,
     stock: product?.product.stock || 0,
-    isActive: (product?.product.isActive ? "true" : "false") as "true" | "false",
+    isActive: (product?.product.isActive ? "true" : "false") as
+      | "true"
+      | "false",
     description: product?.product.description || "",
-    images: product?.images?.map((img, index) => ({
-      url: img.url,
-      alt: img.alt || "",
-      isPrimary: img.isPrimary || false,
-      position: img.position || index,
-    })) || [],
+    images:
+      product?.images?.map((img, index) => ({
+        url: img.url,
+        alt: img.alt || "",
+        isPrimary: img.isPrimary || false,
+        position: img.position || index,
+      })) || [],
   };
 
   return (

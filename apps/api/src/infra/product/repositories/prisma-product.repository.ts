@@ -130,7 +130,7 @@ export class PrismaProductRepository implements ProductRepository {
     },
   ): Promise<Product> {
     const { isActive, ...restData } = data;
-    
+
     const product = await this.prisma.products.update({
       where: { id },
       data: {

@@ -85,12 +85,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <AuthProvider>
             <HeaderWrapper />
             {children}
-            <Toaster 
-              position="top-right"
-              theme="dark"
-              richColors
-              closeButton
-            />
+            <Toaster position="top-right" theme="dark" richColors closeButton />
           </AuthProvider>
         </ReactQueryProvider>
       </body>

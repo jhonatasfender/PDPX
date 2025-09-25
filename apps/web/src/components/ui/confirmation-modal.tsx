@@ -76,7 +76,10 @@ export function ConfirmationModal({
   const confirmButtonVariant = variant === "danger" ? "danger" : "primary";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" data-cy="confirmation-modal">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      data-cy="confirmation-modal"
+    >
       <div
         ref={modalRef}
         className={cn(
@@ -84,9 +87,19 @@ export function ConfirmationModal({
           variantStyles[variant],
         )}
       >
-        <h3 className="mb-4 text-lg font-semibold text-white" data-cy="confirmation-modal-title">{title}</h3>
-        <p className="mb-6 text-neutral-100" data-cy="confirmation-modal-message">{message}</p>
-        
+        <h3
+          className="mb-4 text-lg font-semibold text-white"
+          data-cy="confirmation-modal-title"
+        >
+          {title}
+        </h3>
+        <p
+          className="mb-6 text-neutral-100"
+          data-cy="confirmation-modal-message"
+        >
+          {message}
+        </p>
+
         <div className="flex justify-end gap-3">
           <Button
             variant="ghost"
