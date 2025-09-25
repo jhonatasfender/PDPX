@@ -1,8 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const contentType = "image/png";
-export const size = { width: 1200, height: 630 };
+const OG_SIZE = { width: 1200, height: 630 };
 
 function formatBRL(cents?: number): string {
   if (typeof cents !== "number") return "";
@@ -96,6 +95,6 @@ export async function GET(
         </div>
       </div>
     ),
-    size,
+    OG_SIZE,
   );
 }
