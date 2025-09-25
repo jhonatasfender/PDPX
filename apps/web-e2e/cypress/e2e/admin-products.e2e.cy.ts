@@ -87,7 +87,7 @@ describe("Admin Products E2E Tests", () => {
     cy.get('[data-cy="admin-products-table"]').should("contain", "Ativo");
   });
 
-  it.only("should edit an existing product", () => {
+  it("should edit an existing product", () => {
     cy.intercept("PUT", "**/admin/products/*").as("updateProduct");
     cy.intercept("GET", "**/admin/products/*").as("getProduct");
 

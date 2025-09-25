@@ -5,14 +5,16 @@ import Link from "next/link";
 
 import { useState } from "react";
 import { useProducts } from "../../hooks/use-products";
-import type { ApiProductWithDetails } from "../../types/api";
+import type {
+  ApiProductWithDetails,
+} from "../../types/product";
 import { CurrencyFormatter } from "../../lib/format";
 import { Button } from "../ui/button";
 import { Table, THead, TBody, TR, TH, TD } from "../ui/table";
 import { ConfirmationModal } from "../ui/confirmation-modal";
 import { Eye, Pencil, Trash2, ImageOff, Play, Pause } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { ProductsTableSkeleton } from "./products-table-skeleton";
+import { ProductsTableWithPaginationSkeleton } from "./products-table-skeleton";
 
 export function ProductsTable() {
   const [page, setPage] = useState<number>(1);
@@ -60,24 +62,7 @@ export function ProductsTable() {
   };
 
   if (isLoading) {
-    return (
-      <>
-        <ProductsTableSkeleton rows={limit} />
-        <div
-          className="mt-4 flex items-center justify-between"
-          data-cy="admin-products-pagination-skeleton"
-        >
-          <div className="flex items-center gap-2 text-sm text-neutral-400">
-            <div className="h-4 w-32 bg-neutral-800 rounded animate-pulse" />
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-20 bg-neutral-800 rounded animate-pulse" />
-            <div className="h-8 w-20 bg-neutral-800 rounded animate-pulse" />
-            <div className="h-8 w-24 bg-neutral-800 rounded animate-pulse" />
-          </div>
-        </div>
-      </>
-    );
+    return <ProductsTableWithPaginationSkeleton rows={limit} />;
   }
 
   if (isError) {
@@ -265,7 +250,7 @@ export function ProductsTable() {
         {isFetching && (
           <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
             <div className="relative z-10">
-              <ProductsTableSkeleton rows={limit} />
+              <ProductsTableWithPaginationSkeleton rows={limit} showPagination={false} />
             </div>
           </div>
         )}

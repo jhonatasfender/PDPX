@@ -29,6 +29,14 @@ import { ToggleProductStatusUseCase } from "../application/product/use-cases/tog
 import { PrismaProductRepository } from "../infra/product/repositories/prisma-product.repository";
 import { PrismaProductImageRepository } from "../infra/product/repositories/prisma-product-image.repository";
 import { PrismaProductPriceRepository } from "../infra/product/repositories/prisma-product-price.repository";
+import { BagController } from "../presentation/controllers/bag/bag.controller";
+import { AddItemToBagUseCase } from "../application/bag/use-cases/add-item-to-bag.use-case";
+import { GetBagUseCase } from "../application/bag/use-cases/get-bag.use-case";
+import { UpdateItemQuantityUseCase } from "../application/bag/use-cases/update-item-quantity.use-case";
+import { RemoveItemFromBagUseCase } from "../application/bag/use-cases/remove-item-from-bag.use-case";
+import { ClearBagUseCase } from "../application/bag/use-cases/clear-bag.use-case";
+import { PrismaBagRepository } from "../infra/bag/repositories/prisma-bag.repository";
+import { PrismaBagItemRepository } from "../infra/bag/repositories/prisma-bag-item.repository";
 
 @Module({
   controllers: [
@@ -36,6 +44,7 @@ import { PrismaProductPriceRepository } from "../infra/product/repositories/pris
     AdminController,
     AdminProductController,
     CatalogPublicController,
+    BagController,
   ],
   providers: [
     RegisterUserUseCase,
@@ -80,6 +89,19 @@ import { PrismaProductPriceRepository } from "../infra/product/repositories/pris
     {
       provide: "ProductPriceRepository",
       useClass: PrismaProductPriceRepository,
+    },
+    AddItemToBagUseCase,
+    GetBagUseCase,
+    UpdateItemQuantityUseCase,
+    RemoveItemFromBagUseCase,
+    ClearBagUseCase,
+    {
+      provide: "BagRepository",
+      useClass: PrismaBagRepository,
+    },
+    {
+      provide: "BagItemRepository",
+      useClass: PrismaBagItemRepository,
     },
   ],
   exports: [
