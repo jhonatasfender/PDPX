@@ -45,9 +45,10 @@ export class AddItemToBagUseCase {
       });
     }
 
-    const currentPrice = await this.productPriceRepository.findCurrentByProductId(
-      request.productId,
-    );
+    const currentPrice =
+      await this.productPriceRepository.findCurrentByProductId(
+        request.productId,
+      );
 
     if (!currentPrice) {
       throw new Error("Produto não encontrado ou sem preço");
