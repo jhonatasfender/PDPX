@@ -76,11 +76,13 @@ export default async function AdminProductViewPage({
         <section className="rounded-lg border border-neutral-800 p-4 overflow-x-hidden">
           <div className="mx-auto w-full max-w-full md:max-w-screen-lg overflow-hidden">
             <ProductGallery
-              images={images.map((img: Pick<ApiProductImage, "id" | "url" | "alt">) => ({
-                id: img.id,
-                url: img.url,
-                alt: img.alt,
-              }))}
+              images={images.map(
+                (img: Pick<ApiProductImage, "id" | "url" | "alt">) => ({
+                  id: img.id,
+                  url: img.url,
+                  alt: img.alt,
+                }),
+              )}
             />
           </div>
         </section>

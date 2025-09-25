@@ -1,0 +1,10 @@
+{
+  "extends": "../../packages/config/tsconfig/web.json",
+  "compilerOptions": {
+    "incremental": true,
+    "jsx": "preserve",
+    "isolatedModules": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mdx"],
+  "exclude": ["node_modules"]
+}
