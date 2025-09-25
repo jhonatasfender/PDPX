@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { api } from "@/lib/http";
@@ -172,4 +173,55 @@ export default async function PDPPage({
       </section>
     </main>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const { data: product } = await api.get<PublicCatalogProductDTO>(
+      `/public/products/${slug}`,
+    );
+
+    const images = Array.isArray(product.images) ? product.images : [];
+    const primary = images.find((i) => i.isPrimary) ?? images[0];
+    const title = `${product.name} — ${product.brand}`;
+    const description = product.description
+      ? product.description.replace(/<[^>]*>/g, "").slice(0, 160)
+      : undefined;
+    const imageUrl = primary?.url;
+
+    return {
+      title,
+      description,
+      alternates: { canonical: `/produto/${product.slug}` },
+      openGraph: {
+        type: "website",
+        title: product.name,
+        description: description || undefined,
+        url: `/produto/${product.slug}`,
+        images: imageUrl
+          ? [
+              {
+                url: imageUrl,
+                width: 1200,
+                height: 630,
+                alt: product.name,
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: description || undefined,
+        images: imageUrl ? [imageUrl] : undefined,
+      },
+    };
+  } catch {
+    return {};
+  }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../../infra/prisma/prisma.service";
-import { UserRole } from "@prisma/client";
 
 @Injectable()
 export class UserRepository {
@@ -12,11 +11,7 @@ export class UserRepository {
     });
   }
 
-  public async create(data: {
-    id: string;
-    auth_user_id: string;
-    role?: UserRole;
-  }) {
+  public async create(data: { id: string; auth_user_id: string }) {
     return this.prisma.users.create({
       data: {
         id: data.id,

@@ -7,6 +7,12 @@ import {
 import { PublicUser } from "../../../domain/entities/public-user.entity";
 import { UserRole as DbUserRole } from "@prisma/client";
 
+interface MinimalCustomUser {
+  id: string;
+  auth_user_id: string;
+  name: string | null;
+}
+
 @Injectable()
 export class UserSyncRepositoryImpl implements UserSyncRepository {
   public constructor(private readonly prisma: PrismaService) {}
@@ -174,7 +180,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     });
 
     const usersWithAuth = await Promise.all(
-      customUsers.map(async (user) => {
+      customUsers.map(async (user: MinimalCustomUser) => {
         const authUser = await this.prisma.auth_users.findUnique({
           where: { id: user.auth_user_id },
           include: {
