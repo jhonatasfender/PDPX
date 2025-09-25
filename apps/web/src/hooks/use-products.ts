@@ -43,25 +43,35 @@ export function useProducts(params?: ProductsQueryParams, productId?: string) {
       router.push("/admin/products");
     },
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          "Erro ao criar produto";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao criar produto";
       toast.error(errorMessage);
     },
   });
 
   const updateProductMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateProductRequest }) => {
-      return await productsService.updateProduct(id, data, { timeoutMs: 30000 });
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateProductRequest;
+    }) => {
+      return await productsService.updateProduct(id, data, {
+        timeoutMs: 30000,
+      });
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       toast.success("Produto atualizado com sucesso");
     },
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          "Erro ao atualizar produto";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao atualizar produto";
       toast.error(errorMessage);
     },
   });
@@ -75,9 +85,10 @@ export function useProducts(params?: ProductsQueryParams, productId?: string) {
       toast.success(data.message || "Produto deletado com sucesso");
     },
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          "Erro ao deletar produto";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao deletar produto";
       toast.error(errorMessage);
     },
   });
@@ -91,9 +102,10 @@ export function useProducts(params?: ProductsQueryParams, productId?: string) {
       toast.success(data.message);
     },
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          "Erro ao alterar status do produto";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao alterar status do produto";
       toast.error(errorMessage);
     },
   });
@@ -117,7 +129,7 @@ export function useProducts(params?: ProductsQueryParams, productId?: string) {
       })),
       isActive: values.isActive === "true",
     } satisfies CreateProductRequest;
-    
+
     return await createProductMutation.mutateAsync(payload);
   };
 

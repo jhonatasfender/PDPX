@@ -222,7 +222,8 @@ export class AdminProductController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Ativar/Desativar produto",
-    description: "Alterna o status ativo/inativo de um produto (requer role ADMIN ou SUPERADMIN)",
+    description:
+      "Alterna o status ativo/inativo de um produto (requer role ADMIN ou SUPERADMIN)",
   })
   @ApiResponse({
     status: 200,

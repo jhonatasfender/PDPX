@@ -58,9 +58,8 @@ export function ProductsTable() {
   };
 
   const handleToggleStatus = async (product: ApiProductWithDetails) => {
-      await toggleProductStatus(product.product.id);
+    await toggleProductStatus(product.product.id);
   };
-
 
   if (isLoading) {
     return <ProductsTableWithPaginationSkeleton rows={limit} />;
@@ -101,157 +100,160 @@ export function ProductsTable() {
     <>
       <div className="relative">
         <Table data-cy="admin-products-table">
-        <THead>
-          <TR>
-            <TH data-cy="th-produto">Produto</TH>
-            <TH data-cy="th-marca">Marca</TH>
-            <TH data-cy="th-sku">SKU</TH>
-            <TH data-cy="th-estoque">Estoque</TH>
-            <TH data-cy="th-status">Status</TH>
-            <TH data-cy="th-preco">Preço</TH>
-            <TH className="text-right" data-cy="th-acoes">
-              Ações
-            </TH>
-          </TR>
-        </THead>
-        <TBody>
-          {products.map((productData: ApiProductWithDetails) => {
-            const { product, images, price } = productData;
-            const img = Array.isArray(images)
-              ? images.find((i) => i && i.url && i.url !== "string")
-              : undefined;
-            return (
-              <TR key={product.id} data-cy={`admin-product-row-${product.id}`}>
-                <TD data-cy="col-produto">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-16 min-h-[48px] min-w-[64px] flex-shrink-0 overflow-hidden rounded-md bg-neutral-800">
-                      {img &&
-                      img.url &&
-                      (img.url.startsWith("http") ||
-                        img.url.startsWith("/")) ? (
-                        <Image
-                          src={img.url}
-                          alt={img.alt ?? product.name}
-                          fill
-                          sizes="(max-width: 768px) 64px, 64px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-neutral-600">
-                          <ImageOff size={18} aria-hidden="true" />
-                          <span className="sr-only">Sem imagem</span>
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <div className="line-clamp-1 font-medium text-neutral-100">
-                        {product.name}
-                      </div>
-                      <div className="text-xs text-neutral-500">
-                        /{product.slug}
-                      </div>
-                    </div>
-                  </div>
-                </TD>
-                <TD className="text-neutral-300" data-cy="col-marca">
-                  {product.brand}
-                </TD>
-                <TD className="text-neutral-300" data-cy="col-sku">
-                  {product.sku}
-                </TD>
-                <TD className="text-neutral-300" data-cy="col-estoque">
-                  {product.stock}
-                </TD>
-                <TD data-cy="col-status">
-                  <span
-                    className={cn(
-                      "rounded-md px-2 py-1 text-xs",
-                      product.isActive
-                        ? "border border-green-800/40 bg-green-900/20 text-green-300"
-                        : "border border-neutral-800 text-neutral-400",
-                    )}
-                  >
-                    {product.isActive ? "Ativo" : "Inativo"}
-                  </span>
-                </TD>
-                <TD
-                  className="font-medium text-neutral-100"
-                  data-cy="col-preco"
+          <THead>
+            <TR>
+              <TH data-cy="th-produto">Produto</TH>
+              <TH data-cy="th-marca">Marca</TH>
+              <TH data-cy="th-sku">SKU</TH>
+              <TH data-cy="th-estoque">Estoque</TH>
+              <TH data-cy="th-status">Status</TH>
+              <TH data-cy="th-preco">Preço</TH>
+              <TH className="text-right" data-cy="th-acoes">
+                Ações
+              </TH>
+            </TR>
+          </THead>
+          <TBody>
+            {products.map((productData: ApiProductWithDetails) => {
+              const { product, images, price } = productData;
+              const img = Array.isArray(images)
+                ? images.find((i) => i && i.url && i.url !== "string")
+                : undefined;
+              return (
+                <TR
+                  key={product.id}
+                  data-cy={`admin-product-row-${product.id}`}
                 >
-                  {CurrencyFormatter.formatBRLFromCents(price.amountCents)}
-                </TD>
-                <TD data-cy="col-acoes">
-                  <div className="flex justify-end gap-1.5" data-cy="acoes">
-                    <Link
-                      href={`/admin/products/${product.id}`}
-                      data-cy="btn-ver"
+                  <TD data-cy="col-produto">
+                    <div className="flex items-center gap-3">
+                      <div className="relative h-12 w-16 min-h-[48px] min-w-[64px] flex-shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                        {img &&
+                        img.url &&
+                        (img.url.startsWith("http") ||
+                          img.url.startsWith("/")) ? (
+                          <Image
+                            src={img.url}
+                            alt={img.alt ?? product.name}
+                            fill
+                            sizes="(max-width: 768px) 64px, 64px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-neutral-600">
+                            <ImageOff size={18} aria-hidden="true" />
+                            <span className="sr-only">Sem imagem</span>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="line-clamp-1 font-medium text-neutral-100">
+                          {product.name}
+                        </div>
+                        <div className="text-xs text-neutral-500">
+                          /{product.slug}
+                        </div>
+                      </div>
+                    </div>
+                  </TD>
+                  <TD className="text-neutral-300" data-cy="col-marca">
+                    {product.brand}
+                  </TD>
+                  <TD className="text-neutral-300" data-cy="col-sku">
+                    {product.sku}
+                  </TD>
+                  <TD className="text-neutral-300" data-cy="col-estoque">
+                    {product.stock}
+                  </TD>
+                  <TD data-cy="col-status">
+                    <span
+                      className={cn(
+                        "rounded-md px-2 py-1 text-xs",
+                        product.isActive
+                          ? "border border-green-800/40 bg-green-900/20 text-green-300"
+                          : "border border-neutral-800 text-neutral-400",
+                      )}
                     >
+                      {product.isActive ? "Ativo" : "Inativo"}
+                    </span>
+                  </TD>
+                  <TD
+                    className="font-medium text-neutral-100"
+                    data-cy="col-preco"
+                  >
+                    {CurrencyFormatter.formatBRLFromCents(price.amountCents)}
+                  </TD>
+                  <TD data-cy="col-acoes">
+                    <div className="flex justify-end gap-1.5" data-cy="acoes">
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        data-cy="btn-ver"
+                      >
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Visualizar"
+                          data-cy="action-ver"
+                        >
+                          <Eye size={16} />
+                          <span className="sr-only">Ver</span>
+                        </Button>
+                      </Link>
+                      <Link
+                        href={`/admin/products/${product.id}/edit`}
+                        data-cy="btn-editar"
+                      >
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          title="Editar"
+                          data-cy="action-editar"
+                        >
+                          <Pencil size={16} />
+                          <span className="sr-only">Editar</span>
+                        </Button>
+                      </Link>
                       <Button
                         variant="ghost"
                         size="sm"
-                        title="Visualizar"
-                        data-cy="action-ver"
+                        title={product.isActive ? "Desativar" : "Ativar"}
+                        data-cy="action-toggle-status"
+                        onClick={() => handleToggleStatus(productData)}
+                        disabled={isToggling}
                       >
-                        <Eye size={16} />
-                        <span className="sr-only">Ver</span>
+                        {product.isActive ? (
+                          <Pause size={16} />
+                        ) : (
+                          <Play size={16} />
+                        )}
+                        <span className="sr-only">
+                          {product.isActive ? "Desativar" : "Ativar"}
+                        </span>
                       </Button>
-                    </Link>
-                    <Link
-                      href={`/admin/products/${product.id}/edit`}
-                      data-cy="btn-editar"
-                    >
                       <Button
-                        variant="secondary"
+                        variant="danger"
                         size="sm"
-                        title="Editar"
-                        data-cy="action-editar"
+                        title="Excluir"
+                        data-cy="action-excluir"
+                        onClick={() => handleDeleteClick(productData)}
                       >
-                        <Pencil size={16} />
-                        <span className="sr-only">Editar</span>
+                        <Trash2 size={16} />
+                        <span className="sr-only">Excluir</span>
                       </Button>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      title={product.isActive ? "Desativar" : "Ativar"}
-                      data-cy="action-toggle-status"
-                      onClick={() => handleToggleStatus(productData)}
-                      disabled={isToggling}
-                    >
-                      {product.isActive ? (
-                        <Pause size={16} />
-                      ) : (
-                        <Play size={16} />
-                      )}
-                      <span className="sr-only">
-                        {product.isActive ? "Desativar" : "Ativar"}
-                      </span>
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      title="Excluir"
-                      data-cy="action-excluir"
-                      onClick={() => handleDeleteClick(productData)}
-                    >
-                      <Trash2 size={16} />
-                      <span className="sr-only">Excluir</span>
-                    </Button>
-                  </div>
-                </TD>
-              </TR>
-            );
-          })}
-        </TBody>
-      </Table>
-      
-      {isFetching && (
-        <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
-          <div className="relative z-10">
-            <ProductsTableWithPaginationSkeleton rows={limit} showPagination={false} />
+                    </div>
+                  </TD>
+                </TR>
+              );
+            })}
+          </TBody>
+        </Table>
+
+        {isFetching && (
+          <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
+            <div className="relative z-10">
+              <ProductsTableWithPaginationSkeleton rows={limit} showPagination={false} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
 
       <div

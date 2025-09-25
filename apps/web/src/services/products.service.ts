@@ -60,9 +60,7 @@ class ProductsService {
     return response.data;
   }
 
-  public async deleteProduct(
-    id: string,
-  ): Promise<DeleteProductResponse> {
+  public async deleteProduct(id: string): Promise<DeleteProductResponse> {
     const response = await api.delete<DeleteProductResponse>(
       `/admin/products/${id}`,
     );
