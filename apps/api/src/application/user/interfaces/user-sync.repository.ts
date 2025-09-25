@@ -1,5 +1,5 @@
 import { PublicUser } from "../../../domain/entities/public-user.entity";
-import { UserRole } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 
 export interface UserWithAuthData {
   custom: PublicUser;
@@ -23,7 +23,7 @@ export interface UserSyncRepository {
   ): Promise<PublicUser>;
   getUserWithAuthData(userId: string): Promise<UserWithAuthData>;
   getUserByEmail(email: string): Promise<UserWithAuthData | null>;
-  updateUserRole(authUserId: string, role: UserRole): Promise<PublicUser>;
+  updateUserRole(authUserId: string, role: $Enums.UserRole): Promise<PublicUser>;
   getAllUsersWithAuthData(): Promise<UserWithAuthData[]>;
   findCustomUserByAuthId(authUserId: string): Promise<PublicUser | null>;
   createCustomUser(data: {
@@ -33,7 +33,7 @@ export interface UserSyncRepository {
   updateCustomUser(
     authUserId: string,
     data: {
-      role?: UserRole;
+      role?: $Enums.UserRole;
       name?: string;
     },
   ): Promise<PublicUser>;

@@ -5,7 +5,8 @@ import {
   UserWithAuthData,
 } from "../../../application/user/interfaces/user-sync.repository";
 import { PublicUser } from "../../../domain/entities/public-user.entity";
-import { UserRole as DbUserRole } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 
 interface MinimalCustomUser {
   id: string;
@@ -39,7 +40,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
       await this.upsertUserProfileForUser(
         existingUser.id,
         existingUser.name ?? undefined,
-        existingUser.role as DbUserRole,
+        existingUser.role as $Enums.UserRole,
       );
       return existingUser;
     } else {
@@ -52,7 +53,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
       await this.upsertUserProfileForUser(
         created.id,
         extractedName,
-        DbUserRole.USER,
+        $Enums.UserRole.USER,
       );
       return created;
     }
@@ -122,7 +123,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
       id: row.id,
       auth_user_id: row.auth_user_id,
       name: row.name,
-      role: profile?.role ?? DbUserRole.USER,
+      role: profile?.role ?? $Enums.UserRole.USER,
     });
   }
 
@@ -137,13 +138,13 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
       },
       select: { id: true, auth_user_id: true, name: true },
     });
-    return this.toPublicUser({ ...row, role: DbUserRole.USER });
+    return this.toPublicUser({ ...row, role: $Enums.UserRole.USER });
   }
 
   public async updateCustomUser(
     authUserId: string,
     data: {
-      role?: DbUserRole;
+      role?: $Enums.UserRole;
       name?: string;
     },
   ): Promise<PublicUser> {
@@ -157,13 +158,13 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     await this.upsertUserProfileForAuthUser(authUserId, data.name, data.role);
     return this.toPublicUser({
       ...updated,
-      role: data.role ?? DbUserRole.USER,
+      role: data.role ?? $Enums.UserRole.USER,
     });
   }
 
   public async updateUserRole(
     authUserId: string,
-    role: DbUserRole,
+    role: $Enums.UserRole,
   ): Promise<PublicUser> {
     const updated = await this.prisma.users.findUnique({
       where: { auth_user_id: authUserId },
@@ -197,7 +198,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
             id: user.id,
             auth_user_id: user.auth_user_id,
             name: user.name,
-            role: profile?.role ?? DbUserRole.USER,
+              role: profile?.role ?? $Enums.UserRole.USER,
           }),
           auth: authUser as UserWithAuthData["auth"],
         };
@@ -255,7 +256,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
   private async upsertUserProfileForAuthUser(
     authUserId: string,
     name?: string,
-    role?: DbUserRole,
+    role?: $Enums.UserRole,
   ): Promise<void> {
     const user = await this.prisma.users.findUnique({
       where: { auth_user_id: authUserId },
@@ -265,14 +266,14 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     await this.upsertUserProfileForUser(
       user.id,
       name ?? user.name ?? "Usuário",
-      role ?? DbUserRole.USER,
+      role ?? $Enums.UserRole.USER,
     );
   }
 
   private async upsertUserProfileForUser(
     userId: string,
     name?: string,
-    role?: DbUserRole,
+    role?: Prisma.UserRole,
   ): Promise<void> {
     try {
       await this.prisma.user_profiles.upsert({
@@ -280,11 +281,11 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
         create: {
           user_id: userId,
           name: name ?? "Usuário",
-          role: role ?? DbUserRole.USER,
+          role: role ?? $Enums.UserRole.USER,
         },
         update: {
           name: name ?? "Usuário",
-          role: role ?? DbUserRole.USER,
+          role: role ?? $Enums.UserRole.USER,
         },
       });
     } catch (error) {
@@ -296,7 +297,7 @@ export class UserSyncRepositoryImpl implements UserSyncRepository {
     id: string;
     auth_user_id: string;
     name: string | null;
-    role: DbUserRole;
+    role: Prisma.UserRole;
   }): PublicUser {
     return {
       id: row.id,
