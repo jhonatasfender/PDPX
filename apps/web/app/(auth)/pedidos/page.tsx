@@ -22,7 +22,11 @@ export default async function PedidosPage() {
   } catch (err: any) {
     const status = err?.status || err?.response?.status;
     const code = err?.code || err?.response?.data?.error;
-    if (status === 401 || code === "MISSING_TOKEN" || code === "INVALID_TOKEN") {
+    if (
+      status === 401 ||
+      code === "MISSING_TOKEN" ||
+      code === "INVALID_TOKEN"
+    ) {
       redirect("/login?redirect=/pedidos");
     }
     throw err;

@@ -12,5 +12,3 @@ export function BodyScrollLock() {
   }, []);
   return null;
 }
-
-
