@@ -34,6 +34,7 @@ export function AddToBagIcon({ productId, className }: AddToBagIconProps) {
         disabled
         className={`h-8 w-8 p-0 ${className}`}
         title="No carrinho"
+        data-cy="add-to-bag-button"
       >
         <Check size={14} className="text-green-400" />
       </Button>
@@ -48,6 +49,7 @@ export function AddToBagIcon({ productId, className }: AddToBagIconProps) {
       disabled={isAdding}
       className={`h-8 w-8 p-0 hover:bg-neutral-800 ${className}`}
       title={isAdding ? "Adicionando..." : "Adicionar ao carrinho"}
+      data-cy="add-to-bag-button"
     >
       {isAdding ? (
         <Loader2 size={14} className="animate-spin" />

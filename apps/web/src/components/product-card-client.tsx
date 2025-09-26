@@ -26,7 +26,7 @@ export function ProductCardClient({
   );
 
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 transition-colors hover:bg-neutral-900/90">
+    <div className="group relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 transition-colors hover:bg-neutral-900/90" data-cy="product-card">
       <Link href={`/produto/${product.slug}`} className="block">
         <div className="relative aspect-[4/3] w-full bg-neutral-800">
           {images.length > 0 ? (

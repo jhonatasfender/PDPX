@@ -52,6 +52,7 @@ export function AddToBagButton({
           size={size}
           className={cn("gap-2", fullWidth && "w-full", className)}
           disabled
+          data-cy="add-to-bag-button"
         >
           <ShoppingCart size={16} />
           No Carrinho
@@ -97,6 +98,7 @@ export function AddToBagButton({
           fullWidth && "w-full",
           className,
         )}
+        data-cy="add-to-bag-button"
       >
         {isAdding ? (
           <Loader2 size={16} className="animate-spin" />

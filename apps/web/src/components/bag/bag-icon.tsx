@@ -15,6 +15,7 @@ export function BagIcon({ className }: BagIconProps) {
     <Link
       href="/carrinho"
       className={`relative flex items-center justify-center ${className}`}
+      data-cy="bag-icon"
     >
       <ShoppingCart size={20} className="text-neutral-300" />
       {totalItems > 0 && (

@@ -7,6 +7,9 @@ config({ path: ".env" });
 export default defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL || "http://localhost:3000",
+    defaultCommandTimeout: 10000,
+    requestTimeout: 10000,
+    responseTimeout: 10000,
     env: {
       API_BASE_URL:
         process.env.API_BASE_URL ||

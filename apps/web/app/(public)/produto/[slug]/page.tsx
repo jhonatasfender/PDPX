@@ -151,7 +151,7 @@ export default async function PDPPage({
               size="lg"
             />
             <Link href="/carrinho" className="w-full">
-              <Button variant="secondary" size="lg" className="w-full gap-2">
+              <Button variant="secondary" size="lg" className="w-full gap-2" data-cy="view-bag-button">
                 <ShoppingCart size={18} />
                 Ver Carrinho
               </Button>

@@ -6,7 +6,7 @@ describe("Admin Products E2E Tests", () => {
   });
 
   const loginAndNavigateToProducts = () => {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
 
     cy.get('[data-cy="header-login"]').click();
     cy.get('[data-cy="login-email"]').type("jhonatas.fender@gmail.com");

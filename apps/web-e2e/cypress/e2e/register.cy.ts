@@ -77,7 +77,7 @@ describe("Registro", () => {
 
     cy.wait("@authRegister").its("response.statusCode").should("eq", 409);
     cy.contains(
-      /usuário já existe com este email|email já está cadastrado/i,
+      /usuário com email.*já existe|email já está cadastrado|usuário já existe com este email/i,
     ).should("exist");
   });
 

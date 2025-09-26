@@ -56,7 +56,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
   );
 
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <div className="flex items-center gap-4 rounded-lg border border-neutral-800 bg-neutral-900 p-4" data-cy="bag-item">
       <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-neutral-800">
         {image ? (
           <Image
@@ -91,6 +91,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
           onClick={() => handleQuantityChange(item.quantity - 1)}
           disabled={isUpdating}
           className="h-8 w-8 p-0"
+          data-cy="quantity-minus"
         >
           {isUpdating ? (
             <Loader2 size={14} className="animate-spin" />
@@ -99,7 +100,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
           )}
         </Button>
 
-        <span className="min-w-[2rem] text-center text-sm font-medium text-neutral-100">
+        <span className="min-w-[2rem] text-center text-sm font-medium text-neutral-100" data-cy="item-quantity">
           {item.quantity}
         </span>
 
@@ -109,6 +110,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
           onClick={() => handleQuantityChange(item.quantity + 1)}
           disabled={isUpdating}
           className="h-8 w-8 p-0"
+          data-cy="quantity-plus"
         >
           {isUpdating ? (
             <Loader2 size={14} className="animate-spin" />
@@ -119,7 +121,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
       </div>
 
       <div className="text-right">
-        <p className="font-medium text-neutral-100">
+        <p className="font-medium text-neutral-100" data-cy="item-total-price">
           {CurrencyFormatter.formatBRLFromCents(item.totalPriceCents)}
         </p>
       </div>
@@ -137,6 +139,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
         }}
         disabled={isRemoving}
         className="h-8 w-8 p-0 text-red-400 hover:text-red-300"
+        data-cy="remove-item-button"
       >
         {isRemoving ? (
           <Loader2 size={14} className="animate-spin" />

@@ -21,7 +21,7 @@ export function BagSummary() {
 
   if (bagItems.length === 0) {
     return (
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6 text-center">
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6 text-center" data-cy="bag-empty-message">
         <ShoppingCart size={32} className="mx-auto mb-3 text-neutral-600" />
         <p className="text-neutral-400">Seu carrinho está vazio</p>
       </div>
@@ -29,7 +29,7 @@ export function BagSummary() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6">
+    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6" data-cy="bag-summary">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-neutral-100">
           Resumo do Carrinho
@@ -40,6 +40,7 @@ export function BagSummary() {
           onClick={clearBag}
           disabled={isClearing}
           className="text-red-400 hover:text-red-300"
+          data-cy="clear-bag-button"
         >
           {isClearing ? (
             <Loader2 size={16} className="animate-spin" />
@@ -52,14 +53,14 @@ export function BagSummary() {
 
       <div className="space-y-3">
         <div className="flex justify-between text-sm text-neutral-400">
-          <span>Itens ({totalItems})</span>
+          <span data-cy="bag-total-items">Itens ({totalItems})</span>
           <span>{CurrencyFormatter.formatBRLFromCents(totalPrice * 100)}</span>
         </div>
 
         <div className="border-t border-neutral-800 pt-3">
           <div className="flex justify-between text-lg font-semibold text-neutral-100">
             <span>Total</span>
-            <span>
+            <span data-cy="bag-summary-total">
               {CurrencyFormatter.formatBRLFromCents(totalPrice * 100)}
             </span>
           </div>
@@ -81,6 +82,7 @@ export function BagSummary() {
             setIsFinalizing(false);
           }
         }}
+        data-cy="checkout-button"
       >
         {isFinalizing || isCheckingOut ? (
           <Loader2 size={18} className="animate-spin" />
