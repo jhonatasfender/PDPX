@@ -23,7 +23,7 @@ type BagItemProps = {
 };
 
 export function BagItemComponent({ item, product }: BagItemProps) {
-  const { updateItemQuantity, removeItem } = useBagContext();
+  const { updateItemQuantity, removeItem, bagProductsMap } = useBagContext();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
 
@@ -45,8 +45,11 @@ export function BagItemComponent({ item, product }: BagItemProps) {
     }
   };
 
-  const image = product?.images?.find(
-    (img) =>
+  const resolvedProduct =
+    product ?? bagProductsMap[item.productId] ?? undefined;
+
+  const image = resolvedProduct?.images?.find(
+    (img: { url: string; alt?: string | null }) =>
       img.url &&
       img.url !== "string" &&
       (img.url.startsWith("http") || img.url.startsWith("/")),
@@ -58,10 +61,11 @@ export function BagItemComponent({ item, product }: BagItemProps) {
         {image ? (
           <Image
             src={image.url}
-            alt={image.alt ?? product?.name ?? "Produto"}
+            alt={image.alt ?? resolvedProduct?.name ?? "Produto"}
             fill
             sizes="64px"
             className="object-cover"
+            unoptimized
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-neutral-600">
@@ -73,7 +77,7 @@ export function BagItemComponent({ item, product }: BagItemProps) {
 
       <div className="flex-1 min-w-0">
         <h3 className="line-clamp-1 font-medium text-neutral-100">
-          {product?.name ?? "Produto"}
+          {resolvedProduct?.name ?? "Produto"}
         </h3>
         <p className="text-sm text-neutral-400">
           {CurrencyFormatter.formatBRLFromCents(item.priceCents)} cada

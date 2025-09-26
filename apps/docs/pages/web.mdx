@@ -1,0 +1,64 @@
+---
+title: Web
+---
+
+# Web
+
+Aplicação Next.js com app router.
+
+## Principais pontos
+
+- UI com componentes reutilizáveis e Tailwind
+- React Query para dados
+- Rotas públicas e autenticadas
+
+## Pacotes e scripts (package.json)
+
+- Next.js 15 + React 19
+- UI e formulário: `lucide-react`, `react-hook-form`, `zod`, `@hookform/resolvers`
+- Data fetching/state: `@tanstack/react-query`
+- Markdown/Editor: `@uiw/react-md-editor`, `@uiw/react-markdown-preview`, `remark-gfm`, `slate*`
+- Gráficos (admin): `@nivo/*`
+- Carrossel: `embla-carousel*`
+- Scripts: `dev` (porta 3000), `build`, `start`, `lint`
+
+## Estrutura de rotas (app/)
+
+```text
+app/
+├─ (admin)/admin/... (área administrativa)
+├─ (auth)/{carrinho,pedidos,profile}/...
+├─ (public)/{login,register,produto/[slug],page.tsx}
+├─ layout.tsx (RootLayout com providers e header)
+└─ globals.css
+```
+
+## Componentes principais (src/components)
+
+- `ui/*`: biblioteca de componentes base (Button, Card, Input, Table, Alert, Spinner, Skeleton, RichTextEditor, etc.)
+- `bag/*`: carrinho (ícone, item, resumo, skeletons, botões)
+- `product-*`: cartão e galeria de produto
+- `admin/*`: tabelas, formulários, charts, layout admin
+- `auth/*` e `user-menu/*`: autenticação e menu do usuário
+
+## Providers e contexto
+
+- `ReactQueryProvider` provê o QueryClient (caching, retries)
+- Contextos: `auth.context.tsx` e `bag.context.tsx` para sessão e carrinho
+
+## Integração com API
+
+- Base URL via `NEXT_PUBLIC_API_BASE_URL`
+- `src/lib/http.ts` configura Axios com interceptors (auth/refresh)
+- Serviços: `services/*.ts` (auth, products, bag)
+
+## Screenshot (catálogo)
+
+![Catálogo em tema escuro](/media/web-catalog-dark.png)
+
+## Screenshot (página de produto)
+
+![Página de produto em tema escuro](/media/web-product-page-dark.png)
+
+
+

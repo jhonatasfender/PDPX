@@ -64,8 +64,8 @@ import { PermissionRepository } from "../infra/user/repositories/permission.repo
     SupabaseTokenAdapter,
     AuthGuard,
     RolesGuard,
-    UserSyncRepositoryImpl,
+    "UserSyncRepository",
     "TokenService",
   ],
 })
-export class AuthModule {}
+export class UserModule {}

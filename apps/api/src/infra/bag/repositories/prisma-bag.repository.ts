@@ -98,4 +98,12 @@ export class PrismaBagRepository implements BagRepository {
 
     return bags.map((bag) => Bag.fromPrisma(bag));
   }
+
+  public async findConvertedByUserId(userId: string): Promise<Bag[]> {
+    const bags = await this.prisma.bags.findMany({
+      where: { user_id: userId, status: BagStatus.CONVERTED },
+      orderBy: { created_at: "desc" },
+    });
+    return bags.map((bag) => Bag.fromPrisma(bag));
+  }
 }

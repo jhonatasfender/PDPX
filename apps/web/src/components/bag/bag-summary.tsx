@@ -1,13 +1,23 @@
 "use client";
 
-import { ShoppingCart, Trash2, Loader2 } from "lucide-react";
+import { ShoppingCart, Trash2, Loader2, Check } from "lucide-react";
 import { Button } from "../ui/button";
 import { CurrencyFormatter } from "../../lib/format";
 import { useBagContext } from "../../contexts/bag.context";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function BagSummary() {
-  const { bagItems, totalItems, totalPrice, clearBag, isClearing } =
-    useBagContext();
+  const {
+    bagItems,
+    totalItems,
+    totalPrice,
+    clearBag,
+    isClearing,
+    checkout,
+    isCheckingOut,
+  } = useBagContext();
+  const [isFinalizing, setIsFinalizing] = useState(false);
 
   if (bagItems.length === 0) {
     return (
@@ -56,8 +66,28 @@ export function BagSummary() {
         </div>
       </div>
 
-      <Button className="mt-6 w-full" size="lg">
-        Finalizar Compra
+      <Button
+        className="mt-6 w-full gap-2"
+        size="lg"
+        disabled={
+          isFinalizing || isClearing || isCheckingOut || bagItems.length === 0
+        }
+        onClick={async () => {
+          try {
+            setIsFinalizing(true);
+            await checkout();
+            toast.success("Compra finalizada com sucesso!");
+          } finally {
+            setIsFinalizing(false);
+          }
+        }}
+      >
+        {isFinalizing || isCheckingOut ? (
+          <Loader2 size={18} className="animate-spin" />
+        ) : (
+          <Check size={18} />
+        )}
+        {isFinalizing || isCheckingOut ? "Finalizando..." : "Finalizar Compra"}
       </Button>
     </div>
   );

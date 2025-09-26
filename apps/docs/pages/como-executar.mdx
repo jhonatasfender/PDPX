@@ -1,0 +1,98 @@
+---
+title: Como executar localmente
+---
+
+import { Callout } from 'nextra/components'
+
+# Como executar o projeto localmente
+
+<Callout type="info" emoji="🚀">
+  <strong>Deploys disponíveis</strong>
+  <ul>
+    <li>Documentação: <a href="https://pdpx-docs.vercel.app/" target="_blank" rel="noreferrer">pdpx-docs.vercel.app</a></li>
+    <li>Front-end (deploy): <a href="https://pdpx-web-ten.vercel.app/" target="_blank" rel="noreferrer">pdpx-web-ten.vercel.app</a></li>
+  </ul>
+  Deploys hospedados na Vercel.
+</Callout>
+
+## Pré-requisitos
+
+- Node.js 20.x ou 22.x (recomendado). Mínimo suportado: 18.18.
+- PNPM (workspace usa pnpm v10)
+- Variáveis de ambiente (.env) para API e Web quando necessário
+
+```bash
+# Exemplo com nvm
+nvm install 20
+nvm use 20
+```
+- Variáveis de ambiente (.env) para API e Web quando necessário
+
+## Passos rápidos (monorepo)
+
+```bash
+pnpm install
+
+# subir tudo em modo dev (usa Turborepo)
+pnpm dev
+```
+
+## Executar apps individualmente
+
+### API (NestJS)
+
+```bash
+pnpm -F @pdpx/api dev
+# Porta padrão: 3010 (variável: API_PORT)
+# Swagger: http://localhost:3010/api/docs
+# Banco de dados: Supabase (Postgres)
+```
+
+### Web (Next.js)
+
+```bash
+pnpm -F @pdpx/web dev
+# Porta padrão: 3000
+```
+
+### E2E (Cypress)
+
+```bash
+pnpm e2e:open
+# ou
+pnpm -F @pdpx/web-e2e e2e:run
+```
+
+- Os testes de e-mail utilizam MailSlurp. Configure `MAILSLURP_API_KEY` (ou `CYPRESS_MAILSLURP_API_KEY`).
+
+## Variáveis de ambiente
+
+Lista das variáveis usadas no projeto (apenas nomes e finalidade, sem valores):
+
+### API (NestJS)
+
+- `API_PORT`: porta da API em desenvolvimento (padrão 3010).
+- `DATABASE_URL`: string de conexão do PostgreSQL usada pelo Prisma.
+- `DIRECT_URL`: conexão direta do PostgreSQL (migrations/CLI do Prisma).
+- `SUPABASE_URL`: URL do projeto Supabase.
+- `SUPABASE_ANON_KEY`: chave pública do Supabase.
+- `SUPABASE_SERVICE_ROLE_KEY`: chave de service role do Supabase (uso restrito no servidor).
+
+### Web (Next.js)
+
+- `NEXT_PUBLIC_API_BASE_URL`: base URL da API consumida pelo frontend.
+- `NEXT_PUBLIC_SITE_URL`: URL pública do site (SEO/OG/etc.).
+- `VERCEL_URL`: fornecida pelo Vercel em deploys (opcional, usada como fallback em alguns cenários).
+
+### E2E (Cypress)
+
+- `CYPRESS_BASE_URL`: base da aplicação web sob teste (padrão http://localhost:3000).
+- `API_BASE_URL`: base da API para testes (fallback se `NEXT_PUBLIC_API_BASE_URL` não estiver presente).
+- `NEXT_PUBLIC_API_BASE_URL`: também pode ser lida pelos testes como fallback.
+- `MAILSLURP_API_KEY` ou `CYPRESS_MAILSLURP_API_KEY`: chave para testes de e-mail (quando habilitado).
+
+## Observações
+
+- `turbo.json` coordena as tasks e variáveis compartilhadas.
+- `pnpm-workspace.yaml` define os workspaces `apps/*` e `packages/*`.
+

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ShoppingCart, Plus, Minus, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { cn } from "../../lib/cn";
 import { useBagContext } from "../../contexts/bag.context";
 
 type AddToBagButtonProps = {
@@ -10,6 +11,7 @@ type AddToBagButtonProps = {
   className?: string;
   variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
+  fullWidth?: boolean;
 };
 
 export function AddToBagButton({
@@ -17,6 +19,7 @@ export function AddToBagButton({
   className,
   variant = "primary",
   size = "md",
+  fullWidth = true,
 }: AddToBagButtonProps) {
   const { addItem, bagItems } = useBagContext();
   const [quantity, setQuantity] = useState(1);
@@ -43,8 +46,13 @@ export function AddToBagButton({
 
   if (isInBag) {
     return (
-      <div className="flex items-center gap-2">
-        <Button variant="secondary" size={size} className={className} disabled>
+      <div className={cn("flex items-center gap-2", fullWidth && "w-full")}>
+        <Button
+          variant="secondary"
+          size={size}
+          className={cn("gap-2", fullWidth && "w-full", className)}
+          disabled
+        >
           <ShoppingCart size={16} />
           No Carrinho
         </Button>
@@ -53,8 +61,8 @@ export function AddToBagButton({
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1">
+    <div className={cn("flex items-center gap-2", fullWidth && "w-full")}>
+      <div className="flex items-center gap-1 shrink-0">
         <Button
           variant="ghost"
           size="sm"
@@ -84,7 +92,11 @@ export function AddToBagButton({
         size={size}
         onClick={handleAddToBag}
         disabled={isAdding}
-        className={className}
+        className={cn(
+          "gap-2 whitespace-nowrap",
+          fullWidth && "w-full",
+          className,
+        )}
       >
         {isAdding ? (
           <Loader2 size={16} className="animate-spin" />

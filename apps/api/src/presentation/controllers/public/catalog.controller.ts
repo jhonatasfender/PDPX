@@ -84,4 +84,26 @@ export class CatalogPublicController {
       throw new NotFoundException("Produto não encontrado");
     }
   }
+
+  @Get("products/id/:id")
+  @HttpCode(HttpStatus.OK)
+  public async getPublicProductById(
+    @Param("id") id: string,
+  ): Promise<PublicCatalogProductDto> {
+    try {
+      const result = await this.getProductUseCase.execute({ id });
+      return ProductPublicMapper.toPublicCatalog({
+        product: result.product,
+        images: result.images,
+        price: result.price
+          ? {
+              currency: result.price.currency,
+              amountCents: result.price.amountCents,
+            }
+          : null,
+      });
+    } catch (error) {
+      throw new NotFoundException("Produto não encontrado");
+    }
+  }
 }

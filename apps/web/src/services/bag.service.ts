@@ -9,11 +9,26 @@ import type {
   RemoveItemFromBagResponse,
   ClearBagResponse,
 } from "@/types/bag";
+import type { PublicCatalogProductDTO } from "@pdpx/types";
 
 class BagService {
   public async getBag(): Promise<GetBagResponse> {
     const response = await api.get<GetBagResponse>("/bag");
     return response.data;
+  }
+
+  public async getPublicProduct(
+    productId: string,
+  ): Promise<PublicCatalogProductDTO | null> {
+    try {
+      const resp = await api.get<PublicCatalogProductDTO>(
+        `/public/products/id/${productId}`,
+        { timeout: 8000 },
+      );
+      return resp.data;
+    } catch {
+      return null;
+    }
   }
 
   public async addItem(
@@ -44,6 +59,14 @@ class BagService {
 
   public async clearBag(): Promise<ClearBagResponse> {
     const response = await api.delete<ClearBagResponse>("/bag");
+    return response.data;
+  }
+
+  public async checkout(): Promise<{ success: boolean; message: string }> {
+    const response = await api.post<{ success: boolean; message: string }>(
+      "/bag/checkout",
+      {},
+    );
     return response.data;
   }
 }

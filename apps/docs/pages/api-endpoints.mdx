@@ -1,0 +1,47 @@
+---
+title: Endpoints da API
+---
+
+# Endpoints da API
+
+Use o Swagger em `/api/docs` para detalhes completos de parâmetros, schemas e respostas.
+
+import Link from 'next/link'
+import { RapiDocViewer } from '../components/RapiDocViewer'
+import { BodyScrollLock } from '../components/BodyScrollLock'
+
+<Link
+  href="/"
+  style={{
+    position: 'fixed',
+    top: 16,
+    right: 16,
+    zIndex: 60,
+    padding: '8px 12px',
+    borderRadius: 8,
+    background: 'rgba(24,24,27,0.9)',
+    border: '1px solid rgba(63,63,70,0.6)',
+    color: '#fff',
+    textDecoration: 'none',
+    backdropFilter: 'saturate(180%) blur(8px)'
+  }}
+>
+  ← Voltar
+</Link>
+
+<div
+  style={{
+    position: 'fixed',
+    inset: 0,
+    zIndex: 50,
+    width: '100vw',
+    height: '100vh',
+    background: 'var(--nextra-bg, #0a0a0a)'
+  }}
+>
+  <BodyScrollLock />
+  <RapiDocViewer specUrl="https://pdpx-web.vercel.app/api/docs-json" />
+</div>
+
+
+

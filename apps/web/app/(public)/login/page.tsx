@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -9,7 +9,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Alert } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/auth.context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { AuthGuard } from "@/components/auth-guard";
 
@@ -21,9 +21,14 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function LoginPage() {
-  const methods = useForm<FormValues>({ resolver: zodResolver(schema) });
+  const resolver = (
+    zodResolver as unknown as (schema: unknown) => Resolver<FormValues>
+  )(schema);
+
+  const methods = useForm<FormValues>({ resolver });
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +37,9 @@ export default function LoginPage() {
       setIsLoading(true);
       setError(null);
       await login(values);
-      router.push("/");
+      const redirectParam = searchParams?.get("redirect") || "/";
+      const safeRedirect = redirectParam.startsWith("/") ? redirectParam : "/";
+      router.push(safeRedirect);
     } catch (error: any) {
       console.error("Erro no login:", error);
       if (error.code === "INVALID_CREDENTIALS") {

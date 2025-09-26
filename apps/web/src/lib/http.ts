@@ -80,6 +80,7 @@ api.interceptors.response.use(
         );
         (customError as any).code = "MISSING_TOKEN";
         (customError as any).status = 401;
+
         return Promise.reject(customError);
       }
     }

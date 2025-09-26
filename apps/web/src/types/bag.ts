@@ -66,6 +66,9 @@ export interface ClearBagResponse {
 export interface BagContextType {
   bag: Bag | null;
   bagItems: BagItem[];
+  bagProductsMap: {
+    [productId: string]: import("@pdpx/types").PublicCatalogProductDTO | null;
+  };
   totalItems: number;
   totalPrice: number;
   isLoading: boolean;
@@ -75,9 +78,11 @@ export interface BagContextType {
   updateItemQuantity: (productId: string, quantity: number) => Promise<void>;
   removeItem: (productId: string) => Promise<void>;
   clearBag: () => Promise<void>;
+  checkout: () => Promise<void>;
   refetch: () => void;
   isAdding: boolean;
   isUpdating: boolean;
   isRemoving: boolean;
   isClearing: boolean;
+  isCheckingOut: boolean;
 }

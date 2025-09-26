@@ -15,4 +15,5 @@ export interface BagRepository {
   updateExpiresAt(id: string, expiresAt: Date | null): Promise<Bag>;
   delete(id: string): Promise<void>;
   findExpiredBags(): Promise<Bag[]>;
+  findConvertedByUserId(userId: string): Promise<Bag[]>;
 }

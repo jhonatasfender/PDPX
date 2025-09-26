@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { bagService } from "../services/bag.service";
+import type { PublicCatalogProductDTO } from "@pdpx/types";
 import { toast } from "sonner";
 import type {
   GetBagResponse,
@@ -19,6 +20,28 @@ export function useBag() {
     refetchOnWindowFocus: false,
     staleTime: 30_000,
     gcTime: 300_000,
+    placeholderData: (prev) => prev as GetBagResponse | undefined,
+  });
+
+  const productsForItems = useQuery<{
+    [productId: string]: PublicCatalogProductDTO | null;
+  }>({
+    queryKey: [
+      "bag-products",
+      bagQuery.data?.bagItems?.map((i) => i.productId).join(","),
+    ],
+    enabled: (bagQuery.data?.bagItems?.length ?? 0) > 0,
+    queryFn: async () => {
+      const entries = await Promise.all(
+        (bagQuery.data?.bagItems ?? []).map(async (i) => {
+          const p = await bagService.getPublicProduct(i.productId);
+          return [i.productId, p] as const;
+        }),
+      );
+      return Object.fromEntries(entries);
+    },
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
   });
 
   const addItemMutation = useMutation({
@@ -30,6 +53,16 @@ export function useBag() {
       toast.success("Item adicionado ao carrinho");
     },
     onError: (error: any) => {
+      const code = error?.code || error?.response?.data?.error;
+      if (code === "MISSING_TOKEN") {
+        if (typeof window !== "undefined") {
+          const current = window.location.pathname + window.location.search;
+          const redirect = encodeURIComponent(current);
+          window.location.href = `/login?redirect=${redirect}`;
+          return;
+        }
+      }
+
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
@@ -89,6 +122,21 @@ export function useBag() {
     },
   });
 
+  const checkoutMutation = useMutation({
+    mutationFn: async () => {
+      return await bagService.checkout();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bag"] });
+      toast.success("Compra finalizada");
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || error?.message || "Erro no checkout";
+      toast.error(errorMessage);
+    },
+  });
+
   const addItem = async (productId: string, quantity: number = 1) => {
     await addItemMutation.mutateAsync({ productId, quantity });
   };
@@ -105,9 +153,14 @@ export function useBag() {
     await clearBagMutation.mutateAsync();
   };
 
+  const checkout = async () => {
+    await checkoutMutation.mutateAsync();
+  };
+
   return {
     bag: bagQuery.data?.bag ?? null,
     bagItems: bagQuery.data?.bagItems ?? [],
+    bagProductsMap: productsForItems.data ?? {},
     totalItems: bagQuery.data?.totalItems ?? 0,
     totalPrice: bagQuery.data?.totalPrice ?? 0,
     isLoading: bagQuery.isLoading,
@@ -122,5 +175,7 @@ export function useBag() {
     isUpdating: updateQuantityMutation.isPending,
     isRemoving: removeItemMutation.isPending,
     isClearing: clearBagMutation.isPending,
+    checkout,
+    isCheckingOut: checkoutMutation.isPending,
   };
 }

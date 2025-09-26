@@ -38,6 +38,7 @@ import { GetBagUseCase } from "../../../application/bag/use-cases/get-bag.use-ca
 import { UpdateItemQuantityUseCase } from "../../../application/bag/use-cases/update-item-quantity.use-case";
 import { RemoveItemFromBagUseCase } from "../../../application/bag/use-cases/remove-item-from-bag.use-case";
 import { ClearBagUseCase } from "../../../application/bag/use-cases/clear-bag.use-case";
+import { ConvertBagUseCase } from "../../../application/bag/use-cases/convert-bag.use-case";
 import { UserNotAuthenticatedException } from "../../../domain/exceptions/bag-exceptions";
 
 @ApiTags("Carrinho")
@@ -51,6 +52,7 @@ export class BagController {
     private readonly updateItemQuantityUseCase: UpdateItemQuantityUseCase,
     private readonly removeItemFromBagUseCase: RemoveItemFromBagUseCase,
     private readonly clearBagUseCase: ClearBagUseCase,
+    private readonly convertBagUseCase: ConvertBagUseCase,
   ) {}
 
   @Get()
@@ -191,5 +193,24 @@ export class BagController {
     const request = { userId: user.custom.id };
     const response = await this.clearBagUseCase.execute(request);
     return BagMapper.toClearBagResponse(response);
+  }
+
+  @Post("checkout")
+  @RequireUser()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: "Finalizar compra",
+    description: "Converte a bag ativa em pedido e cria nova bag ativa",
+  })
+  public async checkout(
+    @CurrentUser() user: CurrentUserData,
+  ): Promise<{ success: boolean; message: string }> {
+    if (!user.custom?.id) {
+      throw new UserNotAuthenticatedException();
+    }
+    const response = await this.convertBagUseCase.execute({
+      userId: user.custom.id,
+    });
+    return response;
   }
 }
